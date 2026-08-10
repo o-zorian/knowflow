@@ -1,0 +1,67 @@
+package config
+
+import (
+	"strings"
+	"testing"
+)
+
+func setValidAPIEnv(t *testing.T) {
+	t.Helper()
+	values := map[string]string{
+		"APP_ENV":             "development",
+		"HTTP_ADDR":           ":8080",
+		"DATABASE_URL":        "postgres://knowflow:secret@localhost:5432/knowflow?sslmode=disable",
+		"REDIS_ADDR":          "localhost:6379",
+		"MINIO_ENDPOINT":      "localhost:9000",
+		"MINIO_ACCESS_KEY":    "change-me",
+		"MINIO_SECRET_KEY":    "change-me",
+		"MINIO_BUCKET":        "knowflow",
+		"JWT_SECRET":          "change-me",
+		"EMBEDDING_DIMENSION": "1024",
+		"LOG_LEVEL":           "info",
+	}
+	for name, value := range values {
+		t.Setenv(name, value)
+	}
+}
+
+func TestLoadAPI(t *testing.T) {
+	setValidAPIEnv(t)
+	cfg, err := LoadAPI()
+	if err != nil {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+	if cfg.Models.Embedding.Dimension != 1024 {
+		t.Fatalf("dimension = %d", cfg.Models.Embedding.Dimension)
+	}
+	if got := cfg.Database.URL.String(); got != "[REDACTED]" {
+		t.Fatalf("secret String() = %q", got)
+	}
+}
+
+func TestLoadAPIDoesNotExposeMissingSecretValue(t *testing.T) {
+	setValidAPIEnv(t)
+	t.Setenv("JWT_SECRET", "")
+	_, err := LoadAPI()
+	if err == nil || !strings.Contains(err.Error(), "JWT_SECRET is required") {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+}
+
+func TestLoadAPIRejectsDimensionMismatch(t *testing.T) {
+	setValidAPIEnv(t)
+	t.Setenv("EMBEDDING_DIMENSION", "768")
+	_, err := LoadAPI()
+	if err == nil || !strings.Contains(err.Error(), "must be 1024") {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+}
+
+func TestLoadAPIRejectsProductionPlaceholders(t *testing.T) {
+	setValidAPIEnv(t)
+	t.Setenv("APP_ENV", "production")
+	_, err := LoadAPI()
+	if err == nil || !strings.Contains(err.Error(), "JWT_SECRET") || !strings.Contains(err.Error(), "MinIO credentials") {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+}
