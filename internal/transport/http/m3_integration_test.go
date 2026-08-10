@@ -61,7 +61,7 @@ func TestM3UploadedDocumentProducesStreamedAnswerWithRealChunkCitation(t *testin
 	embedder, _ := model.NewFakeEmbedder(1024)
 	retrievalService := retrieval.NewService(retrieval.NewPostgresStore(pool), embedder)
 	fakeChat := &model.FakeChatModel{ModelName: "fake-chat"}
-	chatService := chat.NewService(chat.NewPostgresStore(pool), retrievalService, fakeChat, fakeChat.Name())
+	chatService := chat.NewService(chat.NewPostgresStore(pool), retrievalService, fakeChat, fakeChat.Name(), &model.FakeQueryRewriter{})
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 	handler := NewHandler(logger, []string{"http://localhost"}, time.Second, nil, BusinessServices{
 		Auth: authService, KnowledgeBase: kbService, Document: docService, Chat: chatService, MaxUploadSize: 1 << 20,
@@ -142,6 +142,17 @@ func TestM3UploadedDocumentProducesStreamedAnswerWithRealChunkCitation(t *testin
 	if answer.Status != "completed" || !strings.Contains(answer.Content, "[1]") || len(answer.Citations) != 1 ||
 		answer.Citations[0].ChunkID != chunkID || answer.Citations[0].Excerpt != documentText {
 		t.Fatalf("persisted answer = %#v", answer)
+	}
+
+	followUpBody, _ := json.Marshal(map[string]string{"content": "它如何返回真实引用？"})
+	followUpRequest := httptest.NewRequest(http.MethodPost, "/api/v1/conversations/"+conversationEnvelope.Data.ID+"/messages", bytes.NewReader(followUpBody))
+	followUpRequest.Header.Set("Content-Type", "application/json")
+	followUpRequest.Header.Set("Authorization", "Bearer "+tokens.AccessToken)
+	followUpResponse := httptest.NewRecorder()
+	handler.ServeHTTP(followUpResponse, followUpRequest)
+	if followUpResponse.Code != http.StatusOK || !strings.Contains(followUpResponse.Body.String(), `"rewrite_applied":true`) ||
+		!strings.Contains(followUpResponse.Body.String(), `"retrieval_query":"M3 如何返回答案和引用？；后续问题：它如何返回真实引用？"`) {
+		t.Fatalf("follow-up rewrite SSE status=%d body=%s", followUpResponse.Code, followUpResponse.Body.String())
 	}
 
 	failingModel := &model.FakeChatModel{ModelName: "fake-chat", Failure: errors.New("provider unavailable")}

@@ -53,3 +53,19 @@ func TestDefaultsNameUniquenessAndOwnership(t *testing.T) {
 		t.Fatal("another owner accessed the knowledge base")
 	}
 }
+
+func TestRetrievalConfigAllowsOneSourceToBeDisabled(t *testing.T) {
+	config := DefaultRetrievalConfig()
+	config.SparseTopK = 0
+	if err := validateConfig(config); err != nil {
+		t.Fatalf("dense-only config rejected: %v", err)
+	}
+	config.DenseTopK, config.SparseTopK = 0, 20
+	if err := validateConfig(config); err != nil {
+		t.Fatalf("sparse-only config rejected: %v", err)
+	}
+	config.SparseTopK = 0
+	if err := validateConfig(config); err == nil {
+		t.Fatal("config with both retrieval sources disabled was accepted")
+	}
+}

@@ -230,6 +230,7 @@ func validate(cfg Config, required scope, problems *[]string) {
 	}
 	validateModel("LLM", cfg.Models.LLM, problems)
 	validateModel("EMBEDDING", cfg.Models.Embedding.Model, problems)
+	validateModel("RERANK", cfg.Models.Reranker, problems)
 	if cfg.App.Environment == "production" && required.http {
 		if cfg.Models.LLM.BaseURL == "" {
 			*problems = append(*problems, "LLM_BASE_URL, LLM_API_KEY, and LLM_MODEL are required in production")

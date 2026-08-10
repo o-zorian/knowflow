@@ -131,7 +131,8 @@ func validateName(name string) error {
 
 func validateConfig(config RetrievalConfig) error {
 	if config.ChunkSize < 100 || config.ChunkSize > 10000 || config.ChunkOverlap < 0 || config.ChunkOverlap >= config.ChunkSize ||
-		config.DenseTopK < 1 || config.DenseTopK > 100 || config.SparseTopK < 1 || config.SparseTopK > 100 ||
+		config.DenseTopK < 0 || config.DenseTopK > 100 || config.SparseTopK < 0 || config.SparseTopK > 100 ||
+		(config.DenseTopK == 0 && config.SparseTopK == 0) ||
 		config.RerankTopK < 1 || config.RerankTopK > 100 || config.FinalTopK < 1 || config.FinalTopK > config.RerankTopK ||
 		config.MinimumScore < 0 || config.MinimumScore > 1 || config.RRFK < 1 || config.RRFK > 1000 {
 		return apperror.New(http.StatusBadRequest, "INVALID_RETRIEVAL_CONFIG", "retrieval_config contains invalid values")

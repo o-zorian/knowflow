@@ -78,8 +78,13 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	retrievalService := retrieval.NewService(retrieval.NewPostgresStore(pool), embedder)
-	chatService := chat.NewService(chat.NewPostgresStore(pool), retrievalService, chatModel, chatModelName)
+	reranker, err := configuredReranker(cfg)
+	if err != nil {
+		return err
+	}
+	queryRewriter := configuredQueryRewriter(cfg, chatModel)
+	retrievalService := retrieval.NewService(retrieval.NewPostgresStore(pool), embedder, reranker)
+	chatService := chat.NewService(chat.NewPostgresStore(pool), retrievalService, chatModel, chatModelName, queryRewriter)
 
 	server := &http.Server{
 		Addr: cfg.HTTP.Addr,
@@ -137,4 +142,21 @@ func configuredChatModel(cfg config.Config) (model.ChatModel, string, error) {
 		return nil, "", err
 	}
 	return client, client.Name(), nil
+}
+
+func configuredReranker(cfg config.Config) (model.Reranker, error) {
+	if cfg.Models.Reranker.BaseURL == "" {
+		if cfg.App.Environment == "production" {
+			return nil, nil
+		}
+		return &model.FakeReranker{}, nil
+	}
+	return model.NewRerankClient(cfg.Models.Reranker.BaseURL, cfg.Models.Reranker.APIKey.Value(), cfg.Models.Reranker.Name, nil)
+}
+
+func configuredQueryRewriter(cfg config.Config, chatModel model.ChatModel) model.QueryRewriter {
+	if cfg.Models.LLM.BaseURL == "" {
+		return &model.FakeQueryRewriter{}
+	}
+	return model.NewChatQueryRewriter(chatModel)
 }

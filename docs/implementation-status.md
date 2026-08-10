@@ -73,5 +73,31 @@ M3 verification on 2026-08-10:
 
 Current boundary:
 
-- M4 retrieval enhancement is intentionally absent: no sparse search execution, RRF, reranking, fallback, or query rewriting.
 - M5 governance is intentionally absent: no provider retry/fallback, pricing, cost calculation, metrics views, or evaluation pipeline.
+
+### M4 — retrieval enhancement
+
+Status: **accepted**.
+
+Completed scope:
+
+- PostgreSQL `tsvector` sparse retrieval with a GIN-indexed first-release tokenizer for ASCII terms and common Han unigram/bigram terms.
+- Per-knowledge-base Dense-only, Sparse-only, Dense + Sparse + RRF, and Dense + Sparse + RRF + Reranker configurations; a zero source Top K disables that source.
+- Concurrent dense/sparse source execution, RRF score fusion, stable chunk de-duplication, configurable score filtering and final Top K.
+- Replaceable `Reranker` interface, deterministic offline fake, HTTP `/rerank` adapter, response validation, and transparent RRF fallback on any reranker error.
+- Conversation-aware standalone-query rewriting from the latest six completed messages, with original-query fallback.
+- Retrieval traces containing rewrite, strategy, source-count, component-score, and fallback information; citations now persist the final strategy score.
+- Unit coverage for RRF/de-duplication, all four configurations, reranker adapter/fallback, query rewriting/fallback, and retrieval configuration validation.
+- PostgreSQL integration coverage that executes all four configurations through real pgvector and `tsvector` queries and verifies reranker fallback without a paid model.
+
+M4 verification on 2026-08-10:
+
+- M3 baseline before M4: `go test ./... -count=1`, `go vet ./...`, and `go build ./...` passed; opt-in database tests were skipped because the variable was not initially set.
+- PostgreSQL M4 integration: `go test ./internal/retrieval -run TestM4PostgresFourConfigurationsAndRerankFallback -count=1 -v` passed all four named subtests plus the fallback assertion.
+- M1–M4 database regression: `go test ./internal/ingestion ./internal/retrieval ./internal/transport/http -run 'TestM1HTTPIntegration|TestM2|TestM3|TestM4' -count=1 -v` passed against local PostgreSQL/pgvector.
+
+M4 boundary and risks:
+
+- The first-release sparse tokenizer and `plainto_tsquery` tradeoffs are documented in README; it is not production-grade Chinese linguistic segmentation.
+- The rerank HTTP contract follows the commonly deployed `/rerank` shape because OpenAI Chat/Embedding compatibility does not define a universal rerank wire protocol.
+- Provider retry/backoff, usage/cost governance, evaluation datasets/reports, rate limiting, and metrics remain M5 work.

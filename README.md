@@ -1,14 +1,29 @@
 # KnowFlow
 
-KnowFlow is a Go-based enterprise knowledge-base RAG platform. The repository currently implements M0 through M3: the engineering foundation, owner-scoped authentication/knowledge-base/document APIs, asynchronous document indexing into PostgreSQL/pgvector, and citation-grounded streaming RAG conversations.
+KnowFlow is a Go-based enterprise knowledge-base RAG platform. The repository currently implements M0 through M4: the engineering foundation, owner-scoped authentication/knowledge-base/document APIs, asynchronous document indexing into PostgreSQL/pgvector, citation-grounded streaming RAG conversations, and configurable hybrid retrieval.
 
-## Architecture through M3
+## Architecture through M4
 
-The API and Worker are separate processes in one Go module. Shared infrastructure lives under `internal/`; HTTP concerns are isolated under `internal/transport/http`; versioned SQL is the only source of database schema changes. Registration, token rotation, owner-scoped knowledge-base CRUD, document upload/status/retry/chunk-preview APIs, Redis queueing, parsing, recursive chunking, replaceable embeddings, transactional vector persistence, dense retrieval, persisted conversations, streaming chat, and server-validated citations are implemented.
+The API and Worker are separate processes in one Go module. Shared infrastructure lives under `internal/`; HTTP concerns are isolated under `internal/transport/http`; versioned SQL is the only source of database schema changes. Registration, token rotation, owner-scoped knowledge-base CRUD, document upload/status/retry/chunk-preview APIs, Redis queueing, parsing, recursive chunking, replaceable model adapters, transactional vector persistence, hybrid retrieval, persisted conversations, streaming chat, and server-validated citations are implemented.
 
 The API applies pending migrations while holding a PostgreSQL advisory lock before accepting traffic. The API stores validated source files under generated MinIO keys and enqueues only job identifiers. The Worker downloads the source, parses and cleans it, chunks it using the knowledge-base configuration, embeds chunks in configurable batches, then writes every chunk and changes the document to `ready` in one database transaction.
 
-For a question, the API persists the user and streaming assistant messages first, embeds the original question, and performs pgvector cosine retrieval filtered by owner, knowledge base, ready document, and current index version. It retrieves the configured dense Top K (20 by default), supplies at most the first five chunks as numbered evidence, streams the model response over SSE, validates citation markers against that evidence, and atomically saves the final answer, usage, retrieval trace, and real chunk citation snapshots.
+For a question, the API persists the user and streaming assistant messages first. It uses the most recent six completed messages to rewrite a follow-up into a standalone query, falling back to the original question on any rewrite error. It then runs the enabled dense pgvector and sparse PostgreSQL full-text searches concurrently, filters every query by owner, knowledge base, ready document, and current index version, fuses hybrid candidates with RRF, optionally reranks the configured candidate count, and falls back to RRF ordering if reranking fails. The final configured candidates are bounded to an 8,000-token context, numbered as evidence, streamed over SSE, validated, and saved with the retrieval trace and real chunk citation snapshots.
+
+## Retrieval configurations
+
+Retrieval is configured per knowledge base. `dense_top_k` and `sparse_top_k` default to 20; setting either one to `0` disables that source, while disabling both is rejected. `rrf_k` defaults to 60, `rerank_top_k` to 10, and `final_top_k` to 5. `minimum_score` is applied to the active strategy's score before reranking.
+
+The four supported configurations are:
+
+| Configuration | `dense_top_k` | `sparse_top_k` | `rerank_enabled` |
+|---|---:|---:|---:|
+| Dense only | `> 0` | `0` | `false` |
+| Sparse only | `0` | `> 0` | `false` |
+| Dense + Sparse + RRF | `> 0` | `> 0` | `false` |
+| Dense + Sparse + RRF + Reranker | `> 0` | `> 0` | `true` |
+
+The `retrieval.completed` trace records the original and rewritten queries, rewrite fallback, source counts, strategy, dense/sparse/RRF/rerank scores, and rerank fallback. No provider error text is exposed in the trace.
 
 ## Asynchronous indexing behavior
 
@@ -62,7 +77,7 @@ curl -N -X POST http://localhost:8080/api/v1/conversations/<conversation-id>/mes
   -d '{"content":"What does this document say?"}'
 ```
 
-The stream uses JSON payloads for `message.started`, `retrieval.completed`, `message.delta`, `citation`, `usage`, `message.completed`, and `error`. A `citation` contains the persisted document ID, filename, chunk ID, original excerpt, page or paragraph location, and dense similarity score. `GET /api/v1/conversations/{id}` returns the saved messages and citation snapshots.
+The stream uses JSON payloads for `message.started`, `retrieval.completed`, `message.delta`, `citation`, `usage`, `message.completed`, and `error`. A `citation` contains the persisted document ID, filename, chunk ID, original excerpt, page or paragraph location, and the final retrieval score. `GET /api/v1/conversations/{id}` returns the saved messages and citation snapshots.
 
 `docker compose down` stops the stack but retains named volumes. This project does not provide a target that deletes volumes.
 
@@ -85,7 +100,7 @@ docker compose config --quiet
 PostgreSQL integration tests are opt-in and remain offline with respect to model providers:
 
 ```sh
-KNOWFLOW_TEST_DATABASE_URL='postgres://knowflow:knowflow-dev-password@localhost:5432/knowflow?sslmode=disable' go test ./internal/ingestion ./internal/transport/http -count=1
+KNOWFLOW_TEST_DATABASE_URL='postgres://knowflow:knowflow-dev-password@localhost:5432/knowflow?sslmode=disable' go test ./internal/ingestion ./internal/retrieval ./internal/transport/http -count=1
 ```
 
 On Windows without a POSIX `make`, run the underlying Go and Docker commands directly.
@@ -100,22 +115,21 @@ Errors exposed to clients are deliberately generic. Dependency details are prese
 
 ## Configuration
 
-`.env.example` is the configuration reference. In development and test, leaving all three `LLM_*` values empty selects the offline `FakeChatModel`; leaving all three `EMBEDDING_*` provider values empty selects the deterministic lexical `FakeEmbedder` in both API and Worker. Supplying a provider requires each Base URL, API key, and model name as one complete group. OpenAI-compatible `/chat/completions` streaming and `/embeddings` endpoints are supported. Production API startup requires both complete LLM and embedding provider groups. API keys are read only from the environment and are redacted from configuration formatting.
+`.env.example` is the configuration reference. In development and test, leaving all three `LLM_*` values empty selects the offline `FakeChatModel` and `FakeQueryRewriter`; leaving all three `EMBEDDING_*` values empty selects the deterministic lexical `FakeEmbedder`; leaving all three `RERANK_*` values empty selects `FakeReranker`. Supplying any provider requires its Base URL, API key, and model name as one complete group. OpenAI-compatible `/chat/completions` streaming and `/embeddings` endpoints are supported. The rerank adapter posts the common `{model, query, documents, top_n}` contract to `/rerank` and accepts `{results:[{index,relevance_score}]}`. Production API startup requires complete LLM and embedding provider groups. Reranking remains optional; if a production knowledge base enables it without a configured provider, the request safely falls back to RRF. API keys are read only from the environment and are redacted from configuration formatting.
 
 `EMBEDDING_BATCH_SIZE`, `WORKER_POLL_TIMEOUT`, and `INGESTION_JOB_TIMEOUT` control the Worker. API startup requires HTTP, PostgreSQL, Redis, MinIO, and JWT values; Worker startup requires PostgreSQL, Redis, and MinIO; the migration command requires PostgreSQL. In `production`, placeholder MinIO credentials, a short/placeholder JWT secret, wildcard CORS, and missing model providers are rejected.
 
-If an SSE client disconnects, its request context cancels dense retrieval or the active model stream. The API then uses a short independent database context to mark the assistant message `failed` with `CLIENT_DISCONNECTED`; it does not continue generation in the background.
+If an SSE client disconnects, its request context cancels query rewriting, active dense/sparse retrieval, reranking, or the answer model stream. The API then uses a short independent database context to mark the assistant message `failed` with `CLIENT_DISCONNECTED`; it does not continue generation in the background.
 
 ## Database schema
 
-`migrations/000001_core.up.sql` creates pgcrypto and pgvector plus the requirements-defined core tables: users, refresh tokens, knowledge bases, documents, document chunks, ingestion jobs, conversations, messages, and per-call model usage. It includes foreign keys, state checks, non-negative value checks, partial uniqueness for soft-deleted records, GIN full-text indexing, and an HNSW cosine vector index.
+`migrations/000001_core.up.sql` creates pgcrypto and pgvector plus the requirements-defined core tables: users, refresh tokens, knowledge bases, documents, document chunks, ingestion jobs, conversations, messages, and per-call model usage. It includes foreign keys, state checks, non-negative value checks, partial uniqueness, and an HNSW cosine vector index. Migration 000002 replaces the initial basic `search_vector` expression with M4 search-term generation and rebuilds its GIN index.
 
-The `simple` PostgreSQL text-search configuration only tokenizes on basic word boundaries and is not a production-grade Chinese tokenizer. Hybrid/full-text retrieval is scheduled for M4, where that limitation must be addressed or explicitly retained as a documented tradeoff.
+Sparse retrieval deliberately uses a small, immutable tokenizer suitable for the first release: ASCII letters/digits are retained as lower-case words, and common CJK Unified Ideographs in `U+4E00..U+9FA5` produce unigram and adjacent bigram terms before PostgreSQL `simple` stemming and GIN indexing. It has no linguistic Chinese segmentation, stemming, synonyms, phrase scoring, or support for every CJK extension block; long `plainto_tsquery` inputs also use AND semantics and can reduce sparse recall. A production deployment with broader language needs should replace this function with a dedicated tokenizer and rebuild the generated column/index.
 
-## Known M3 limitations
+## Known limitations
 
 - PDF indexing extracts an existing text layer; scanned/image-only PDFs and OCR are outside the requirements and fail with `EMPTY_DOCUMENT` when no text is extractable. Password-protected or malformed PDFs fail with `DOCUMENT_PARSE_FAILED`.
 - DOCX parsing targets the main `word/document.xml` body. Headers, footers, comments, drawings, and embedded media are not indexed.
 - The development fake embedder is deterministic and lexical. It exercises the complete pgvector path but is not a substitute for a production semantic embedding model; configure the OpenAI-compatible embedding adapter for semantic retrieval.
-- M3 intentionally implements dense retrieval only. Sparse/full-text retrieval, RRF, reranking and fallback, and conversation-aware query rewriting remain M4 work.
 - Model retries, fallback providers, pricing, and the per-call governance views remain M5 work. M3 persists prompt/completion token counts reported by the chat provider on each assistant message but does not estimate cost.

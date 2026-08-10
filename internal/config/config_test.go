@@ -74,3 +74,12 @@ func TestLoadAPIRejectsPartialModelConfiguration(t *testing.T) {
 		t.Fatalf("LoadAPI() error = %v", err)
 	}
 }
+
+func TestLoadAPIRejectsPartialRerankerConfiguration(t *testing.T) {
+	setValidAPIEnv(t)
+	t.Setenv("RERANK_BASE_URL", "https://models.example.test/v1")
+	_, err := LoadAPI()
+	if err == nil || !strings.Contains(err.Error(), "RERANK_BASE_URL, RERANK_API_KEY, and RERANK_MODEL must be configured together") {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+}

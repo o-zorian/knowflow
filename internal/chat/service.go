@@ -37,11 +37,16 @@ type Service struct {
 	store     Store
 	retriever Retriever
 	model     model.ChatModel
+	rewriter  model.QueryRewriter
 	modelName string
 }
 
-func NewService(store Store, retriever Retriever, chatModel model.ChatModel, modelName string) *Service {
-	return &Service{store: store, retriever: retriever, model: chatModel, modelName: modelName}
+func NewService(store Store, retriever Retriever, chatModel model.ChatModel, modelName string, rewriters ...model.QueryRewriter) *Service {
+	var rewriter model.QueryRewriter
+	if len(rewriters) > 0 {
+		rewriter = rewriters[0]
+	}
+	return &Service{store: store, retriever: retriever, model: chatModel, rewriter: rewriter, modelName: modelName}
 }
 
 func (s *Service) Create(ctx context.Context, userID, knowledgeBaseID, title string) (Conversation, error) {
@@ -102,12 +107,14 @@ func (s *Service) runTurn(ctx context.Context, conversation Conversation, userMe
 		s.persistFailure(assistantMessage.ID, "", "CLIENT_DISCONNECTED", started)
 		return
 	}
-	retrieved, err := s.retriever.Retrieve(ctx, conversation.UserID, conversation.KnowledgeBaseID, userMessage.Content)
+	retrievalQuery, rewriteApplied, rewriteFallback := rewriteForRetrieval(ctx, s.rewriter, history, userMessage.Content)
+	retrieved, err := s.retriever.Retrieve(ctx, conversation.UserID, conversation.KnowledgeBaseID, retrievalQuery)
 	if err != nil {
 		s.failTurn(ctx, events, assistantMessage.ID, "", publicError(err), started)
 		return
 	}
-	trace := retrievalTrace(retrieved)
+	retrieved.Results = limitContext(retrieved.Results, 8000)
+	trace := retrievalTrace(retrieved, userMessage.Content, retrievalQuery, rewriteApplied, rewriteFallback)
 	if !send(ctx, events, StreamEvent{Name: "retrieval.completed", Data: trace}) {
 		s.persistFailure(assistantMessage.ID, "", "CLIENT_DISCONNECTED", started)
 		return
@@ -125,9 +132,6 @@ func (s *Service) runTurn(ctx context.Context, conversation Conversation, userMe
 		return
 	}
 	selected := retrieved.Results
-	if len(selected) > 5 {
-		selected = selected[:5]
-	}
 	request := buildRequest(history, userMessage, selected)
 	stream, err := s.model.Stream(ctx, request)
 	if err != nil {
@@ -231,13 +235,20 @@ func buildRequest(history []Message, userMessage Message, results []retrieval.Re
 	return model.ChatRequest{SystemPrompt: system, Messages: messages, Evidence: evidence}
 }
 
-func retrievalTrace(response retrieval.Response) map[string]any {
+func retrievalTrace(response retrieval.Response, originalQuery, retrievalQuery string, rewriteApplied, rewriteFallback bool) map[string]any {
 	results := make([]map[string]any, 0, len(response.Results))
 	for index, result := range response.Results {
 		results = append(results, map[string]any{"number": index + 1, "chunk_id": result.ChunkID,
-			"document_id": result.DocumentID, "score": result.Similarity})
+			"document_id": result.DocumentID, "score": result.Score, "dense_score": result.Similarity,
+			"sparse_score": result.SparseScore, "rrf_score": result.RRFScore, "rerank_score": result.RerankScore})
 	}
-	return map[string]any{"strategy": "dense", "latency_ms": response.LatencyMS, "result_count": len(results), "results": results}
+	return map[string]any{
+		"strategy": response.Strategy, "latency_ms": response.LatencyMS, "result_count": len(results), "results": results,
+		"dense_result_count": response.DenseResultCount, "sparse_result_count": response.SparseResultCount,
+		"rerank_attempted": response.RerankAttempted, "rerank_fallback": response.RerankFallback,
+		"original_query": originalQuery, "retrieval_query": retrievalQuery,
+		"rewrite_applied": rewriteApplied, "rewrite_fallback": rewriteFallback,
+	}
 }
 
 func citationsFor(numbers []int, results []retrieval.Result) []Citation {
@@ -250,9 +261,48 @@ func citationsFor(numbers []int, results []retrieval.Result) []Citation {
 		citations = append(citations, Citation{Number: number, DocumentID: result.DocumentID,
 			Filename: result.Filename, ChunkID: result.ChunkID, Excerpt: result.Content,
 			PageStart: result.PageStart, PageEnd: result.PageEnd, HeadingPath: result.HeadingPath,
-			ChunkIndex: result.ChunkIndex, Location: retrieval.Location(result), Score: result.Similarity})
+			ChunkIndex: result.ChunkIndex, Location: retrieval.Location(result), Score: result.Score})
 	}
 	return citations
+}
+
+func rewriteForRetrieval(ctx context.Context, rewriter model.QueryRewriter, history []Message, query string) (string, bool, bool) {
+	if rewriter == nil {
+		return query, false, false
+	}
+	completed := make([]model.ChatMessage, 0, 6)
+	for index := len(history) - 1; index >= 0 && len(completed) < 6; index-- {
+		item := history[index]
+		if item.Status == "completed" && (item.Role == "user" || item.Role == "assistant") {
+			completed = append(completed, model.ChatMessage{Role: item.Role, Content: item.Content})
+		}
+	}
+	for left, right := 0, len(completed)-1; left < right; left, right = left+1, right-1 {
+		completed[left], completed[right] = completed[right], completed[left]
+	}
+	rewritten, err := rewriter.Rewrite(ctx, completed, query)
+	if err != nil || strings.TrimSpace(rewritten) == "" {
+		return query, false, true
+	}
+	rewritten = strings.TrimSpace(rewritten)
+	return rewritten, rewritten != strings.TrimSpace(query), false
+}
+
+func limitContext(results []retrieval.Result, maximumTokens int) []retrieval.Result {
+	selected := make([]retrieval.Result, 0, len(results))
+	total := 0
+	for _, result := range results {
+		tokens := result.TokenCount
+		if tokens <= 0 {
+			tokens = max(1, len([]rune(result.Content))/4)
+		}
+		if len(selected) > 0 && total+tokens > maximumTokens {
+			break
+		}
+		selected = append(selected, result)
+		total += tokens
+	}
+	return selected
 }
 
 func publicError(err error) error { return err }

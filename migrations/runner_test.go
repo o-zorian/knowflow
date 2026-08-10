@@ -10,7 +10,7 @@ func TestEmbeddedMigrationsAreOrderedAndContainCoreSchema(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(migrations) != 1 || migrations[0].version != 1 {
+	if len(migrations) != 2 || migrations[0].version != 1 || migrations[1].version != 2 {
 		t.Fatalf("migrations = %#v", migrations)
 	}
 	for _, required := range []string{
@@ -30,6 +30,11 @@ func TestEmbeddedMigrationsAreOrderedAndContainCoreSchema(t *testing.T) {
 	} {
 		if !strings.Contains(migrations[0].sql, required) {
 			t.Errorf("migration does not contain %q", required)
+		}
+	}
+	for _, required := range []string{"knowflow_search_terms", "USING GIN", "search_vector"} {
+		if !strings.Contains(migrations[1].sql, required) {
+			t.Errorf("M4 migration does not contain %q", required)
 		}
 	}
 }
