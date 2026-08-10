@@ -42,9 +42,36 @@ Executed from the repository root on 2026-08-10:
 - Real API → MinIO → Redis → Worker → pgvector test: a Markdown document moved from `queued` to `ready`, job reached `succeeded/completed/100`, and 9 chunks were persisted.
 - The same Redis job payload was replayed. Before and after values were both `attempts=1`, `chunk_count=9`, and actual chunk rows `=9`.
 
-## Current boundary and risks
+## M2 boundary and risks at acceptance
 
-- M3 and later functionality is intentionally absent: dense retrieval, chat/SSE/citations, hybrid retrieval/reranking, evaluation/governance, and frontend work remain future milestones.
 - M2 PDF support requires a text layer and does not perform OCR. DOCX indexing excludes headers, footers, comments, and embedded media.
-- M2 uses the fake embedder by design; it validates batching and pgvector storage but does not provide semantic vectors.
+- M2 originally used the fake embedder by design. M3 retains a deterministic lexical fake for offline tests and adds the OpenAI-compatible production adapter.
 - The Redis list consumer provides duplicate-safe processing but does not yet implement a separate in-flight/acknowledgement list for automatic crash recovery. A process crash after dequeue can leave a job `running`; operator recovery is a remaining reliability hardening item outside the M2 acceptance path.
+
+### M3 — RAG question answering
+
+Status: **accepted**.
+
+Completed scope:
+
+- Owner- and knowledge-base-scoped pgvector cosine retrieval over ready documents and their current index versions, using the configured dense Top K.
+- Replaceable `ChatModel` streaming interface, deterministic offline `FakeChatModel`, and OpenAI-compatible chat streaming adapter.
+- Matching fake or OpenAI-compatible query/document embedding selection in API and Worker.
+- Conversation create/list/detail/delete APIs and persisted multi-turn user/assistant messages.
+- JSON SSE events for start, retrieval completion, answer deltas, citations, usage, completion, and errors.
+- Stable evidence numbering, streaming validation/removal of nonexistent numeric citation markers, and citation snapshots mapped to real document/chunk rows with location and similarity.
+- Completed answer/usage/retrieval persistence, readable failed-message state on model failure, and documented client-disconnect cancellation behavior.
+- Unit tests for citation filtering, fake streaming, and OpenAI-compatible adapters plus a PostgreSQL integration test covering HTTP upload, indexing, dense retrieval, SSE, real citations, and failure persistence.
+
+M3 verification on 2026-08-10:
+
+- `go test ./... -count=1`: passed with PostgreSQL integration enabled.
+- `go vet ./...`: passed.
+- `go build ./...`: passed.
+- `go test ./internal/ingestion ./internal/transport/http -run 'TestM1HTTPIntegration|TestM2|TestM3' -count=1 -v`: passed against the running PostgreSQL/pgvector service. The M3 test uploaded a TXT document, processed it into a real chunk/vector row, retrieved it by dense similarity, observed all successful SSE event types, verified the emitted document/chunk IDs, and reloaded the completed answer/citation from the database. The same test verified owner isolation and persisted `failed` state on a fake model error.
+- Docker Compose could not be re-invoked in this shell because no Docker CLI executable was installed on its PATH. Existing local PostgreSQL, Redis, MinIO, and API ports were reachable; the database-backed acceptance test did not depend on a paid external model.
+
+Current boundary:
+
+- M4 retrieval enhancement is intentionally absent: no sparse search execution, RRF, reranking, fallback, or query rewriting.
+- M5 governance is intentionally absent: no provider retry/fallback, pricing, cost calculation, metrics views, or evaluation pipeline.

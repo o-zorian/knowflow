@@ -228,6 +228,16 @@ func validate(cfg Config, required scope, problems *[]string) {
 	if cfg.Models.Embedding.Dimension != EmbeddingDimension {
 		*problems = append(*problems, fmt.Sprintf("EMBEDDING_DIMENSION must be %d to match the database migration", EmbeddingDimension))
 	}
+	validateModel("LLM", cfg.Models.LLM, problems)
+	validateModel("EMBEDDING", cfg.Models.Embedding.Model, problems)
+	if cfg.App.Environment == "production" && required.http {
+		if cfg.Models.LLM.BaseURL == "" {
+			*problems = append(*problems, "LLM_BASE_URL, LLM_API_KEY, and LLM_MODEL are required in production")
+		}
+		if cfg.Models.Embedding.BaseURL == "" {
+			*problems = append(*problems, "EMBEDDING_BASE_URL, EMBEDDING_API_KEY, and EMBEDDING_MODEL are required in production")
+		}
+	}
 	if cfg.App.Environment == "production" {
 		if required.auth && (cfg.Auth.JWTSecret.Value() == "change-me" || len(cfg.Auth.JWTSecret.Value()) < 32) {
 			*problems = append(*problems, "JWT_SECRET must be at least 32 characters and not a development placeholder in production")
@@ -243,6 +253,25 @@ func validate(cfg Config, required scope, problems *[]string) {
 	}
 	if cfg.Log.Level != "debug" && cfg.Log.Level != "info" && cfg.Log.Level != "warn" && cfg.Log.Level != "error" {
 		*problems = append(*problems, "LOG_LEVEL must be one of debug, info, warn, error")
+	}
+}
+
+func validateModel(prefix string, model Model, problems *[]string) {
+	values := []string{model.BaseURL, model.APIKey.Value(), model.Name}
+	configured := 0
+	for _, value := range values {
+		if strings.TrimSpace(value) != "" {
+			configured++
+		}
+	}
+	if configured != 0 && configured != len(values) {
+		*problems = append(*problems, prefix+"_BASE_URL, "+prefix+"_API_KEY, and "+prefix+"_MODEL must be configured together")
+	}
+	if model.BaseURL != "" {
+		parsed, err := url.Parse(model.BaseURL)
+		if err != nil || (parsed.Scheme != "http" && parsed.Scheme != "https") || parsed.Host == "" {
+			*problems = append(*problems, prefix+"_BASE_URL must be an absolute HTTP(S) URL")
+		}
 	}
 }
 

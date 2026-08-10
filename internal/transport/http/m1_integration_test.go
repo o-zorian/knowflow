@@ -47,6 +47,15 @@ func (s *integrationObjects) Remove(_ context.Context, key string) error {
 	delete(s.objects, key)
 	return nil
 }
+func (s *integrationObjects) Get(_ context.Context, key string) (io.ReadCloser, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	data, ok := s.objects[key]
+	if !ok {
+		return nil, os.ErrNotExist
+	}
+	return io.NopCloser(bytes.NewReader(append([]byte(nil), data...))), nil
+}
 
 type integrationQueue struct {
 	mu      sync.Mutex

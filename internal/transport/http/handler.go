@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"knowflow/internal/auth"
+	"knowflow/internal/chat"
 	"knowflow/internal/document"
 	"knowflow/internal/health"
 	"knowflow/internal/knowledgebase"
@@ -17,6 +18,7 @@ type BusinessServices struct {
 	Auth          *auth.Service
 	KnowledgeBase *knowledgebase.Service
 	Document      *document.Service
+	Chat          *chat.Service
 	MaxUploadSize int64
 }
 
@@ -30,6 +32,9 @@ func NewHandler(logger *slog.Logger, allowedOrigins []string, timeout time.Durat
 	mux.HandleFunc("/api/v1/health/ready", methodNotAllowed)
 	if len(business) > 0 {
 		registerM1Routes(mux, logger, business[0])
+		if business[0].Chat != nil {
+			registerM3Routes(mux, logger, business[0])
+		}
 	}
 	mux.HandleFunc("/", notFound)
 

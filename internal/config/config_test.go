@@ -65,3 +65,12 @@ func TestLoadAPIRejectsProductionPlaceholders(t *testing.T) {
 		t.Fatalf("LoadAPI() error = %v", err)
 	}
 }
+
+func TestLoadAPIRejectsPartialModelConfiguration(t *testing.T) {
+	setValidAPIEnv(t)
+	t.Setenv("LLM_BASE_URL", "https://models.example.test/v1")
+	_, err := LoadAPI()
+	if err == nil || !strings.Contains(err.Error(), "LLM_BASE_URL, LLM_API_KEY, and LLM_MODEL must be configured together") {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+}

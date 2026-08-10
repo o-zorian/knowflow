@@ -55,7 +55,7 @@ func run() error {
 	if err := checkDependencies(startupCtx, dependencies); err != nil {
 		return err
 	}
-	embedder, err := model.NewFakeEmbedder(cfg.Models.Embedding.Dimension)
+	embedder, err := configuredEmbedder(cfg)
 	if err != nil {
 		return err
 	}
@@ -95,6 +95,14 @@ func run() error {
 			}
 		}
 	}
+}
+
+func configuredEmbedder(cfg config.Config) (model.Embedder, error) {
+	if cfg.Models.Embedding.BaseURL == "" {
+		return model.NewFakeEmbedder(cfg.Models.Embedding.Dimension)
+	}
+	return model.NewOpenAIEmbeddingClient(cfg.Models.Embedding.BaseURL, cfg.Models.Embedding.APIKey.Value(),
+		cfg.Models.Embedding.Name, cfg.Models.Embedding.Dimension, nil)
 }
 
 func checkDependencies(ctx context.Context, dependencies []health.Dependency) error {

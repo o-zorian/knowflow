@@ -11,15 +11,18 @@ import (
 	"time"
 
 	"knowflow/internal/auth"
+	"knowflow/internal/chat"
 	"knowflow/internal/config"
 	"knowflow/internal/document"
 	"knowflow/internal/health"
 	"knowflow/internal/ingestion"
 	"knowflow/internal/knowledgebase"
+	"knowflow/internal/model"
 	"knowflow/internal/platform/database"
 	"knowflow/internal/platform/logging"
 	"knowflow/internal/platform/objectstore"
 	redisplatform "knowflow/internal/platform/redis"
+	"knowflow/internal/retrieval"
 	transporthttp "knowflow/internal/transport/http"
 	"knowflow/migrations"
 )
@@ -67,16 +70,26 @@ func run() error {
 	authService := auth.NewService(auth.NewPostgresRepository(pool), cfg.Auth.JWTSecret.Value(), cfg.Auth.AccessTokenTTL, cfg.Auth.RefreshTokenTTL)
 	knowledgeBaseService := knowledgebase.NewService(knowledgebase.NewPostgresStore(pool), queue, cfg.Models.Embedding.Dimension)
 	documentService := document.NewService(document.NewPostgresStore(pool), objectStore, queue, cfg.Upload.MaxSizeBytes)
+	embedder, err := configuredEmbedder(cfg)
+	if err != nil {
+		return err
+	}
+	chatModel, chatModelName, err := configuredChatModel(cfg)
+	if err != nil {
+		return err
+	}
+	retrievalService := retrieval.NewService(retrieval.NewPostgresStore(pool), embedder)
+	chatService := chat.NewService(chat.NewPostgresStore(pool), retrievalService, chatModel, chatModelName)
 
 	server := &http.Server{
 		Addr: cfg.HTTP.Addr,
 		Handler: transporthttp.NewHandler(logger, cfg.HTTP.AllowedOrigins, cfg.Operational.HealthCheckTimeout, dependencies,
 			transporthttp.BusinessServices{
-				Auth: authService, KnowledgeBase: knowledgeBaseService, Document: documentService, MaxUploadSize: cfg.Upload.MaxSizeBytes,
+				Auth: authService, KnowledgeBase: knowledgeBaseService, Document: documentService, Chat: chatService, MaxUploadSize: cfg.Upload.MaxSizeBytes,
 			}),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       15 * time.Second,
-		WriteTimeout:      30 * time.Second,
+		WriteTimeout:      0,
 		IdleTimeout:       60 * time.Second,
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -104,4 +117,24 @@ func run() error {
 	}
 	logger.Info("api stopped")
 	return nil
+}
+
+func configuredEmbedder(cfg config.Config) (model.Embedder, error) {
+	if cfg.Models.Embedding.BaseURL == "" {
+		return model.NewFakeEmbedder(cfg.Models.Embedding.Dimension)
+	}
+	return model.NewOpenAIEmbeddingClient(cfg.Models.Embedding.BaseURL, cfg.Models.Embedding.APIKey.Value(),
+		cfg.Models.Embedding.Name, cfg.Models.Embedding.Dimension, nil)
+}
+
+func configuredChatModel(cfg config.Config) (model.ChatModel, string, error) {
+	if cfg.Models.LLM.BaseURL == "" {
+		fake := &model.FakeChatModel{ModelName: "fake-chat"}
+		return fake, fake.Name(), nil
+	}
+	client, err := model.NewOpenAIClient(cfg.Models.LLM.BaseURL, cfg.Models.LLM.APIKey.Value(), cfg.Models.LLM.Name, nil)
+	if err != nil {
+		return nil, "", err
+	}
+	return client, client.Name(), nil
 }

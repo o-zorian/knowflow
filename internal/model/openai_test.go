@@ -1,0 +1,60 @@
+package model
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+)
+
+func TestOpenAIClientStreamsDeltasAndUsage(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/chat/completions" || r.Header.Get("Authorization") != "Bearer secret" {
+			t.Fatalf("request path=%s auth=%q", r.URL.Path, r.Header.Get("Authorization"))
+		}
+		w.Header().Set("Content-Type", "text/event-stream")
+		fmt.Fprint(w, "data: {\"choices\":[{\"delta\":{\"content\":\"answer \"}}]}\n\n")
+		fmt.Fprint(w, "data: {\"choices\":[{\"delta\":{\"content\":\"[1]\"}}],\"usage\":{\"prompt_tokens\":4,\"completion_tokens\":2,\"total_tokens\":6}}\n\n")
+		fmt.Fprint(w, "data: [DONE]\n\n")
+	}))
+	defer server.Close()
+	client, err := NewOpenAIClient(server.URL, "secret", "chat-model", server.Client())
+	if err != nil {
+		t.Fatal(err)
+	}
+	events, err := client.Stream(context.Background(), ChatRequest{Messages: []ChatMessage{{Role: "user", Content: "question"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var answer strings.Builder
+	var usage *Usage
+	for event := range events {
+		if event.Err != nil {
+			t.Fatal(event.Err)
+		}
+		answer.WriteString(event.Delta)
+		if event.Usage != nil {
+			usage = event.Usage
+		}
+	}
+	if answer.String() != "answer [1]" || usage == nil || usage.TotalTokens != 6 {
+		t.Fatalf("answer=%q usage=%#v", answer.String(), usage)
+	}
+}
+
+func TestOpenAIEmbeddingClientValidatesDimension(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		fmt.Fprint(w, `{"data":[{"index":0,"embedding":[1,0]}]}`)
+	}))
+	defer server.Close()
+	client, err := NewOpenAIEmbeddingClient(server.URL, "secret", "embedding-model", 3, server.Client())
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = client.EmbedQuery(context.Background(), "question")
+	if err == nil || !strings.Contains(err.Error(), "dimension 2, want 3") {
+		t.Fatalf("error = %v", err)
+	}
+}

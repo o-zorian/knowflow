@@ -3,9 +3,10 @@ package model
 import (
 	"context"
 	"crypto/sha256"
-	"encoding/binary"
 	"errors"
 	"math"
+	"strings"
+	"unicode"
 )
 
 type Embedder interface {
@@ -48,17 +49,39 @@ func (f *FakeEmbedder) EmbedQuery(ctx context.Context, text string) ([]float32, 
 }
 
 func (f *FakeEmbedder) embed(text string) []float32 {
-	digest := sha256.Sum256([]byte(text))
 	vector := make([]float32, f.dimension)
-	var norm float64
-	for i := range vector {
-		word := binary.LittleEndian.Uint32(digest[(i%8)*4 : (i%8+1)*4])
-		value := float32(int64(word)-(1<<31)) / float32(1<<31)
-		vector[i] = value
-		norm += float64(value * value)
-		if i%8 == 7 {
-			digest = sha256.Sum256(digest[:])
+	normalized := []rune(strings.ToLower(strings.TrimSpace(text)))
+	features := make([]string, 0, len(normalized)*2)
+	var word strings.Builder
+	flushWord := func() {
+		if word.Len() > 0 {
+			features = append(features, word.String())
+			word.Reset()
 		}
+	}
+	for index, char := range normalized {
+		if unicode.IsLetter(char) || unicode.IsDigit(char) {
+			word.WriteRune(char)
+		} else {
+			flushWord()
+		}
+		features = append(features, string(char))
+		if index+1 < len(normalized) {
+			features = append(features, string(normalized[index:index+2]))
+		}
+	}
+	flushWord()
+	if len(features) == 0 {
+		features = append(features, "empty")
+	}
+	for _, feature := range features {
+		digest := sha256.Sum256([]byte(feature))
+		index := int(uint64(digest[0])<<8|uint64(digest[1])) % f.dimension
+		vector[index]++
+	}
+	var norm float64
+	for _, value := range vector {
+		norm += float64(value * value)
 	}
 	if norm == 0 {
 		vector[0] = 1

@@ -1,12 +1,14 @@
 # KnowFlow
 
-KnowFlow is a Go-based enterprise knowledge-base RAG platform. The repository currently implements M0 through M2: the engineering foundation, owner-scoped authentication/knowledge-base/document APIs, and asynchronous document indexing into PostgreSQL/pgvector.
+KnowFlow is a Go-based enterprise knowledge-base RAG platform. The repository currently implements M0 through M3: the engineering foundation, owner-scoped authentication/knowledge-base/document APIs, asynchronous document indexing into PostgreSQL/pgvector, and citation-grounded streaming RAG conversations.
 
-## Architecture through M2
+## Architecture through M3
 
-The API and Worker are separate processes in one Go module. Shared infrastructure lives under `internal/`; HTTP concerns are isolated under `internal/transport/http`; versioned SQL is the only source of database schema changes. Registration, token rotation, owner-scoped knowledge-base CRUD, document upload/status/retry/chunk-preview APIs, Redis queueing, parsing, recursive chunking, fake embedding, and transactional vector persistence are implemented.
+The API and Worker are separate processes in one Go module. Shared infrastructure lives under `internal/`; HTTP concerns are isolated under `internal/transport/http`; versioned SQL is the only source of database schema changes. Registration, token rotation, owner-scoped knowledge-base CRUD, document upload/status/retry/chunk-preview APIs, Redis queueing, parsing, recursive chunking, replaceable embeddings, transactional vector persistence, dense retrieval, persisted conversations, streaming chat, and server-validated citations are implemented.
 
 The API applies pending migrations while holding a PostgreSQL advisory lock before accepting traffic. The API stores validated source files under generated MinIO keys and enqueues only job identifiers. The Worker downloads the source, parses and cleans it, chunks it using the knowledge-base configuration, embeds chunks in configurable batches, then writes every chunk and changes the document to `ready` in one database transaction.
+
+For a question, the API persists the user and streaming assistant messages first, embeds the original question, and performs pgvector cosine retrieval filtered by owner, knowledge base, ready document, and current index version. It retrieves the configured dense Top K (20 by default), supplies at most the first five chunks as numbered evidence, streams the model response over SSE, validates citation markers against that evidence, and atomically saves the final answer, usage, retrieval trace, and real chunk citation snapshots.
 
 ## Asynchronous indexing behavior
 
@@ -46,6 +48,22 @@ docker compose run --rm api /usr/local/bin/migrate
 
 After registering, creating a knowledge base, and uploading a supported document, poll `GET /api/v1/documents/{id}` until its status is `ready`. `GET /api/v1/documents/{id}/chunks` then returns the persisted chunk preview.
 
+Create a conversation and stream a grounded answer with the returned access token and knowledge-base ID:
+
+```sh
+curl -X POST http://localhost:8080/api/v1/conversations \
+  -H 'Authorization: Bearer <access-token>' \
+  -H 'Content-Type: application/json' \
+  -d '{"knowledge_base_id":"<knowledge-base-id>","title":"Demo"}'
+
+curl -N -X POST http://localhost:8080/api/v1/conversations/<conversation-id>/messages \
+  -H 'Authorization: Bearer <access-token>' \
+  -H 'Content-Type: application/json' \
+  -d '{"content":"What does this document say?"}'
+```
+
+The stream uses JSON payloads for `message.started`, `retrieval.completed`, `message.delta`, `citation`, `usage`, `message.completed`, and `error`. A `citation` contains the persisted document ID, filename, chunk ID, original excerpt, page or paragraph location, and dense similarity score. `GET /api/v1/conversations/{id}` returns the saved messages and citation snapshots.
+
 `docker compose down` stops the stack but retains named volumes. This project does not provide a target that deletes volumes.
 
 ## Running Go processes on the host
@@ -82,7 +100,11 @@ Errors exposed to clients are deliberately generic. Dependency details are prese
 
 ## Configuration
 
-`.env.example` is the configuration reference. Model provider variables may remain empty because M2 uses the offline fake embedder. `EMBEDDING_BATCH_SIZE`, `WORKER_POLL_TIMEOUT`, and `INGESTION_JOB_TIMEOUT` control the M2 Worker. API startup requires HTTP, PostgreSQL, Redis, MinIO, and JWT values; Worker startup requires PostgreSQL, Redis, and MinIO; the migration command requires PostgreSQL. In `production`, placeholder MinIO credentials, a short/placeholder JWT secret, and wildcard CORS are rejected.
+`.env.example` is the configuration reference. In development and test, leaving all three `LLM_*` values empty selects the offline `FakeChatModel`; leaving all three `EMBEDDING_*` provider values empty selects the deterministic lexical `FakeEmbedder` in both API and Worker. Supplying a provider requires each Base URL, API key, and model name as one complete group. OpenAI-compatible `/chat/completions` streaming and `/embeddings` endpoints are supported. Production API startup requires both complete LLM and embedding provider groups. API keys are read only from the environment and are redacted from configuration formatting.
+
+`EMBEDDING_BATCH_SIZE`, `WORKER_POLL_TIMEOUT`, and `INGESTION_JOB_TIMEOUT` control the Worker. API startup requires HTTP, PostgreSQL, Redis, MinIO, and JWT values; Worker startup requires PostgreSQL, Redis, and MinIO; the migration command requires PostgreSQL. In `production`, placeholder MinIO credentials, a short/placeholder JWT secret, wildcard CORS, and missing model providers are rejected.
+
+If an SSE client disconnects, its request context cancels dense retrieval or the active model stream. The API then uses a short independent database context to mark the assistant message `failed` with `CLIENT_DISCONNECTED`; it does not continue generation in the background.
 
 ## Database schema
 
@@ -90,9 +112,10 @@ Errors exposed to clients are deliberately generic. Dependency details are prese
 
 The `simple` PostgreSQL text-search configuration only tokenizes on basic word boundaries and is not a production-grade Chinese tokenizer. Hybrid/full-text retrieval is scheduled for M4, where that limitation must be addressed or explicitly retained as a documented tradeoff.
 
-## Known M2 limitations
+## Known M3 limitations
 
 - PDF indexing extracts an existing text layer; scanned/image-only PDFs and OCR are outside the requirements and fail with `EMPTY_DOCUMENT` when no text is extractable. Password-protected or malformed PDFs fail with `DOCUMENT_PARSE_FAILED`.
 - DOCX parsing targets the main `word/document.xml` body. Headers, footers, comments, drawings, and embedded media are not indexed.
-- The fake vectors are deterministic and exercise pgvector persistence only. Dense semantic retrieval and a real OpenAI-compatible embedding adapter belong to later milestones.
-- M3 retrieval, conversations, ChatModel streaming, SSE, and citations are intentionally not implemented.
+- The development fake embedder is deterministic and lexical. It exercises the complete pgvector path but is not a substitute for a production semantic embedding model; configure the OpenAI-compatible embedding adapter for semantic retrieval.
+- M3 intentionally implements dense retrieval only. Sparse/full-text retrieval, RRF, reranking and fallback, and conversation-aware query rewriting remain M4 work.
+- Model retries, fallback providers, pricing, and the per-call governance views remain M5 work. M3 persists prompt/completion token counts reported by the chat provider on each assistant message but does not estimate cost.
