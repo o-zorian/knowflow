@@ -10,8 +10,12 @@ import (
 	"syscall"
 	"time"
 
+	"knowflow/internal/auth"
 	"knowflow/internal/config"
+	"knowflow/internal/document"
 	"knowflow/internal/health"
+	"knowflow/internal/ingestion"
+	"knowflow/internal/knowledgebase"
 	"knowflow/internal/platform/database"
 	"knowflow/internal/platform/logging"
 	"knowflow/internal/platform/objectstore"
@@ -59,10 +63,17 @@ func run() error {
 		{Name: "redis", Check: redisClient.Ping},
 		{Name: "minio", Check: objectStore.Check},
 	}
+	queue := ingestion.NewRedisQueue(redisClient.Native())
+	authService := auth.NewService(auth.NewPostgresRepository(pool), cfg.Auth.JWTSecret.Value(), cfg.Auth.AccessTokenTTL, cfg.Auth.RefreshTokenTTL)
+	knowledgeBaseService := knowledgebase.NewService(knowledgebase.NewPostgresStore(pool), queue, cfg.Models.Embedding.Dimension)
+	documentService := document.NewService(document.NewPostgresStore(pool), objectStore, queue, cfg.Upload.MaxSizeBytes)
 
 	server := &http.Server{
-		Addr:              cfg.HTTP.Addr,
-		Handler:           transporthttp.NewHandler(logger, cfg.HTTP.AllowedOrigins, cfg.Operational.HealthCheckTimeout, dependencies),
+		Addr: cfg.HTTP.Addr,
+		Handler: transporthttp.NewHandler(logger, cfg.HTTP.AllowedOrigins, cfg.Operational.HealthCheckTimeout, dependencies,
+			transporthttp.BusinessServices{
+				Auth: authService, KnowledgeBase: knowledgeBaseService, Document: documentService, MaxUploadSize: cfg.Upload.MaxSizeBytes,
+			}),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       15 * time.Second,
 		WriteTimeout:      30 * time.Second,

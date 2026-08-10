@@ -2,53 +2,49 @@
 
 Last updated: 2026-08-10
 
-## M0 — engineering foundation
+## Accepted milestones
 
-Status: **accepted**. The implementation, static verification, Compose startup, repeated migrations, and dependency-aware readiness all pass.
+### M0 — engineering foundation
+
+Versioned PostgreSQL/pgvector migrations, Redis, MinIO, configuration validation, JSON logging/request IDs, dependency-aware health checks, independent API/Worker processes, Compose, and graceful shutdown are complete.
+
+### M1 — users, knowledge bases, and documents
+
+Registration/login/refresh/logout, password/JWT handling, owner isolation, knowledge-base CRUD, validated MinIO upload with SHA-256 duplicate detection, document/job status, retry, chunk-preview gating, and deletion queueing are complete. The original M1 changes remain part of the current working tree.
+
+### M2 — asynchronous indexing
+
+Status: **accepted**.
 
 Completed scope:
 
-- Neutral Go module `knowflow` with independent API, Worker, and migration command entry points.
-- Typed environment configuration, scoped validation for each process, redacted secret values, production safety checks, and startup fast-fail behavior.
-- Structured JSON logging with component and request context; UUID request ID generation/propagation; unified success/error JSON responses, recovery, CORS, access logging, and JSON 404/405 responses.
-- PostgreSQL pool, Redis client, authenticated MinIO bucket checker, concurrent dependency health checks, API liveness/readiness, and graceful API/Worker shutdown.
-- Docker Compose development stack for pgvector/PostgreSQL, Redis, MinIO bucket initialization, API, and Worker. All published ports bind to localhost and named volumes are retained by normal shutdown.
-- Transactional, advisory-lock-protected, versioned migration creating every requirements-defined core table, constraint, and required GIN/HNSW/ordinary/unique index. Schema creation never uses ORM auto-migration.
-- Dockerfile, `.env.example`, Makefile, README, and focused tests for configuration, redaction, logging, request IDs, envelopes, readiness failure, and migration embedding.
+- Redis queue consumption in the independent Worker with per-job timeout and structured `job_id` logging.
+- TXT, Markdown, PDF, and DOCX parsing; whitespace/control-character cleaning; explicit empty-document and parse failures.
+- Heading, paragraph, table, and PDF page metadata preservation.
+- Recursive character chunking using per-knowledge-base `chunk_size` and `chunk_overlap`, with content hashes and token estimates.
+- Replaceable `Embedder` interface plus deterministic offline 1024-dimensional `FakeEmbedder`; configurable batch size.
+- Stage and progress transitions across parsing, chunking, embedding, and completion.
+- PostgreSQL/pgvector persistence with all chunks, document `ready`, chunk count, and job success committed atomically.
+- Manual failed-job retry with attempts counted on Worker claim.
+- Idempotency through pending-only transactional claims, unique job keys, unique chunk positions, and duplicate-message no-ops.
+- Unit coverage for four parsers, cleanup, empty documents, chunk boundaries/overlap/metadata, retry classification, fake embeddings, processor stages, and duplicate claims.
+- PostgreSQL integration coverage for ready transition, duplicate message replay, failure/retry, and no duplicate chunks.
+- Docker `scratch` image now contains a mode-1777 `/tmp`, fixing the M1 upload/M2 PDF parsing blocker.
 
-## Key decisions
-
-- The migration owns the fixed `VECTOR(1024)` schema. Configuration rejects any other embedding dimension until a coordinated schema migration exists.
-- API startup applies migrations. A separate `cmd/migrate` binary supports explicit and repeated execution; both paths use the same migration runner and PostgreSQL advisory lock.
-- Readiness validates PostgreSQL, Redis, and authenticated existence of the configured MinIO bucket. It does not expose dependency error details to HTTP clients.
-- The M0 Worker performs dependency initialization and ongoing dependency monitoring so it has a real lifecycle without pretending to consume jobs before M2.
-- No M1–M6 business interfaces, fake implementations, TODOs, or endpoints were pre-created.
-
-## Verification
+## M2 verification
 
 Executed from the repository root on 2026-08-10:
 
-- `gofmt -w` across `cmd`, `internal`, and `migrations`: passed.
-- `go test ./...`: passed. Configuration, JSON logging, HTTP envelopes/request IDs/readiness behavior, and embedded migration assertions are covered; no paid or external model calls occur.
-- `go vet ./...`: passed with no findings.
-- `go build ./...`: passed for API, Worker, migration command, healthcheck utility, and shared packages.
-- Docker Compose v5.1.4 `config --quiet`: passed. The standalone official binary was downloaded into ignored `.cache/tools`, and its release SHA-256 was verified before execution because the host had no `docker` CLI on `PATH`.
-- Compose `up -d --build`: passed after removing an unnecessary Dockerfile frontend image dependency that had encountered a transient Docker Hub IPv6 timeout. PostgreSQL, Redis, MinIO, and API became healthy; Worker started successfully.
-- `/usr/local/bin/migrate` executed twice in fresh Compose run containers: both passed and logged `database migrations are current`.
-- Read-only database checks: `schema_migrations` contains exactly version `1` (`000001_core.up.sql`); `pgcrypto` and `vector` are installed; all nine required core tables exist.
-- `GET /api/v1/health/live`: HTTP 200 with `status=alive` and a UUID request ID.
-- `GET /api/v1/health/ready`: HTTP 200 with PostgreSQL, Redis, and MinIO all `ok` and a UUID request ID.
-- API and Worker log inspection: JSON entries include time, level, component and request IDs where applicable; startup and periodic health checks show no errors or secret values.
+- Baseline before M2: `go test ./...`, `go vet ./...`, and `go build ./...` passed after pointing Go caches at ignored workspace paths.
+- `go test ./...`: passed; integration suites skip unless `KNOWFLOW_TEST_DATABASE_URL` is set.
+- PostgreSQL integration: `go test ./internal/ingestion ./internal/transport/http -run 'TestM2|TestM1HTTPIntegration' -count=1 -v` passed against Compose PostgreSQL/pgvector.
+- Compose build/start: passed; PostgreSQL, Redis, MinIO, and API became healthy and the Worker started.
+- Real API → MinIO → Redis → Worker → pgvector test: a Markdown document moved from `queued` to `ready`, job reached `succeeded/completed/100`, and 9 chunks were persisted.
+- The same Redis job payload was replayed. Before and after values were both `attempts=1`, `chunk_count=9`, and actual chunk rows `=9`.
 
-The Compose stack is intentionally left running for immediate local inspection. Its named data volumes were not removed.
+## Current boundary and risks
 
-## Known risks and limitations
-
-- The first two image-build attempts hit transient Docker Hub IPv6 authorization timeouts. Retrying with the final reduced-image Dockerfile succeeded; this was an external network condition, not an application failure.
-- PostgreSQL full-text search currently uses the `simple` configuration. Its Chinese tokenization is limited and remains an explicit M4 concern.
-- Vector dimension is deliberately fixed at 1024 for the initial schema. Supporting a different embedding model dimension requires a coordinated versioned migration.
-- M0 has no business API or ingestion processing by design. The Worker only initializes and monitors real dependencies until M2 adds queue consumption.
-
-## Remaining milestones
-
-M1 owns registration/login/refresh/logout and password/JWT behavior, user ownership enforcement, knowledge-base CRUD, document validation and SHA-256 calculation, upload to MinIO with safe object keys, duplicate document detection, and persisted document/ingestion-job status APIs. It must add unit/integration tests for those behaviors without starting M2 ingestion execution. Later ingestion, RAG, enhanced retrieval, evaluation/governance, and release UI/CI remain in M2–M6 respectively.
+- M3 and later functionality is intentionally absent: dense retrieval, chat/SSE/citations, hybrid retrieval/reranking, evaluation/governance, and frontend work remain future milestones.
+- M2 PDF support requires a text layer and does not perform OCR. DOCX indexing excludes headers, footers, comments, and embedded media.
+- M2 uses the fake embedder by design; it validates batching and pgvector storage but does not provide semantic vectors.
+- The Redis list consumer provides duplicate-safe processing but does not yet implement a separate in-flight/acknowledgement list for automatic crash recovery. A process crash after dequeue can leave a job `running`; operator recovery is a remaining reliability hardening item outside the M2 acceptance path.

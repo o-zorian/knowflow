@@ -29,3 +29,5 @@ func (c *Client) Ping(ctx context.Context) error {
 }
 
 func (c *Client) Close() error { return c.client.Close() }
+
+func (c *Client) Native() *redisclient.Client { return c.client }

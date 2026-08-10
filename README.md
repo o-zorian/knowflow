@@ -1,12 +1,24 @@
 # KnowFlow
 
-KnowFlow is a Go-based enterprise knowledge-base RAG platform. This repository currently contains the M0 engineering foundation: independently runnable API and Worker processes, validated environment configuration, JSON logging and request tracing, versioned PostgreSQL/pgvector migrations, dependency-aware health checks, and a local Docker Compose stack.
+KnowFlow is a Go-based enterprise knowledge-base RAG platform. The repository currently implements M0 through M2: the engineering foundation, owner-scoped authentication/knowledge-base/document APIs, and asynchronous document indexing into PostgreSQL/pgvector.
 
-## Architecture at M0
+## Architecture through M2
 
-The API and Worker are separate processes in one Go module. Shared infrastructure lives under `internal/`; HTTP concerns are isolated under `internal/transport/http`; versioned SQL is the only source of database schema changes. No M1–M6 business endpoints or empty model/retrieval interfaces are created in this milestone.
+The API and Worker are separate processes in one Go module. Shared infrastructure lives under `internal/`; HTTP concerns are isolated under `internal/transport/http`; versioned SQL is the only source of database schema changes. Registration, token rotation, owner-scoped knowledge-base CRUD, document upload/status/retry/chunk-preview APIs, Redis queueing, parsing, recursive chunking, fake embedding, and transactional vector persistence are implemented.
 
-The API applies pending migrations while holding a PostgreSQL advisory lock before accepting traffic. Re-running the API or the migration command is safe because applied versions are recorded in `schema_migrations`. The Worker validates PostgreSQL, Redis, and the configured MinIO bucket on startup, then continues monitoring those dependencies until graceful shutdown; queue consumption begins in M2.
+The API applies pending migrations while holding a PostgreSQL advisory lock before accepting traffic. The API stores validated source files under generated MinIO keys and enqueues only job identifiers. The Worker downloads the source, parses and cleans it, chunks it using the knowledge-base configuration, embeds chunks in configurable batches, then writes every chunk and changes the document to `ready` in one database transaction.
+
+## Asynchronous indexing behavior
+
+- Redis carries `document.index` messages; API upload never parses or embeds synchronously.
+- TXT and Markdown retain paragraph positions; Markdown also retains heading paths.
+- PDF extracts text page by page and records `page_start`/`page_end` on chunks.
+- DOCX extracts headings, body paragraphs, and table text with paragraph positions.
+- Job progress advances through `parsing`, `chunking`, `embedding`, and `completed`; the document mirrors the processing state.
+- The M2 deterministic `FakeEmbedder` runs offline and emits 1024-dimensional vectors in configurable batches. It is a test/development adapter, not a semantic production embedding model.
+- A job is claimed only while pending. Replayed messages for running or succeeded jobs are no-ops, while the database unique index on `(document_id, index_version, chunk_index)` provides a second idempotency boundary.
+- Chunk inserts, final chunk count, job success, and document `ready` are committed atomically. Failed parsing or embedding cannot expose a partially written index.
+- Failed jobs can be reset through `POST /api/v1/documents/{id}/retry`; the attempt counter increments when the Worker actually claims an attempt.
 
 ## Quick start
 
@@ -32,6 +44,8 @@ docker compose run --rm api /usr/local/bin/migrate
 docker compose run --rm api /usr/local/bin/migrate
 ```
 
+After registering, creating a knowledge base, and uploading a supported document, poll `GET /api/v1/documents/{id}` until its status is `ready`. `GET /api/v1/documents/{id}/chunks` then returns the persisted chunk preview.
+
 `docker compose down` stops the stack but retains named volumes. This project does not provide a target that deletes volumes.
 
 ## Running Go processes on the host
@@ -50,6 +64,12 @@ make build
 docker compose config --quiet
 ```
 
+PostgreSQL integration tests are opt-in and remain offline with respect to model providers:
+
+```sh
+KNOWFLOW_TEST_DATABASE_URL='postgres://knowflow:knowflow-dev-password@localhost:5432/knowflow?sslmode=disable' go test ./internal/ingestion ./internal/transport/http -count=1
+```
+
 On Windows without a POSIX `make`, run the underlying Go and Docker commands directly.
 
 ## Health behavior
@@ -62,7 +82,7 @@ Errors exposed to clients are deliberately generic. Dependency details are prese
 
 ## Configuration
 
-`.env.example` is the complete M0 reference. Model provider variables may remain empty until their owning milestones. API startup requires HTTP, PostgreSQL, Redis, MinIO, and JWT values; Worker startup requires PostgreSQL, Redis, and MinIO; the migration command requires PostgreSQL. In `production`, placeholder MinIO credentials, a short/placeholder JWT secret, and wildcard CORS are rejected.
+`.env.example` is the configuration reference. Model provider variables may remain empty because M2 uses the offline fake embedder. `EMBEDDING_BATCH_SIZE`, `WORKER_POLL_TIMEOUT`, and `INGESTION_JOB_TIMEOUT` control the M2 Worker. API startup requires HTTP, PostgreSQL, Redis, MinIO, and JWT values; Worker startup requires PostgreSQL, Redis, and MinIO; the migration command requires PostgreSQL. In `production`, placeholder MinIO credentials, a short/placeholder JWT secret, and wildcard CORS are rejected.
 
 ## Database schema
 
@@ -70,6 +90,9 @@ Errors exposed to clients are deliberately generic. Dependency details are prese
 
 The `simple` PostgreSQL text-search configuration only tokenizes on basic word boundaries and is not a production-grade Chinese tokenizer. Hybrid/full-text retrieval is scheduled for M4, where that limitation must be addressed or explicitly retained as a documented tradeoff.
 
-## Current milestone boundary
+## Known M2 limitations
 
-M0 intentionally does not include authentication, knowledge-base/document APIs, ingestion execution, model adapters, retrieval, chat/SSE, metrics, evaluation, frontend, or OpenAPI paths. These are implemented in their corresponding M1–M6 milestones rather than as placeholders.
+- PDF indexing extracts an existing text layer; scanned/image-only PDFs and OCR are outside the requirements and fail with `EMPTY_DOCUMENT` when no text is extractable. Password-protected or malformed PDFs fail with `DOCUMENT_PARSE_FAILED`.
+- DOCX parsing targets the main `word/document.xml` body. Headers, footers, comments, drawings, and embedded media are not indexed.
+- The fake vectors are deterministic and exercise pgvector persistence only. Dense semantic retrieval and a real OpenAI-compatible embedding adapter belong to later milestones.
+- M3 retrieval, conversations, ChatModel streaming, SSE, and citations are intentionally not implemented.

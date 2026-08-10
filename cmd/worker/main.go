@@ -10,6 +10,8 @@ import (
 
 	"knowflow/internal/config"
 	"knowflow/internal/health"
+	"knowflow/internal/ingestion"
+	"knowflow/internal/model"
 	"knowflow/internal/platform/database"
 	"knowflow/internal/platform/logging"
 	"knowflow/internal/platform/objectstore"
@@ -53,9 +55,22 @@ func run() error {
 	if err := checkDependencies(startupCtx, dependencies); err != nil {
 		return err
 	}
+	embedder, err := model.NewFakeEmbedder(cfg.Models.Embedding.Dimension)
+	if err != nil {
+		return err
+	}
+	processor, err := ingestion.NewProcessor(ingestion.NewPostgresStore(pool), objectStore,
+		ingestion.DocumentParser{}, embedder, cfg.Models.Embedding.BatchSize)
+	if err != nil {
+		return err
+	}
+	queue := ingestion.NewRedisQueue(redisClient.Native())
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+	indexWorker := ingestion.NewWorker(queue, processor, logger, cfg.Operational.WorkerPollTimeout, cfg.Operational.IngestionJobTimeout)
+	workerErrors := make(chan error, 1)
+	go func() { workerErrors <- indexWorker.Run(ctx) }()
 	ticker := time.NewTicker(cfg.Operational.WorkerHealthInterval)
 	defer ticker.Stop()
 	logger.Info("worker started", "environment", cfg.App.Environment)
@@ -63,6 +78,11 @@ func run() error {
 		select {
 		case <-ctx.Done():
 			logger.Info("worker stopped")
+			return nil
+		case err := <-workerErrors:
+			if err != nil {
+				return fmt.Errorf("run ingestion worker: %w", err)
+			}
 			return nil
 		case <-ticker.C:
 			checkCtx, checkCancel := context.WithTimeout(ctx, cfg.Operational.HealthCheckTimeout)

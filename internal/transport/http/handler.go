@@ -6,11 +6,21 @@ import (
 	"net/http"
 	"time"
 
+	"knowflow/internal/auth"
+	"knowflow/internal/document"
 	"knowflow/internal/health"
+	"knowflow/internal/knowledgebase"
 	"knowflow/internal/platform/requestid"
 )
 
-func NewHandler(logger *slog.Logger, allowedOrigins []string, timeout time.Duration, dependencies []health.Dependency) http.Handler {
+type BusinessServices struct {
+	Auth          *auth.Service
+	KnowledgeBase *knowledgebase.Service
+	Document      *document.Service
+	MaxUploadSize int64
+}
+
+func NewHandler(logger *slog.Logger, allowedOrigins []string, timeout time.Duration, dependencies []health.Dependency, business ...BusinessServices) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/v1/health/live", func(w http.ResponseWriter, r *http.Request) {
 		WriteSuccess(w, r, http.StatusOK, map[string]string{"status": "alive"})
@@ -18,6 +28,9 @@ func NewHandler(logger *slog.Logger, allowedOrigins []string, timeout time.Durat
 	mux.HandleFunc("/api/v1/health/live", methodNotAllowed)
 	mux.HandleFunc("GET /api/v1/health/ready", readinessHandler(logger, timeout, dependencies))
 	mux.HandleFunc("/api/v1/health/ready", methodNotAllowed)
+	if len(business) > 0 {
+		registerM1Routes(mux, logger, business[0])
+	}
 	mux.HandleFunc("/", notFound)
 
 	var handler http.Handler = mux

@@ -61,7 +61,9 @@ type MinIO struct {
 }
 
 type Auth struct {
-	JWTSecret Secret
+	JWTSecret       Secret
+	AccessTokenTTL  time.Duration
+	RefreshTokenTTL time.Duration
 }
 
 type Models struct {
@@ -79,6 +81,7 @@ type Model struct {
 type EmbeddingModel struct {
 	Model
 	Dimension int
+	BatchSize int
 }
 
 type Upload struct {
@@ -94,6 +97,8 @@ type Operational struct {
 	HealthCheckTimeout   time.Duration
 	ShutdownTimeout      time.Duration
 	WorkerHealthInterval time.Duration
+	WorkerPollTimeout    time.Duration
+	IngestionJobTimeout  time.Duration
 }
 
 type scope struct {
@@ -143,6 +148,8 @@ func load(required scope) (Config, error) {
 	}
 	if required.auth {
 		cfg.Auth.JWTSecret = Secret(require("JWT_SECRET"))
+		cfg.Auth.AccessTokenTTL = parseDuration("ACCESS_TOKEN_TTL", 2*time.Hour, &problems)
+		cfg.Auth.RefreshTokenTTL = parseDuration("REFRESH_TOKEN_TTL", 30*24*time.Hour, &problems)
 	}
 
 	cfg.Models.LLM = Model{
@@ -167,12 +174,15 @@ func load(required scope) (Config, error) {
 	cfg.Redis.DB = parseInt("REDIS_DB", 0, 0, 15, &problems)
 	cfg.MinIO.UseSSL = parseBool("MINIO_USE_SSL", false, &problems)
 	cfg.Models.Embedding.Dimension = parseInt("EMBEDDING_DIMENSION", EmbeddingDimension, 1, 65535, &problems)
+	cfg.Models.Embedding.BatchSize = parseInt("EMBEDDING_BATCH_SIZE", 32, 1, 512, &problems)
 	maxUploadMB := parseInt("MAX_UPLOAD_SIZE_MB", 30, 1, 1024, &problems)
 	cfg.Upload.MaxSizeBytes = int64(maxUploadMB) * 1024 * 1024
 	cfg.Operational.StartupTimeout = parseDuration("STARTUP_TIMEOUT", 30*time.Second, &problems)
 	cfg.Operational.HealthCheckTimeout = parseDuration("HEALTH_CHECK_TIMEOUT", 2*time.Second, &problems)
 	cfg.Operational.ShutdownTimeout = parseDuration("SHUTDOWN_TIMEOUT", 10*time.Second, &problems)
 	cfg.Operational.WorkerHealthInterval = parseDuration("WORKER_HEALTH_INTERVAL", 30*time.Second, &problems)
+	cfg.Operational.WorkerPollTimeout = parseDuration("WORKER_POLL_TIMEOUT", 2*time.Second, &problems)
+	cfg.Operational.IngestionJobTimeout = parseDuration("INGESTION_JOB_TIMEOUT", 10*time.Minute, &problems)
 
 	validate(cfg, required, &problems)
 	if len(problems) > 0 {
