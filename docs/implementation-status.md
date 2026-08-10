@@ -69,11 +69,9 @@ M3 verification on 2026-08-10:
 - `go vet ./...`: passed.
 - `go build ./...`: passed.
 - `go test ./internal/ingestion ./internal/transport/http -run 'TestM1HTTPIntegration|TestM2|TestM3' -count=1 -v`: passed against the running PostgreSQL/pgvector service. The M3 test uploaded a TXT document, processed it into a real chunk/vector row, retrieved it by dense similarity, observed all successful SSE event types, verified the emitted document/chunk IDs, and reloaded the completed answer/citation from the database. The same test verified owner isolation and persisted `failed` state on a fake model error.
-- Docker Compose could not be re-invoked in this shell because no Docker CLI executable was installed on its PATH. Existing local PostgreSQL, Redis, MinIO, and API ports were reachable; the database-backed acceptance test did not depend on a paid external model.
+- That historical Docker limitation is obsolete. The M5 verification re-ran Compose successfully with Docker CLI and Docker Engine available.
 
-Current boundary:
-
-- M5 governance is intentionally absent: no provider retry/fallback, pricing, cost calculation, metrics views, or evaluation pipeline.
+Current boundary: the M3 behavior is retained and now governed by the M5 usage, retry, pricing, metrics, and evaluation layers.
 
 ### M4 — retrieval enhancement
 
@@ -100,4 +98,21 @@ M4 boundary and risks:
 
 - The first-release sparse tokenizer and `plainto_tsquery` tradeoffs are documented in README; it is not production-grade Chinese linguistic segmentation.
 - The rerank HTTP contract follows the commonly deployed `/rerank` shape because OpenAI Chat/Embedding compatibility does not define a universal rerank wire protocol.
-- Provider retry/backoff, usage/cost governance, evaluation datasets/reports, rate limiting, and metrics remain M5 work.
+- These previously deferred items are implemented in M5 below.
+
+### M5 — evaluation and governance
+
+Status: **implemented and verified**.
+
+Completed scope:
+
+- A validated 60-question JSONL dataset and isolated deterministic PostgreSQL seed corpus.
+- A one-command evaluator for Dense only, Sparse only, Dense + Sparse + RRF, and Dense + Sparse + RRF + Reranker.
+- JSON and Markdown output with configuration, Recall@1/5/10, MRR, citation hit rate, average/P95 retrieval and end-to-end latency, average Token/configured cost, per-question cases, failures, and improvement conclusions.
+- Per-call chat, embedding, and rerank usage persistence with model, scope, tokens/texts, configurable cost, latency, status, request ID, trace ID, and error code; assistant messages also persist cost.
+- Bounded exponential retry for model-provider network, 429, and 5xx failures.
+- Redis IP, authenticated-user, and failed-login rate limits.
+- Prometheus HTTP, ingestion, queue, model, embedding, and retrieval metrics.
+- Admin summary, failed-job, model-usage, user-list/status APIs and an API-backed `/admin` page; disabling a user revokes active refresh tokens.
+
+M5 verification uses the live Docker Engine. `docker compose run --rm --build eval` evaluated 60 questions across all four strategies and generated `eval/results/m5-comparison.json` and `.md`. Full unit, integration, vet, build, Compose, API, metrics, and admin endpoint results are recorded in the final M5 handoff.

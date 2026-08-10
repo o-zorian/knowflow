@@ -39,10 +39,28 @@ func registerM1Routes(mux *http.ServeMux, logger *slog.Logger, services Business
 		if !decodeJSON(w, r, &input) {
 			return
 		}
+		if services.RateLimiter != nil {
+			blocked, retryAfter, limitErr := services.RateLimiter.LoginBlocked(r.Context(), remoteIP(r), strings.ToLower(strings.TrimSpace(input.Email)))
+			if limitErr != nil {
+				WriteError(w, r, http.StatusServiceUnavailable, "RATE_LIMIT_UNAVAILABLE", "rate limiter is unavailable")
+				return
+			}
+			if blocked {
+				w.Header().Set("Retry-After", retryAfterHeader(retryAfter))
+				WriteError(w, r, http.StatusTooManyRequests, "LOGIN_RATE_LIMITED", "too many failed login attempts")
+				return
+			}
+		}
 		pair, err := services.Auth.Login(r.Context(), input)
 		if err != nil {
+			if services.RateLimiter != nil {
+				_ = services.RateLimiter.RecordLoginFailure(r.Context(), remoteIP(r), strings.ToLower(strings.TrimSpace(input.Email)))
+			}
 			writeServiceError(w, r, logger, err)
 			return
+		}
+		if services.RateLimiter != nil {
+			_ = services.RateLimiter.ResetLogin(r.Context(), remoteIP(r), strings.ToLower(strings.TrimSpace(input.Email)))
 		}
 		WriteSuccess(w, r, http.StatusOK, pair)
 	})
@@ -75,7 +93,7 @@ func registerM1Routes(mux *http.ServeMux, logger *slog.Logger, services Business
 	})
 
 	requireAuth := func(handler http.HandlerFunc) http.HandlerFunc {
-		return authenticate(services.Auth, logger, handler)
+		return authenticate(services.Auth, services.RateLimiter, logger, handler)
 	}
 	mux.HandleFunc("GET /api/v1/me", requireAuth(func(w http.ResponseWriter, r *http.Request) {
 		WriteSuccess(w, r, http.StatusOK, currentUser(r))
@@ -199,7 +217,7 @@ func registerM1Routes(mux *http.ServeMux, logger *slog.Logger, services Business
 	}))
 }
 
-func authenticate(service *auth.Service, logger *slog.Logger, next http.HandlerFunc) http.HandlerFunc {
+func authenticate(service *auth.Service, limiter RateLimiter, logger *slog.Logger, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		header := r.Header.Get("Authorization")
 		prefix, token, found := strings.Cut(header, " ")
@@ -211,6 +229,18 @@ func authenticate(service *auth.Service, logger *slog.Logger, next http.HandlerF
 		if err != nil {
 			writeServiceError(w, r, logger, err)
 			return
+		}
+		if limiter != nil {
+			allowed, retryAfter, limitErr := limiter.AllowUser(r.Context(), user.ID)
+			if limitErr != nil {
+				WriteError(w, r, http.StatusServiceUnavailable, "RATE_LIMIT_UNAVAILABLE", "rate limiter is unavailable")
+				return
+			}
+			if !allowed {
+				w.Header().Set("Retry-After", retryAfterHeader(retryAfter))
+				WriteError(w, r, http.StatusTooManyRequests, "RATE_LIMITED", "too many requests")
+				return
+			}
 		}
 		next(w, r.WithContext(contextWithUser(r, user)))
 	}

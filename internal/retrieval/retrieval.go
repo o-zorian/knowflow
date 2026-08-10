@@ -58,6 +58,11 @@ type Service struct {
 	store    Store
 	embedder model.Embedder
 	reranker model.Reranker
+	observer interface{ ObserveRetrieval(string, time.Duration) }
+}
+
+func (s *Service) SetObserver(observer interface{ ObserveRetrieval(string, time.Duration) }) {
+	s.observer = observer
 }
 
 func NewService(store Store, embedder model.Embedder, rerankers ...model.Reranker) *Service {
@@ -124,6 +129,9 @@ func (s *Service) Retrieve(ctx context.Context, ownerID, knowledgeBaseID, query 
 		response.Results = response.Results[:config.FinalTopK]
 	}
 	response.LatencyMS = int(time.Since(started).Milliseconds())
+	if s.observer != nil {
+		s.observer.ObserveRetrieval(response.Strategy, time.Since(started))
+	}
 	return response, nil
 }
 

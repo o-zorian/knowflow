@@ -14,16 +14,19 @@ import (
 	"knowflow/internal/chat"
 	"knowflow/internal/config"
 	"knowflow/internal/document"
+	"knowflow/internal/governance"
 	"knowflow/internal/health"
 	"knowflow/internal/ingestion"
 	"knowflow/internal/knowledgebase"
 	"knowflow/internal/model"
 	"knowflow/internal/platform/database"
 	"knowflow/internal/platform/logging"
+	platformmetrics "knowflow/internal/platform/metrics"
 	"knowflow/internal/platform/objectstore"
 	redisplatform "knowflow/internal/platform/redis"
 	"knowflow/internal/retrieval"
 	transporthttp "knowflow/internal/transport/http"
+	"knowflow/internal/usage"
 	"knowflow/migrations"
 )
 
@@ -67,6 +70,12 @@ func run() error {
 		{Name: "minio", Check: objectStore.Check},
 	}
 	queue := ingestion.NewRedisQueue(redisClient.Native())
+	metrics := platformmetrics.New()
+	pricing := usage.Pricing{ChatInputPerMillion: cfg.Pricing.ChatInputPerMillion, ChatOutputPerMillion: cfg.Pricing.ChatOutputPerMillion,
+		EmbeddingPerMillion: cfg.Pricing.EmbeddingPerMillion, RerankInputPerMillion: cfg.Pricing.RerankInputPerMillion}
+	usageRecorder := usage.NewPostgresRecorder(pool)
+	governanceService := governance.NewService(pool, redisClient.Native(), metrics)
+	limiter := governance.NewLimiter(redisClient.Native(), cfg.Governance)
 	authService := auth.NewService(auth.NewPostgresRepository(pool), cfg.Auth.JWTSecret.Value(), cfg.Auth.AccessTokenTTL, cfg.Auth.RefreshTokenTTL)
 	knowledgeBaseService := knowledgebase.NewService(knowledgebase.NewPostgresStore(pool), queue, cfg.Models.Embedding.Dimension)
 	documentService := document.NewService(document.NewPostgresStore(pool), objectStore, queue, cfg.Upload.MaxSizeBytes)
@@ -74,23 +83,37 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	embedderName := cfg.Models.Embedding.Name
+	if embedderName == "" {
+		embedderName = "fake-embedding"
+	}
+	embedder = usage.ObserveEmbedder(embedder, embedderName, usageRecorder, pricing, metrics)
 	chatModel, chatModelName, err := configuredChatModel(cfg)
 	if err != nil {
 		return err
 	}
+	chatModel = usage.ObserveChat(chatModel, chatModelName, usageRecorder, pricing, metrics)
 	reranker, err := configuredReranker(cfg)
 	if err != nil {
 		return err
 	}
+	rerankerName := cfg.Models.Reranker.Name
+	if rerankerName == "" {
+		rerankerName = "fake-reranker"
+	}
+	reranker = usage.ObserveReranker(reranker, rerankerName, usageRecorder, pricing, metrics)
 	queryRewriter := configuredQueryRewriter(cfg, chatModel)
 	retrievalService := retrieval.NewService(retrieval.NewPostgresStore(pool), embedder, reranker)
+	retrievalService.SetObserver(metrics)
 	chatService := chat.NewService(chat.NewPostgresStore(pool), retrievalService, chatModel, chatModelName, queryRewriter)
+	chatService.SetPricing(pricing)
 
 	server := &http.Server{
 		Addr: cfg.HTTP.Addr,
 		Handler: transporthttp.NewHandler(logger, cfg.HTTP.AllowedOrigins, cfg.Operational.HealthCheckTimeout, dependencies,
 			transporthttp.BusinessServices{
 				Auth: authService, KnowledgeBase: knowledgeBaseService, Document: documentService, Chat: chatService, MaxUploadSize: cfg.Upload.MaxSizeBytes,
+				Governance: governanceService, RateLimiter: limiter, Metrics: metrics,
 			}),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       15 * time.Second,
@@ -128,8 +151,12 @@ func configuredEmbedder(cfg config.Config) (model.Embedder, error) {
 	if cfg.Models.Embedding.BaseURL == "" {
 		return model.NewFakeEmbedder(cfg.Models.Embedding.Dimension)
 	}
-	return model.NewOpenAIEmbeddingClient(cfg.Models.Embedding.BaseURL, cfg.Models.Embedding.APIKey.Value(),
+	client, err := model.NewOpenAIEmbeddingClient(cfg.Models.Embedding.BaseURL, cfg.Models.Embedding.APIKey.Value(),
 		cfg.Models.Embedding.Name, cfg.Models.Embedding.Dimension, nil)
+	if err == nil {
+		client.SetMaxRetries(cfg.Operational.ModelMaxRetries)
+	}
+	return client, err
 }
 
 func configuredChatModel(cfg config.Config) (model.ChatModel, string, error) {
@@ -141,6 +168,7 @@ func configuredChatModel(cfg config.Config) (model.ChatModel, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
+	client.SetMaxRetries(cfg.Operational.ModelMaxRetries)
 	return client, client.Name(), nil
 }
 
@@ -151,7 +179,11 @@ func configuredReranker(cfg config.Config) (model.Reranker, error) {
 		}
 		return &model.FakeReranker{}, nil
 	}
-	return model.NewRerankClient(cfg.Models.Reranker.BaseURL, cfg.Models.Reranker.APIKey.Value(), cfg.Models.Reranker.Name, nil)
+	client, err := model.NewRerankClient(cfg.Models.Reranker.BaseURL, cfg.Models.Reranker.APIKey.Value(), cfg.Models.Reranker.Name, nil)
+	if err == nil {
+		client.SetMaxRetries(cfg.Operational.ModelMaxRetries)
+	}
+	return client, err
 }
 
 func configuredQueryRewriter(cfg config.Config, chatModel model.ChatModel) model.QueryRewriter {

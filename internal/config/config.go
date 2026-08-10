@@ -30,6 +30,8 @@ type Config struct {
 	Upload      Upload
 	Log         Log
 	Operational Operational
+	Governance  Governance
+	Pricing     Pricing
 }
 
 type App struct {
@@ -99,6 +101,21 @@ type Operational struct {
 	WorkerHealthInterval time.Duration
 	WorkerPollTimeout    time.Duration
 	IngestionJobTimeout  time.Duration
+	ModelMaxRetries      int
+}
+
+type Governance struct {
+	IPRequestsPerMinute   int
+	UserRequestsPerMinute int
+	LoginFailures         int
+	LoginFailureWindow    time.Duration
+}
+
+type Pricing struct {
+	ChatInputPerMillion   float64
+	ChatOutputPerMillion  float64
+	EmbeddingPerMillion   float64
+	RerankInputPerMillion float64
 }
 
 type scope struct {
@@ -183,6 +200,15 @@ func load(required scope) (Config, error) {
 	cfg.Operational.WorkerHealthInterval = parseDuration("WORKER_HEALTH_INTERVAL", 30*time.Second, &problems)
 	cfg.Operational.WorkerPollTimeout = parseDuration("WORKER_POLL_TIMEOUT", 2*time.Second, &problems)
 	cfg.Operational.IngestionJobTimeout = parseDuration("INGESTION_JOB_TIMEOUT", 10*time.Minute, &problems)
+	cfg.Operational.ModelMaxRetries = parseInt("MODEL_MAX_RETRIES", 3, 0, 10, &problems)
+	cfg.Governance.IPRequestsPerMinute = parseInt("RATE_LIMIT_IP_PER_MINUTE", 300, 1, 100000, &problems)
+	cfg.Governance.UserRequestsPerMinute = parseInt("RATE_LIMIT_USER_PER_MINUTE", 120, 1, 100000, &problems)
+	cfg.Governance.LoginFailures = parseInt("LOGIN_FAILURE_LIMIT", 5, 1, 1000, &problems)
+	cfg.Governance.LoginFailureWindow = parseDuration("LOGIN_FAILURE_WINDOW", 15*time.Minute, &problems)
+	cfg.Pricing.ChatInputPerMillion = parseFloat("CHAT_INPUT_COST_PER_MILLION_USD", 0, &problems)
+	cfg.Pricing.ChatOutputPerMillion = parseFloat("CHAT_OUTPUT_COST_PER_MILLION_USD", 0, &problems)
+	cfg.Pricing.EmbeddingPerMillion = parseFloat("EMBEDDING_COST_PER_MILLION_USD", 0, &problems)
+	cfg.Pricing.RerankInputPerMillion = parseFloat("RERANK_COST_PER_MILLION_USD", 0, &problems)
 
 	validate(cfg, required, &problems)
 	if len(problems) > 0 {
@@ -327,6 +353,19 @@ func parseDuration(name string, fallback time.Duration, problems *[]string) time
 	value, err := time.ParseDuration(raw)
 	if err != nil || value <= 0 {
 		*problems = append(*problems, name+" must be a positive Go duration such as 2s")
+		return fallback
+	}
+	return value
+}
+
+func parseFloat(name string, fallback float64, problems *[]string) float64 {
+	raw := strings.TrimSpace(os.Getenv(name))
+	if raw == "" {
+		return fallback
+	}
+	value, err := strconv.ParseFloat(raw, 64)
+	if err != nil || value < 0 {
+		*problems = append(*problems, name+" must be a non-negative number")
 		return fallback
 	}
 	return value

@@ -128,7 +128,7 @@ func (s *PostgresStore) StartTurn(ctx context.Context, userID, conversationID, c
 	return conversation, userMessage, assistantMessage, history, nil
 }
 
-func (s *PostgresStore) CompleteAssistant(ctx context.Context, messageID, content, modelName string, citations []Citation, trace map[string]any, usage model.Usage, latencyMS int) (Message, error) {
+func (s *PostgresStore) CompleteAssistant(ctx context.Context, messageID, content, modelName string, citations []Citation, trace map[string]any, usage model.Usage, estimatedCostUSD float64, latencyMS int) (Message, error) {
 	citationJSON, err := json.Marshal(citations)
 	if err != nil {
 		return Message{}, err
@@ -139,10 +139,10 @@ func (s *PostgresStore) CompleteAssistant(ctx context.Context, messageID, conten
 	}
 	row := s.pool.QueryRow(ctx, `UPDATE messages SET content = $2, status = 'completed', citations = $3,
 		retrieval_trace = $4, model = $5, prompt_tokens = $6, completion_tokens = $7,
-		latency_ms = $8, error_code = NULL WHERE id = $1 AND role = 'assistant' AND status = 'streaming'
+		estimated_cost_usd = $8, latency_ms = $9, error_code = NULL WHERE id = $1 AND role = 'assistant' AND status = 'streaming'
 		RETURNING id::text, conversation_id::text, role, content, status, citations, retrieval_trace,
 		model, prompt_tokens, completion_tokens, estimated_cost_usd::float8, latency_ms, error_code, created_at`,
-		messageID, content, citationJSON, traceJSON, modelName, usage.PromptTokens, usage.CompletionTokens, latencyMS)
+		messageID, content, citationJSON, traceJSON, modelName, usage.PromptTokens, usage.CompletionTokens, estimatedCostUSD, latencyMS)
 	return scanMessage(row)
 }
 

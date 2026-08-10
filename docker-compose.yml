@@ -102,6 +102,15 @@ services:
       RERANK_BASE_URL: ${RERANK_BASE_URL:-}
       RERANK_API_KEY: ${RERANK_API_KEY:-}
       RERANK_MODEL: ${RERANK_MODEL:-}
+      MODEL_MAX_RETRIES: ${MODEL_MAX_RETRIES:-3}
+      CHAT_INPUT_COST_PER_MILLION_USD: ${CHAT_INPUT_COST_PER_MILLION_USD:-0}
+      CHAT_OUTPUT_COST_PER_MILLION_USD: ${CHAT_OUTPUT_COST_PER_MILLION_USD:-0}
+      EMBEDDING_COST_PER_MILLION_USD: ${EMBEDDING_COST_PER_MILLION_USD:-0}
+      RERANK_COST_PER_MILLION_USD: ${RERANK_COST_PER_MILLION_USD:-0}
+      RATE_LIMIT_IP_PER_MINUTE: ${RATE_LIMIT_IP_PER_MINUTE:-300}
+      RATE_LIMIT_USER_PER_MINUTE: ${RATE_LIMIT_USER_PER_MINUTE:-120}
+      LOGIN_FAILURE_LIMIT: ${LOGIN_FAILURE_LIMIT:-5}
+      LOGIN_FAILURE_WINDOW: ${LOGIN_FAILURE_WINDOW:-15m}
       MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-30}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       STARTUP_TIMEOUT: ${STARTUP_TIMEOUT:-30s}
@@ -136,6 +145,24 @@ services:
       api:
         condition: service_healthy
     restart: unless-stopped
+
+  eval:
+    profiles: ["tools"]
+    build:
+      context: .
+    command: ["/usr/local/bin/eval", "-dataset", "/app/eval/datasets/knowflow-m5.jsonl", "-json", "/app/eval/results/m5-comparison.json", "-markdown", "/app/eval/results/m5-comparison.md"]
+    environment:
+      <<: *app-environment
+      CHAT_INPUT_COST_PER_MILLION_USD: ${EVAL_CHAT_INPUT_COST_PER_MILLION_USD:-0.15}
+      CHAT_OUTPUT_COST_PER_MILLION_USD: ${EVAL_CHAT_OUTPUT_COST_PER_MILLION_USD:-0.60}
+      EMBEDDING_COST_PER_MILLION_USD: ${EVAL_EMBEDDING_COST_PER_MILLION_USD:-0.02}
+      RERANK_COST_PER_MILLION_USD: ${EVAL_RERANK_COST_PER_MILLION_USD:-0.05}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./eval/results:/app/eval/results
+    restart: "no"
 
 volumes:
   postgres_data:

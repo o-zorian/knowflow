@@ -1,0 +1,4909 @@
+{
+  "generated_at": "2026-08-10T10:00:57.421197474Z",
+  "dataset": "/app/eval/datasets/knowflow-m5.jsonl",
+  "question_count": 60,
+  "pricing": {
+    "chat_input_per_million_usd": 0.15,
+    "chat_output_per_million_usd": 0.6,
+    "embedding_per_million_usd": 0.02,
+    "rerank_input_per_million_usd": 0.05
+  },
+  "experiments": [
+    {
+      "config": {
+        "name": "Dense only",
+        "retrieval": {
+          "chunk_size": 800,
+          "chunk_overlap": 120,
+          "dense_top_k": 20,
+          "sparse_top_k": 0,
+          "rerank_top_k": 10,
+          "final_top_k": 10,
+          "minimum_score": 0,
+          "rrf_k": 60,
+          "rerank_enabled": false
+        }
+      },
+      "metrics": {
+        "recall_at_1": 0.9833333333333333,
+        "recall_at_5": 1,
+        "recall_at_10": 1,
+        "mrr": 0.9888888888888889,
+        "citation_hit_rate": 0.9833333333333333,
+        "average_retrieval_latency_ms": 0.8636333333333337,
+        "p95_retrieval_latency_ms": 1.26,
+        "average_end_to_end_latency_ms": 0.8763333333333335,
+        "p95_end_to_end_latency_ms": 1.297,
+        "average_tokens": 38.75,
+        "average_estimated_cost_usd": 0.000015093333333333327
+      },
+      "cases": [
+        {
+          "id": "q-001",
+          "question": "KnowFlow 支持上传哪些文件格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.932,
+          "end_to_end_latency_ms": 2.967,
+          "tokens": 43,
+          "estimated_cost_usd": 0.0000166,
+          "retrieved_chunk_ids": [
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f"
+          ]
+        },
+        {
+          "id": "q-002",
+          "question": "单个上传文件的默认大小上限是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.196,
+          "end_to_end_latency_ms": 1.21,
+          "tokens": 41,
+          "estimated_cost_usd": 0.00001598,
+          "retrieved_chunk_ids": [
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b"
+          ]
+        },
+        {
+          "id": "q-003",
+          "question": "上传文件使用哪种算法计算摘要？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.377,
+          "end_to_end_latency_ms": 1.395,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000015209999999999998,
+          "retrieved_chunk_ids": [
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-004",
+          "question": "同一知识库上传重复文件时系统如何处理？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.177,
+          "end_to_end_latency_ms": 1.191,
+          "tokens": 41,
+          "estimated_cost_usd": 0.00001598,
+          "retrieved_chunk_ids": [
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e"
+          ]
+        },
+        {
+          "id": "q-005",
+          "question": "原始上传文件保存在哪里？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.161,
+          "end_to_end_latency_ms": 1.176,
+          "tokens": 35,
+          "estimated_cost_usd": 0.00001386,
+          "retrieved_chunk_ids": [
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a"
+          ]
+        },
+        {
+          "id": "q-006",
+          "question": "文档上传接口会同步等待向量化完成吗？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.121,
+          "end_to_end_latency_ms": 1.134,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000014779999999999999,
+          "retrieved_chunk_ids": [
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531"
+          ]
+        },
+        {
+          "id": "q-007",
+          "question": "文档成功完成索引后的状态是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.807,
+          "end_to_end_latency_ms": 0.819,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a"
+          ]
+        },
+        {
+          "id": "q-008",
+          "question": "失败的索引任务是否允许重试？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.738,
+          "end_to_end_latency_ms": 0.748,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70"
+          ]
+        },
+        {
+          "id": "q-009",
+          "question": "TXT 和 Markdown 解析需要保留什么结构？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.632,
+          "end_to_end_latency_ms": 0.641,
+          "tokens": 44,
+          "estimated_cost_usd": 0.00001572,
+          "retrieved_chunk_ids": [
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3"
+          ]
+        },
+        {
+          "id": "q-010",
+          "question": "PDF 分块必须记录哪些页码信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.655,
+          "end_to_end_latency_ms": 0.662,
+          "tokens": 38,
+          "estimated_cost_usd": 0.00001418,
+          "retrieved_chunk_ids": [
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-011",
+          "question": "DOCX 解析会提取哪些内容？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.579,
+          "end_to_end_latency_ms": 0.586,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3"
+          ]
+        },
+        {
+          "id": "q-012",
+          "question": "空文档在解析阶段应如何处理？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.801,
+          "end_to_end_latency_ms": 0.81,
+          "tokens": 35,
+          "estimated_cost_usd": 0.00001341,
+          "retrieved_chunk_ids": [
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b"
+          ]
+        },
+        {
+          "id": "q-013",
+          "question": "默认分块大小是多少字符？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.985,
+          "end_to_end_latency_ms": 0.993,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000015059999999999998,
+          "retrieved_chunk_ids": [
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52"
+          ]
+        },
+        {
+          "id": "q-014",
+          "question": "默认分块重叠长度是多少字符？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.696,
+          "end_to_end_latency_ms": 0.704,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000015809999999999996,
+          "retrieved_chunk_ids": [
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af"
+          ]
+        },
+        {
+          "id": "q-015",
+          "question": "递归分块优先使用哪些边界？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.709,
+          "end_to_end_latency_ms": 0.72,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000015209999999999998,
+          "retrieved_chunk_ids": [
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569"
+          ]
+        },
+        {
+          "id": "q-016",
+          "question": "向量检索必须使用哪个字段隔离知识库？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.658,
+          "end_to_end_latency_ms": 0.669,
+          "tokens": 42,
+          "estimated_cost_usd": 0.00001658,
+          "retrieved_chunk_ids": [
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf"
+          ]
+        },
+        {
+          "id": "q-017",
+          "question": "向量检索默认召回多少条结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.657,
+          "end_to_end_latency_ms": 0.664,
+          "tokens": 35,
+          "estimated_cost_usd": 0.00001341,
+          "retrieved_chunk_ids": [
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7"
+          ]
+        },
+        {
+          "id": "q-018",
+          "question": "全文检索使用 PostgreSQL 的哪些能力？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.585,
+          "end_to_end_latency_ms": 0.592,
+          "tokens": 45,
+          "estimated_cost_usd": 0.000016769999999999997,
+          "retrieved_chunk_ids": [
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8"
+          ]
+        },
+        {
+          "id": "q-019",
+          "question": "混合检索使用什么算法融合结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.72,
+          "end_to_end_latency_ms": 0.727,
+          "tokens": 41,
+          "estimated_cost_usd": 0.000017009999999999998,
+          "retrieved_chunk_ids": [
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182"
+          ]
+        },
+        {
+          "id": "q-020",
+          "question": "RRF 的默认 rrf_k 值是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.82,
+          "end_to_end_latency_ms": 0.834,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000014779999999999999,
+          "retrieved_chunk_ids": [
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d"
+          ]
+        },
+        {
+          "id": "q-021",
+          "question": "混合检索如何处理相同分块？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.837,
+          "end_to_end_latency_ms": 0.859,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "50c1bee0-9992-5ae0-944b-61897f11d731"
+          ]
+        },
+        {
+          "id": "q-022",
+          "question": "启用重排序时默认发送多少候选结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.667,
+          "end_to_end_latency_ms": 0.675,
+          "tokens": 42,
+          "estimated_cost_usd": 0.00001658,
+          "retrieved_chunk_ids": [
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338"
+          ]
+        },
+        {
+          "id": "q-023",
+          "question": "重排序成功后默认保留多少结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.808,
+          "end_to_end_latency_ms": 0.821,
+          "tokens": 36,
+          "estimated_cost_usd": 0.00001401,
+          "retrieved_chunk_ids": [
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7"
+          ]
+        },
+        {
+          "id": "q-024",
+          "question": "rerank 调用失败后检索如何降级？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.644,
+          "end_to_end_latency_ms": 0.652,
+          "tokens": 42,
+          "estimated_cost_usd": 0.00001658,
+          "retrieved_chunk_ids": [
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d"
+          ]
+        },
+        {
+          "id": "q-025",
+          "question": "问答流式响应采用什么协议？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.67,
+          "end_to_end_latency_ms": 0.681,
+          "tokens": 34,
+          "estimated_cost_usd": 0.000012809999999999998,
+          "retrieved_chunk_ids": [
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef"
+          ]
+        },
+        {
+          "id": "q-026",
+          "question": "用户消息何时写入数据库？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.863,
+          "end_to_end_latency_ms": 0.873,
+          "tokens": 36,
+          "estimated_cost_usd": 0.000014459999999999999,
+          "retrieved_chunk_ids": [
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54"
+          ]
+        },
+        {
+          "id": "q-027",
+          "question": "最终生成的回答是否必须持久化？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.735,
+          "end_to_end_latency_ms": 0.744,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "61fc96bb-4076-5b13-984a-9275bc919d13"
+          ]
+        },
+        {
+          "id": "q-028",
+          "question": "模型调用失败时消息记录什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.811,
+          "end_to_end_latency_ms": 0.822,
+          "tokens": 34,
+          "estimated_cost_usd": 0.000012809999999999998,
+          "retrieved_chunk_ids": [
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7"
+          ]
+        },
+        {
+          "id": "q-029",
+          "question": "回答中的引用采用什么编号格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.836,
+          "end_to_end_latency_ms": 0.847,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d"
+          ]
+        },
+        {
+          "id": "q-030",
+          "question": "引用必须包含哪些文档标识？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.76,
+          "end_to_end_latency_ms": 0.773,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a"
+          ]
+        },
+        {
+          "id": "q-031",
+          "question": "引用必须包含哪些原文位置信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.754,
+          "end_to_end_latency_ms": 0.764,
+          "tokens": 36,
+          "estimated_cost_usd": 0.00001401,
+          "retrieved_chunk_ids": [
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a"
+          ]
+        },
+        {
+          "id": "q-032",
+          "question": "服务端如何防止模型伪造引用编号？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.812,
+          "end_to_end_latency_ms": 0.835,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6"
+          ]
+        },
+        {
+          "id": "q-033",
+          "question": "查询改写默认使用最近多少条消息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.805,
+          "end_to_end_latency_ms": 0.817,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4"
+          ]
+        },
+        {
+          "id": "q-034",
+          "question": "查询改写失败后使用什么问题？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.755,
+          "end_to_end_latency_ms": 0.765,
+          "tokens": 35,
+          "estimated_cost_usd": 0.00001341,
+          "retrieved_chunk_ids": [
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8"
+          ]
+        },
+        {
+          "id": "q-035",
+          "question": "没有可靠上下文时系统应如何回答？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.754,
+          "end_to_end_latency_ms": 0.764,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88"
+          ]
+        },
+        {
+          "id": "q-036",
+          "question": "模型 API Key 可以从哪里读取？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.852,
+          "end_to_end_latency_ms": 0.861,
+          "tokens": 40,
+          "estimated_cost_usd": 0.00001538,
+          "retrieved_chunk_ids": [
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7"
+          ]
+        },
+        {
+          "id": "q-037",
+          "question": "模型调用需要记录哪些 Token 信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.26,
+          "end_to_end_latency_ms": 1.297,
+          "tokens": 48,
+          "estimated_cost_usd": 0.0000196,
+          "retrieved_chunk_ids": [
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3"
+          ]
+        },
+        {
+          "id": "q-038",
+          "question": "哪些模型错误应进行指数退避重试？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.217,
+          "end_to_end_latency_ms": 1.243,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c"
+          ]
+        },
+        {
+          "id": "q-039",
+          "question": "模型调用默认最大重试次数是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.938,
+          "end_to_end_latency_ms": 0.952,
+          "tokens": 36,
+          "estimated_cost_usd": 0.00001343,
+          "retrieved_chunk_ids": [
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df"
+          ]
+        },
+        {
+          "id": "q-040",
+          "question": "价格配置应该与什么代码分离？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.786,
+          "end_to_end_latency_ms": 0.797,
+          "tokens": 34,
+          "estimated_cost_usd": 0.000012809999999999998,
+          "retrieved_chunk_ids": [
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3"
+          ]
+        },
+        {
+          "id": "q-041",
+          "question": "管理员可以查看哪些模型调用概况？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.901,
+          "end_to_end_latency_ms": 0.911,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182"
+          ]
+        },
+        {
+          "id": "q-042",
+          "question": "模型用量可按哪些维度汇总？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.842,
+          "end_to_end_latency_ms": 0.853,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6"
+          ]
+        },
+        {
+          "id": "q-043",
+          "question": "Prometheus 指标通过哪个路径暴露？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.79,
+          "end_to_end_latency_ms": 0.801,
+          "tokens": 43,
+          "estimated_cost_usd": 0.000016149999999999996,
+          "retrieved_chunk_ids": [
+            "99e974d0-26db-55c5-bf51-059941c77c2a",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "274f2023-f776-5547-8c5c-c229ff52930d"
+          ]
+        },
+        {
+          "id": "q-044",
+          "question": "HTTP 可观测性至少记录什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.807,
+          "end_to_end_latency_ms": 0.819,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "99e974d0-26db-55c5-bf51-059941c77c2a",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "4a7d9560-fa37-5387-8d82-48ece328f318"
+          ]
+        },
+        {
+          "id": "q-045",
+          "question": "Embedding 指标至少包含什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.993,
+          "end_to_end_latency_ms": 1.006,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000014779999999999999,
+          "retrieved_chunk_ids": [
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa"
+          ]
+        },
+        {
+          "id": "q-046",
+          "question": "离线评测数据集采用什么格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.826,
+          "end_to_end_latency_ms": 0.835,
+          "tokens": 36,
+          "estimated_cost_usd": 0.00001401,
+          "retrieved_chunk_ids": [
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897"
+          ]
+        },
+        {
+          "id": "q-047",
+          "question": "离线评测必须计算哪些 Recall 指标？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.693,
+          "end_to_end_latency_ms": 0.723,
+          "tokens": 47,
+          "estimated_cost_usd": 0.00001855,
+          "retrieved_chunk_ids": [
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "274f2023-f776-5547-8c5c-c229ff52930d"
+          ]
+        },
+        {
+          "id": "q-048",
+          "question": "离线评测是否必须计算 MRR？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.84,
+          "end_to_end_latency_ms": 0.854,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429"
+          ]
+        },
+        {
+          "id": "q-049",
+          "question": "评测必须统计哪种引用指标？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.596,
+          "end_to_end_latency_ms": 0.604,
+          "tokens": 36,
+          "estimated_cost_usd": 0.00001401,
+          "retrieved_chunk_ids": [
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa"
+          ]
+        },
+        {
+          "id": "q-050",
+          "question": "评测需要报告哪些检索延迟？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.702,
+          "end_to_end_latency_ms": 0.71,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000015209999999999998,
+          "retrieved_chunk_ids": [
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef"
+          ]
+        },
+        {
+          "id": "q-051",
+          "question": "评测需要报告哪些端到端延迟？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.927,
+          "end_to_end_latency_ms": 0.94,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000015209999999999998,
+          "retrieved_chunk_ids": [
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429"
+          ]
+        },
+        {
+          "id": "q-052",
+          "question": "评测必须比较的第一种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.758,
+          "end_to_end_latency_ms": 0.768,
+          "tokens": 41,
+          "estimated_cost_usd": 0.00001598,
+          "retrieved_chunk_ids": [
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57"
+          ]
+        },
+        {
+          "id": "q-053",
+          "question": "评测必须比较的第二种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.661,
+          "end_to_end_latency_ms": 0.669,
+          "tokens": 41,
+          "estimated_cost_usd": 0.00001598,
+          "retrieved_chunk_ids": [
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-054",
+          "question": "评测必须比较的第三种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.788,
+          "end_to_end_latency_ms": 0.801,
+          "tokens": 43,
+          "estimated_cost_usd": 0.00001718,
+          "retrieved_chunk_ids": [
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-055",
+          "question": "评测必须比较的第四种检索方案是什么？",
+          "first_relevant_rank": 3,
+          "citation_hit": false,
+          "retrieval_latency_ms": 0.67,
+          "end_to_end_latency_ms": 0.682,
+          "tokens": 41,
+          "estimated_cost_usd": 0.00001598,
+          "retrieved_chunk_ids": [
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-056",
+          "question": "评测报告必须输出哪两种文件格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.822,
+          "end_to_end_latency_ms": 0.837,
+          "tokens": 40,
+          "estimated_cost_usd": 0.000015829999999999996,
+          "retrieved_chunk_ids": [
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e"
+          ]
+        },
+        {
+          "id": "q-057",
+          "question": "评测报告除指标表外还要包含什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.68,
+          "end_to_end_latency_ms": 0.692,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000015229999999999998,
+          "retrieved_chunk_ids": [
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa"
+          ]
+        },
+        {
+          "id": "q-058",
+          "question": "M5 验收至少需要多少条评测问题？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.761,
+          "end_to_end_latency_ms": 0.769,
+          "tokens": 40,
+          "estimated_cost_usd": 0.00001538,
+          "retrieved_chunk_ids": [
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef"
+          ]
+        },
+        {
+          "id": "q-059",
+          "question": "自动化测试默认能否调用真实付费模型？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.847,
+          "end_to_end_latency_ms": 0.862,
+          "tokens": 40,
+          "estimated_cost_usd": 0.00001538,
+          "retrieved_chunk_ids": [
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3"
+          ]
+        },
+        {
+          "id": "q-060",
+          "question": "真实模型测试应如何显式开启？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.344,
+          "end_to_end_latency_ms": 1.36,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000015209999999999998,
+          "retrieved_chunk_ids": [
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531"
+          ]
+        }
+      ],
+      "failures": [
+        {
+          "id": "q-055",
+          "question": "评测必须比较的第四种检索方案是什么？",
+          "first_relevant_rank": 3,
+          "citation_hit": false,
+          "retrieval_latency_ms": 0.67,
+          "end_to_end_latency_ms": 0.682,
+          "tokens": 41,
+          "estimated_cost_usd": 0.00001598,
+          "retrieved_chunk_ids": [
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        }
+      ]
+    },
+    {
+      "config": {
+        "name": "Sparse only",
+        "retrieval": {
+          "chunk_size": 800,
+          "chunk_overlap": 120,
+          "dense_top_k": 0,
+          "sparse_top_k": 20,
+          "rerank_top_k": 10,
+          "final_top_k": 10,
+          "minimum_score": 0,
+          "rrf_k": 60,
+          "rerank_enabled": false
+        }
+      },
+      "metrics": {
+        "recall_at_1": 1,
+        "recall_at_5": 1,
+        "recall_at_10": 1,
+        "mrr": 1,
+        "citation_hit_rate": 1,
+        "average_retrieval_latency_ms": 1.8238833333333337,
+        "p95_retrieval_latency_ms": 2.372,
+        "average_end_to_end_latency_ms": 1.83745,
+        "p95_end_to_end_latency_ms": 2.386,
+        "average_tokens": 35.166666666666664,
+        "average_estimated_cost_usd": 0.00001507
+      },
+      "cases": [
+        {
+          "id": "q-001",
+          "question": "KnowFlow 支持上传哪些文件格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.564,
+          "end_to_end_latency_ms": 2.577,
+          "tokens": 38,
+          "estimated_cost_usd": 0.0000165,
+          "retrieved_chunk_ids": [
+            "afc6f037-635b-5192-a556-9eae8e0fee8e"
+          ]
+        },
+        {
+          "id": "q-002",
+          "question": "单个上传文件的默认大小上限是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.846,
+          "end_to_end_latency_ms": 1.86,
+          "tokens": 37,
+          "estimated_cost_usd": 0.0000159,
+          "retrieved_chunk_ids": [
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f"
+          ]
+        },
+        {
+          "id": "q-003",
+          "question": "上传文件使用哪种算法计算摘要？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.984,
+          "end_to_end_latency_ms": 1.998,
+          "tokens": 35,
+          "estimated_cost_usd": 0.000015149999999999999,
+          "retrieved_chunk_ids": [
+            "d404ce34-7b7e-574e-a237-db1d88ad7429"
+          ]
+        },
+        {
+          "id": "q-004",
+          "question": "同一知识库上传重复文件时系统如何处理？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.516,
+          "end_to_end_latency_ms": 2.617,
+          "tokens": 37,
+          "estimated_cost_usd": 0.0000159,
+          "retrieved_chunk_ids": [
+            "c47b84e8-9694-5313-a90e-f58a61c04095"
+          ]
+        },
+        {
+          "id": "q-005",
+          "question": "原始上传文件保存在哪里？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 0.991,
+          "end_to_end_latency_ms": 1.003,
+          "tokens": 32,
+          "estimated_cost_usd": 0.0000138,
+          "retrieved_chunk_ids": [
+            "66586a14-f088-5264-bf62-8a4c82d5beec"
+          ]
+        },
+        {
+          "id": "q-006",
+          "question": "文档上传接口会同步等待向量化完成吗？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.318,
+          "end_to_end_latency_ms": 2.328,
+          "tokens": 35,
+          "estimated_cost_usd": 0.0000147,
+          "retrieved_chunk_ids": [
+            "90765b49-bc49-5bed-822a-7fd2b5809edc"
+          ]
+        },
+        {
+          "id": "q-007",
+          "question": "文档成功完成索引后的状态是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.046,
+          "end_to_end_latency_ms": 2.057,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "bc69678d-112e-53f1-a12c-d28f27f75eab"
+          ]
+        },
+        {
+          "id": "q-008",
+          "question": "失败的索引任务是否允许重试？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.525,
+          "end_to_end_latency_ms": 1.541,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57"
+          ]
+        },
+        {
+          "id": "q-009",
+          "question": "TXT 和 Markdown 解析需要保留什么结构？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.883,
+          "end_to_end_latency_ms": 1.894,
+          "tokens": 38,
+          "estimated_cost_usd": 0.0000156,
+          "retrieved_chunk_ids": [
+            "d24813f6-4ac1-5925-836f-a1489f82dcef"
+          ]
+        },
+        {
+          "id": "q-010",
+          "question": "PDF 分块必须记录哪些页码信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.579,
+          "end_to_end_latency_ms": 1.586,
+          "tokens": 34,
+          "estimated_cost_usd": 0.0000141,
+          "retrieved_chunk_ids": [
+            "04a20926-4853-5260-a12a-3b6c4f4328bf"
+          ]
+        },
+        {
+          "id": "q-011",
+          "question": "DOCX 解析会提取哪些内容？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.396,
+          "end_to_end_latency_ms": 1.404,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88"
+          ]
+        },
+        {
+          "id": "q-012",
+          "question": "空文档在解析阶段应如何处理？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.787,
+          "end_to_end_latency_ms": 1.801,
+          "tokens": 32,
+          "estimated_cost_usd": 0.000013350000000000001,
+          "retrieved_chunk_ids": [
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35"
+          ]
+        },
+        {
+          "id": "q-013",
+          "question": "默认分块大小是多少字符？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.95,
+          "end_to_end_latency_ms": 1.962,
+          "tokens": 34,
+          "estimated_cost_usd": 0.000014999999999999999,
+          "retrieved_chunk_ids": [
+            "e2c00a19-8543-577e-9863-ed92f5a557b7"
+          ]
+        },
+        {
+          "id": "q-014",
+          "question": "默认分块重叠长度是多少字符？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.707,
+          "end_to_end_latency_ms": 1.716,
+          "tokens": 36,
+          "estimated_cost_usd": 0.000015749999999999997,
+          "retrieved_chunk_ids": [
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4"
+          ]
+        },
+        {
+          "id": "q-015",
+          "question": "递归分块优先使用哪些边界？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.376,
+          "end_to_end_latency_ms": 1.382,
+          "tokens": 35,
+          "estimated_cost_usd": 0.000015149999999999999,
+          "retrieved_chunk_ids": [
+            "2b0dcab0-f61f-5779-9143-ebac39052b67"
+          ]
+        },
+        {
+          "id": "q-016",
+          "question": "向量检索必须使用哪个字段隔离知识库？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.932,
+          "end_to_end_latency_ms": 1.94,
+          "tokens": 38,
+          "estimated_cost_usd": 0.0000165,
+          "retrieved_chunk_ids": [
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569"
+          ]
+        },
+        {
+          "id": "q-017",
+          "question": "向量检索默认召回多少条结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.493,
+          "end_to_end_latency_ms": 1.501,
+          "tokens": 32,
+          "estimated_cost_usd": 0.000013350000000000001,
+          "retrieved_chunk_ids": [
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a"
+          ]
+        },
+        {
+          "id": "q-018",
+          "question": "全文检索使用 PostgreSQL 的哪些能力？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.676,
+          "end_to_end_latency_ms": 1.683,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000016649999999999998,
+          "retrieved_chunk_ids": [
+            "b9e37702-ff2e-5993-a979-65a43e1af34a"
+          ]
+        },
+        {
+          "id": "q-019",
+          "question": "混合检索使用什么算法融合结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.717,
+          "end_to_end_latency_ms": 1.727,
+          "tokens": 38,
+          "estimated_cost_usd": 0.00001695,
+          "retrieved_chunk_ids": [
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b"
+          ]
+        },
+        {
+          "id": "q-020",
+          "question": "RRF 的默认 rrf_k 值是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.563,
+          "end_to_end_latency_ms": 1.575,
+          "tokens": 35,
+          "estimated_cost_usd": 0.0000147,
+          "retrieved_chunk_ids": [
+            "61fc96bb-4076-5b13-984a-9275bc919d13"
+          ]
+        },
+        {
+          "id": "q-021",
+          "question": "混合检索如何处理相同分块？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.001,
+          "end_to_end_latency_ms": 2.013,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531"
+          ]
+        },
+        {
+          "id": "q-022",
+          "question": "启用重排序时默认发送多少候选结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.836,
+          "end_to_end_latency_ms": 1.844,
+          "tokens": 38,
+          "estimated_cost_usd": 0.0000165,
+          "retrieved_chunk_ids": [
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3"
+          ]
+        },
+        {
+          "id": "q-023",
+          "question": "重排序成功后默认保留多少结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.702,
+          "end_to_end_latency_ms": 1.723,
+          "tokens": 33,
+          "estimated_cost_usd": 0.00001395,
+          "retrieved_chunk_ids": [
+            "274f2023-f776-5547-8c5c-c229ff52930d"
+          ]
+        },
+        {
+          "id": "q-024",
+          "question": "rerank 调用失败后检索如何降级？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.486,
+          "end_to_end_latency_ms": 1.492,
+          "tokens": 38,
+          "estimated_cost_usd": 0.0000165,
+          "retrieved_chunk_ids": [
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182"
+          ]
+        },
+        {
+          "id": "q-025",
+          "question": "问答流式响应采用什么协议？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.616,
+          "end_to_end_latency_ms": 1.626,
+          "tokens": 31,
+          "estimated_cost_usd": 0.000012749999999999998,
+          "retrieved_chunk_ids": [
+            "a209e7dc-90db-5bd7-873f-de334162a7a8"
+          ]
+        },
+        {
+          "id": "q-026",
+          "question": "用户消息何时写入数据库？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.45,
+          "end_to_end_latency_ms": 1.458,
+          "tokens": 33,
+          "estimated_cost_usd": 0.0000144,
+          "retrieved_chunk_ids": [
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8"
+          ]
+        },
+        {
+          "id": "q-027",
+          "question": "最终生成的回答是否必须持久化？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.599,
+          "end_to_end_latency_ms": 1.605,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a"
+          ]
+        },
+        {
+          "id": "q-028",
+          "question": "模型调用失败时消息记录什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.491,
+          "end_to_end_latency_ms": 1.497,
+          "tokens": 31,
+          "estimated_cost_usd": 0.000012749999999999998,
+          "retrieved_chunk_ids": [
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df"
+          ]
+        },
+        {
+          "id": "q-029",
+          "question": "回答中的引用采用什么编号格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.625,
+          "end_to_end_latency_ms": 1.639,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78"
+          ]
+        },
+        {
+          "id": "q-030",
+          "question": "引用必须包含哪些文档标识？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.67,
+          "end_to_end_latency_ms": 1.682,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "6127f939-8704-5e94-816f-a1c4af73cf9b"
+          ]
+        },
+        {
+          "id": "q-031",
+          "question": "引用必须包含哪些原文位置信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.623,
+          "end_to_end_latency_ms": 2.64,
+          "tokens": 33,
+          "estimated_cost_usd": 0.00001395,
+          "retrieved_chunk_ids": [
+            "86027f82-b166-50f1-9cc5-adea6c20e311"
+          ]
+        },
+        {
+          "id": "q-032",
+          "question": "服务端如何防止模型伪造引用编号？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.117,
+          "end_to_end_latency_ms": 2.13,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "795ac538-06aa-5928-b545-9a45d51780d0"
+          ]
+        },
+        {
+          "id": "q-033",
+          "question": "查询改写默认使用最近多少条消息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.883,
+          "end_to_end_latency_ms": 1.893,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338"
+          ]
+        },
+        {
+          "id": "q-034",
+          "question": "查询改写失败后使用什么问题？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.57,
+          "end_to_end_latency_ms": 1.581,
+          "tokens": 32,
+          "estimated_cost_usd": 0.000013350000000000001,
+          "retrieved_chunk_ids": [
+            "16a03787-5cf9-51f0-9914-5809bb61f79d"
+          ]
+        },
+        {
+          "id": "q-035",
+          "question": "没有可靠上下文时系统应如何回答？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.649,
+          "end_to_end_latency_ms": 1.666,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6"
+          ]
+        },
+        {
+          "id": "q-036",
+          "question": "模型 API Key 可以从哪里读取？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.661,
+          "end_to_end_latency_ms": 1.673,
+          "tokens": 36,
+          "estimated_cost_usd": 0.0000153,
+          "retrieved_chunk_ids": [
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3"
+          ]
+        },
+        {
+          "id": "q-037",
+          "question": "模型调用需要记录哪些 Token 信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.049,
+          "end_to_end_latency_ms": 2.062,
+          "tokens": 43,
+          "estimated_cost_usd": 0.0000195,
+          "retrieved_chunk_ids": [
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e"
+          ]
+        },
+        {
+          "id": "q-038",
+          "question": "哪些模型错误应进行指数退避重试？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.068,
+          "end_to_end_latency_ms": 2.079,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3"
+          ]
+        },
+        {
+          "id": "q-039",
+          "question": "模型调用默认最大重试次数是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.305,
+          "end_to_end_latency_ms": 2.358,
+          "tokens": 32,
+          "estimated_cost_usd": 0.000013350000000000001,
+          "retrieved_chunk_ids": [
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe"
+          ]
+        },
+        {
+          "id": "q-040",
+          "question": "价格配置应该与什么代码分离？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.927,
+          "end_to_end_latency_ms": 1.937,
+          "tokens": 31,
+          "estimated_cost_usd": 0.000012749999999999998,
+          "retrieved_chunk_ids": [
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84"
+          ]
+        },
+        {
+          "id": "q-041",
+          "question": "管理员可以查看哪些模型调用概况？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.032,
+          "end_to_end_latency_ms": 2.046,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9"
+          ]
+        },
+        {
+          "id": "q-042",
+          "question": "模型用量可按哪些维度汇总？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.402,
+          "end_to_end_latency_ms": 1.417,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d"
+          ]
+        },
+        {
+          "id": "q-043",
+          "question": "Prometheus 指标通过哪个路径暴露？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.916,
+          "end_to_end_latency_ms": 1.928,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000016049999999999997,
+          "retrieved_chunk_ids": [
+            "99e974d0-26db-55c5-bf51-059941c77c2a"
+          ]
+        },
+        {
+          "id": "q-044",
+          "question": "HTTP 可观测性至少记录什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.545,
+          "end_to_end_latency_ms": 1.553,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af"
+          ]
+        },
+        {
+          "id": "q-045",
+          "question": "Embedding 指标至少包含什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.459,
+          "end_to_end_latency_ms": 1.471,
+          "tokens": 35,
+          "estimated_cost_usd": 0.0000147,
+          "retrieved_chunk_ids": [
+            "4a7d9560-fa37-5387-8d82-48ece328f318"
+          ]
+        },
+        {
+          "id": "q-046",
+          "question": "离线评测数据集采用什么格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.525,
+          "end_to_end_latency_ms": 1.534,
+          "tokens": 33,
+          "estimated_cost_usd": 0.00001395,
+          "retrieved_chunk_ids": [
+            "256f9488-5366-5555-a9cc-979f5f9c7a54"
+          ]
+        },
+        {
+          "id": "q-047",
+          "question": "离线评测必须计算哪些 Recall 指标？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.991,
+          "end_to_end_latency_ms": 2.005,
+          "tokens": 42,
+          "estimated_cost_usd": 0.00001845,
+          "retrieved_chunk_ids": [
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3"
+          ]
+        },
+        {
+          "id": "q-048",
+          "question": "离线评测是否必须计算 MRR？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.021,
+          "end_to_end_latency_ms": 2.033,
+          "tokens": 34,
+          "estimated_cost_usd": 0.00001455,
+          "retrieved_chunk_ids": [
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70"
+          ]
+        },
+        {
+          "id": "q-049",
+          "question": "评测必须统计哪种引用指标？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.839,
+          "end_to_end_latency_ms": 1.852,
+          "tokens": 33,
+          "estimated_cost_usd": 0.00001395,
+          "retrieved_chunk_ids": [
+            "5e5a4052-ca83-5305-976d-e14f017a8c08"
+          ]
+        },
+        {
+          "id": "q-050",
+          "question": "评测需要报告哪些检索延迟？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.62,
+          "end_to_end_latency_ms": 1.633,
+          "tokens": 35,
+          "estimated_cost_usd": 0.000015149999999999999,
+          "retrieved_chunk_ids": [
+            "50c1bee0-9992-5ae0-944b-61897f11d731"
+          ]
+        },
+        {
+          "id": "q-051",
+          "question": "评测需要报告哪些端到端延迟？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.605,
+          "end_to_end_latency_ms": 1.615,
+          "tokens": 35,
+          "estimated_cost_usd": 0.000015149999999999999,
+          "retrieved_chunk_ids": [
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d"
+          ]
+        },
+        {
+          "id": "q-052",
+          "question": "评测必须比较的第一种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.119,
+          "end_to_end_latency_ms": 2.131,
+          "tokens": 37,
+          "estimated_cost_usd": 0.0000159,
+          "retrieved_chunk_ids": [
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3"
+          ]
+        },
+        {
+          "id": "q-053",
+          "question": "评测必须比较的第二种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.788,
+          "end_to_end_latency_ms": 1.799,
+          "tokens": 37,
+          "estimated_cost_usd": 0.0000159,
+          "retrieved_chunk_ids": [
+            "39f61a02-41b4-5944-8cc2-08166878b9fa"
+          ]
+        },
+        {
+          "id": "q-054",
+          "question": "评测必须比较的第三种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.212,
+          "end_to_end_latency_ms": 2.224,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000017100000000000002,
+          "retrieved_chunk_ids": [
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d"
+          ]
+        },
+        {
+          "id": "q-055",
+          "question": "评测必须比较的第四种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.32,
+          "end_to_end_latency_ms": 2.333,
+          "tokens": 42,
+          "estimated_cost_usd": 0.000018900000000000002,
+          "retrieved_chunk_ids": [
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897"
+          ]
+        },
+        {
+          "id": "q-056",
+          "question": "评测报告必须输出哪两种文件格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.372,
+          "end_to_end_latency_ms": 2.386,
+          "tokens": 36,
+          "estimated_cost_usd": 0.000015749999999999997,
+          "retrieved_chunk_ids": [
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-057",
+          "question": "评测报告除指标表外还要包含什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.876,
+          "end_to_end_latency_ms": 1.884,
+          "tokens": 35,
+          "estimated_cost_usd": 0.000015149999999999999,
+          "retrieved_chunk_ids": [
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7"
+          ]
+        },
+        {
+          "id": "q-058",
+          "question": "M5 验收至少需要多少条评测问题？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.846,
+          "end_to_end_latency_ms": 1.855,
+          "tokens": 36,
+          "estimated_cost_usd": 0.0000153,
+          "retrieved_chunk_ids": [
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52"
+          ]
+        },
+        {
+          "id": "q-059",
+          "question": "自动化测试默认能否调用真实付费模型？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.181,
+          "end_to_end_latency_ms": 2.196,
+          "tokens": 36,
+          "estimated_cost_usd": 0.0000153,
+          "retrieved_chunk_ids": [
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c"
+          ]
+        },
+        {
+          "id": "q-060",
+          "question": "真实模型测试应如何显式开启？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.587,
+          "end_to_end_latency_ms": 1.602,
+          "tokens": 35,
+          "estimated_cost_usd": 0.000015149999999999999,
+          "retrieved_chunk_ids": [
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e"
+          ]
+        }
+      ],
+      "failures": []
+    },
+    {
+      "config": {
+        "name": "Dense + Sparse + RRF",
+        "retrieval": {
+          "chunk_size": 800,
+          "chunk_overlap": 120,
+          "dense_top_k": 20,
+          "sparse_top_k": 20,
+          "rerank_top_k": 10,
+          "final_top_k": 10,
+          "minimum_score": 0,
+          "rrf_k": 60,
+          "rerank_enabled": false
+        }
+      },
+      "metrics": {
+        "recall_at_1": 1,
+        "recall_at_5": 1,
+        "recall_at_10": 1,
+        "mrr": 1,
+        "citation_hit_rate": 1,
+        "average_retrieval_latency_ms": 2.122150000000001,
+        "p95_retrieval_latency_ms": 2.659,
+        "average_end_to_end_latency_ms": 2.141666666666666,
+        "p95_end_to_end_latency_ms": 2.701,
+        "average_tokens": 38.833333333333336,
+        "average_estimated_cost_usd": 0.000015143333333333328
+      },
+      "cases": [
+        {
+          "id": "q-001",
+          "question": "KnowFlow 支持上传哪些文件格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 8.567,
+          "end_to_end_latency_ms": 8.602,
+          "tokens": 43,
+          "estimated_cost_usd": 0.0000166,
+          "retrieved_chunk_ids": [
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f"
+          ]
+        },
+        {
+          "id": "q-002",
+          "question": "单个上传文件的默认大小上限是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 3.961,
+          "end_to_end_latency_ms": 3.984,
+          "tokens": 41,
+          "estimated_cost_usd": 0.00001598,
+          "retrieved_chunk_ids": [
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b"
+          ]
+        },
+        {
+          "id": "q-003",
+          "question": "上传文件使用哪种算法计算摘要？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.189,
+          "end_to_end_latency_ms": 2.205,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000015209999999999998,
+          "retrieved_chunk_ids": [
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-004",
+          "question": "同一知识库上传重复文件时系统如何处理？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.505,
+          "end_to_end_latency_ms": 2.523,
+          "tokens": 41,
+          "estimated_cost_usd": 0.00001598,
+          "retrieved_chunk_ids": [
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e"
+          ]
+        },
+        {
+          "id": "q-005",
+          "question": "原始上传文件保存在哪里？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.125,
+          "end_to_end_latency_ms": 1.138,
+          "tokens": 35,
+          "estimated_cost_usd": 0.00001386,
+          "retrieved_chunk_ids": [
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a"
+          ]
+        },
+        {
+          "id": "q-006",
+          "question": "文档上传接口会同步等待向量化完成吗？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.318,
+          "end_to_end_latency_ms": 2.337,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000014779999999999999,
+          "retrieved_chunk_ids": [
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531"
+          ]
+        },
+        {
+          "id": "q-007",
+          "question": "文档成功完成索引后的状态是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.659,
+          "end_to_end_latency_ms": 2.701,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a"
+          ]
+        },
+        {
+          "id": "q-008",
+          "question": "失败的索引任务是否允许重试？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.831,
+          "end_to_end_latency_ms": 1.853,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70"
+          ]
+        },
+        {
+          "id": "q-009",
+          "question": "TXT 和 Markdown 解析需要保留什么结构？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.159,
+          "end_to_end_latency_ms": 2.174,
+          "tokens": 44,
+          "estimated_cost_usd": 0.00001572,
+          "retrieved_chunk_ids": [
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3"
+          ]
+        },
+        {
+          "id": "q-010",
+          "question": "PDF 分块必须记录哪些页码信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.891,
+          "end_to_end_latency_ms": 1.907,
+          "tokens": 38,
+          "estimated_cost_usd": 0.00001418,
+          "retrieved_chunk_ids": [
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-011",
+          "question": "DOCX 解析会提取哪些内容？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.549,
+          "end_to_end_latency_ms": 1.566,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3"
+          ]
+        },
+        {
+          "id": "q-012",
+          "question": "空文档在解析阶段应如何处理？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.877,
+          "end_to_end_latency_ms": 1.896,
+          "tokens": 35,
+          "estimated_cost_usd": 0.00001341,
+          "retrieved_chunk_ids": [
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b"
+          ]
+        },
+        {
+          "id": "q-013",
+          "question": "默认分块大小是多少字符？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.61,
+          "end_to_end_latency_ms": 1.622,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000015059999999999998,
+          "retrieved_chunk_ids": [
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52"
+          ]
+        },
+        {
+          "id": "q-014",
+          "question": "默认分块重叠长度是多少字符？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.846,
+          "end_to_end_latency_ms": 1.867,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000015809999999999996,
+          "retrieved_chunk_ids": [
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af"
+          ]
+        },
+        {
+          "id": "q-015",
+          "question": "递归分块优先使用哪些边界？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.738,
+          "end_to_end_latency_ms": 1.751,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000015209999999999998,
+          "retrieved_chunk_ids": [
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569"
+          ]
+        },
+        {
+          "id": "q-016",
+          "question": "向量检索必须使用哪个字段隔离知识库？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.011,
+          "end_to_end_latency_ms": 2.025,
+          "tokens": 42,
+          "estimated_cost_usd": 0.00001658,
+          "retrieved_chunk_ids": [
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf"
+          ]
+        },
+        {
+          "id": "q-017",
+          "question": "向量检索默认召回多少条结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.621,
+          "end_to_end_latency_ms": 1.631,
+          "tokens": 35,
+          "estimated_cost_usd": 0.00001341,
+          "retrieved_chunk_ids": [
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7"
+          ]
+        },
+        {
+          "id": "q-018",
+          "question": "全文检索使用 PostgreSQL 的哪些能力？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.816,
+          "end_to_end_latency_ms": 1.833,
+          "tokens": 45,
+          "estimated_cost_usd": 0.000016769999999999997,
+          "retrieved_chunk_ids": [
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8"
+          ]
+        },
+        {
+          "id": "q-019",
+          "question": "混合检索使用什么算法融合结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.692,
+          "end_to_end_latency_ms": 1.706,
+          "tokens": 41,
+          "estimated_cost_usd": 0.000017009999999999998,
+          "retrieved_chunk_ids": [
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182"
+          ]
+        },
+        {
+          "id": "q-020",
+          "question": "RRF 的默认 rrf_k 值是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.264,
+          "end_to_end_latency_ms": 2.288,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000014779999999999999,
+          "retrieved_chunk_ids": [
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d"
+          ]
+        },
+        {
+          "id": "q-021",
+          "question": "混合检索如何处理相同分块？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.892,
+          "end_to_end_latency_ms": 1.91,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "50c1bee0-9992-5ae0-944b-61897f11d731"
+          ]
+        },
+        {
+          "id": "q-022",
+          "question": "启用重排序时默认发送多少候选结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.53,
+          "end_to_end_latency_ms": 2.551,
+          "tokens": 42,
+          "estimated_cost_usd": 0.00001658,
+          "retrieved_chunk_ids": [
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338"
+          ]
+        },
+        {
+          "id": "q-023",
+          "question": "重排序成功后默认保留多少结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.194,
+          "end_to_end_latency_ms": 2.21,
+          "tokens": 36,
+          "estimated_cost_usd": 0.00001401,
+          "retrieved_chunk_ids": [
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7"
+          ]
+        },
+        {
+          "id": "q-024",
+          "question": "rerank 调用失败后检索如何降级？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.829,
+          "end_to_end_latency_ms": 1.845,
+          "tokens": 42,
+          "estimated_cost_usd": 0.00001658,
+          "retrieved_chunk_ids": [
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d"
+          ]
+        },
+        {
+          "id": "q-025",
+          "question": "问答流式响应采用什么协议？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.56,
+          "end_to_end_latency_ms": 1.572,
+          "tokens": 34,
+          "estimated_cost_usd": 0.000012809999999999998,
+          "retrieved_chunk_ids": [
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef"
+          ]
+        },
+        {
+          "id": "q-026",
+          "question": "用户消息何时写入数据库？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.668,
+          "end_to_end_latency_ms": 1.682,
+          "tokens": 36,
+          "estimated_cost_usd": 0.000014459999999999999,
+          "retrieved_chunk_ids": [
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54"
+          ]
+        },
+        {
+          "id": "q-027",
+          "question": "最终生成的回答是否必须持久化？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.982,
+          "end_to_end_latency_ms": 1.994,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "61fc96bb-4076-5b13-984a-9275bc919d13"
+          ]
+        },
+        {
+          "id": "q-028",
+          "question": "模型调用失败时消息记录什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.079,
+          "end_to_end_latency_ms": 2.097,
+          "tokens": 34,
+          "estimated_cost_usd": 0.000012809999999999998,
+          "retrieved_chunk_ids": [
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7"
+          ]
+        },
+        {
+          "id": "q-029",
+          "question": "回答中的引用采用什么编号格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.802,
+          "end_to_end_latency_ms": 1.818,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d"
+          ]
+        },
+        {
+          "id": "q-030",
+          "question": "引用必须包含哪些文档标识？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.672,
+          "end_to_end_latency_ms": 1.685,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a"
+          ]
+        },
+        {
+          "id": "q-031",
+          "question": "引用必须包含哪些原文位置信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.295,
+          "end_to_end_latency_ms": 2.33,
+          "tokens": 36,
+          "estimated_cost_usd": 0.00001401,
+          "retrieved_chunk_ids": [
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a"
+          ]
+        },
+        {
+          "id": "q-032",
+          "question": "服务端如何防止模型伪造引用编号？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.169,
+          "end_to_end_latency_ms": 2.184,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6"
+          ]
+        },
+        {
+          "id": "q-033",
+          "question": "查询改写默认使用最近多少条消息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.824,
+          "end_to_end_latency_ms": 1.839,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4"
+          ]
+        },
+        {
+          "id": "q-034",
+          "question": "查询改写失败后使用什么问题？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.831,
+          "end_to_end_latency_ms": 1.847,
+          "tokens": 35,
+          "estimated_cost_usd": 0.00001341,
+          "retrieved_chunk_ids": [
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8"
+          ]
+        },
+        {
+          "id": "q-035",
+          "question": "没有可靠上下文时系统应如何回答？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.912,
+          "end_to_end_latency_ms": 1.927,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88"
+          ]
+        },
+        {
+          "id": "q-036",
+          "question": "模型 API Key 可以从哪里读取？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.933,
+          "end_to_end_latency_ms": 1.951,
+          "tokens": 40,
+          "estimated_cost_usd": 0.00001538,
+          "retrieved_chunk_ids": [
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7"
+          ]
+        },
+        {
+          "id": "q-037",
+          "question": "模型调用需要记录哪些 Token 信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.331,
+          "end_to_end_latency_ms": 2.368,
+          "tokens": 48,
+          "estimated_cost_usd": 0.0000196,
+          "retrieved_chunk_ids": [
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3"
+          ]
+        },
+        {
+          "id": "q-038",
+          "question": "哪些模型错误应进行指数退避重试？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.435,
+          "end_to_end_latency_ms": 2.45,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c"
+          ]
+        },
+        {
+          "id": "q-039",
+          "question": "模型调用默认最大重试次数是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.388,
+          "end_to_end_latency_ms": 2.478,
+          "tokens": 36,
+          "estimated_cost_usd": 0.00001343,
+          "retrieved_chunk_ids": [
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df"
+          ]
+        },
+        {
+          "id": "q-040",
+          "question": "价格配置应该与什么代码分离？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.094,
+          "end_to_end_latency_ms": 2.133,
+          "tokens": 34,
+          "estimated_cost_usd": 0.000012809999999999998,
+          "retrieved_chunk_ids": [
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3"
+          ]
+        },
+        {
+          "id": "q-041",
+          "question": "管理员可以查看哪些模型调用概况？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.019,
+          "end_to_end_latency_ms": 2.032,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182"
+          ]
+        },
+        {
+          "id": "q-042",
+          "question": "模型用量可按哪些维度汇总？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.575,
+          "end_to_end_latency_ms": 1.587,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6"
+          ]
+        },
+        {
+          "id": "q-043",
+          "question": "Prometheus 指标通过哪个路径暴露？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.051,
+          "end_to_end_latency_ms": 2.075,
+          "tokens": 43,
+          "estimated_cost_usd": 0.000016149999999999996,
+          "retrieved_chunk_ids": [
+            "99e974d0-26db-55c5-bf51-059941c77c2a",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "274f2023-f776-5547-8c5c-c229ff52930d"
+          ]
+        },
+        {
+          "id": "q-044",
+          "question": "HTTP 可观测性至少记录什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.717,
+          "end_to_end_latency_ms": 2.744,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000014629999999999999,
+          "retrieved_chunk_ids": [
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "99e974d0-26db-55c5-bf51-059941c77c2a",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "4a7d9560-fa37-5387-8d82-48ece328f318"
+          ]
+        },
+        {
+          "id": "q-045",
+          "question": "Embedding 指标至少包含什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.773,
+          "end_to_end_latency_ms": 1.789,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000014779999999999999,
+          "retrieved_chunk_ids": [
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa"
+          ]
+        },
+        {
+          "id": "q-046",
+          "question": "离线评测数据集采用什么格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.57,
+          "end_to_end_latency_ms": 1.584,
+          "tokens": 36,
+          "estimated_cost_usd": 0.00001401,
+          "retrieved_chunk_ids": [
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897"
+          ]
+        },
+        {
+          "id": "q-047",
+          "question": "离线评测必须计算哪些 Recall 指标？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.112,
+          "end_to_end_latency_ms": 2.139,
+          "tokens": 47,
+          "estimated_cost_usd": 0.00001855,
+          "retrieved_chunk_ids": [
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "274f2023-f776-5547-8c5c-c229ff52930d"
+          ]
+        },
+        {
+          "id": "q-048",
+          "question": "离线评测是否必须计算 MRR？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.68,
+          "end_to_end_latency_ms": 1.696,
+          "tokens": 37,
+          "estimated_cost_usd": 0.000014609999999999999,
+          "retrieved_chunk_ids": [
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429"
+          ]
+        },
+        {
+          "id": "q-049",
+          "question": "评测必须统计哪种引用指标？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.663,
+          "end_to_end_latency_ms": 1.678,
+          "tokens": 36,
+          "estimated_cost_usd": 0.00001401,
+          "retrieved_chunk_ids": [
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa"
+          ]
+        },
+        {
+          "id": "q-050",
+          "question": "评测需要报告哪些检索延迟？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.659,
+          "end_to_end_latency_ms": 1.671,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000015209999999999998,
+          "retrieved_chunk_ids": [
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef"
+          ]
+        },
+        {
+          "id": "q-051",
+          "question": "评测需要报告哪些端到端延迟？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.818,
+          "end_to_end_latency_ms": 1.833,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000015209999999999998,
+          "retrieved_chunk_ids": [
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429"
+          ]
+        },
+        {
+          "id": "q-052",
+          "question": "评测必须比较的第一种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.177,
+          "end_to_end_latency_ms": 2.193,
+          "tokens": 41,
+          "estimated_cost_usd": 0.00001598,
+          "retrieved_chunk_ids": [
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57"
+          ]
+        },
+        {
+          "id": "q-053",
+          "question": "评测必须比较的第二种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.276,
+          "end_to_end_latency_ms": 2.291,
+          "tokens": 41,
+          "estimated_cost_usd": 0.00001598,
+          "retrieved_chunk_ids": [
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-054",
+          "question": "评测必须比较的第三种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.159,
+          "end_to_end_latency_ms": 2.182,
+          "tokens": 43,
+          "estimated_cost_usd": 0.00001718,
+          "retrieved_chunk_ids": [
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-055",
+          "question": "评测必须比较的第四种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.235,
+          "end_to_end_latency_ms": 2.249,
+          "tokens": 46,
+          "estimated_cost_usd": 0.00001898,
+          "retrieved_chunk_ids": [
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd"
+          ]
+        },
+        {
+          "id": "q-056",
+          "question": "评测报告必须输出哪两种文件格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.065,
+          "end_to_end_latency_ms": 2.085,
+          "tokens": 40,
+          "estimated_cost_usd": 0.000015829999999999996,
+          "retrieved_chunk_ids": [
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e"
+          ]
+        },
+        {
+          "id": "q-057",
+          "question": "评测报告除指标表外还要包含什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.102,
+          "end_to_end_latency_ms": 2.116,
+          "tokens": 39,
+          "estimated_cost_usd": 0.000015229999999999998,
+          "retrieved_chunk_ids": [
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa"
+          ]
+        },
+        {
+          "id": "q-058",
+          "question": "M5 验收至少需要多少条评测问题？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.781,
+          "end_to_end_latency_ms": 1.793,
+          "tokens": 40,
+          "estimated_cost_usd": 0.00001538,
+          "retrieved_chunk_ids": [
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef"
+          ]
+        },
+        {
+          "id": "q-059",
+          "question": "自动化测试默认能否调用真实付费模型？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.428,
+          "end_to_end_latency_ms": 2.449,
+          "tokens": 40,
+          "estimated_cost_usd": 0.00001538,
+          "retrieved_chunk_ids": [
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3"
+          ]
+        },
+        {
+          "id": "q-060",
+          "question": "真实模型测试应如何显式开启？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.82,
+          "end_to_end_latency_ms": 1.834,
+          "tokens": 38,
+          "estimated_cost_usd": 0.000015209999999999998,
+          "retrieved_chunk_ids": [
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531"
+          ]
+        }
+      ],
+      "failures": []
+    },
+    {
+      "config": {
+        "name": "Dense + Sparse + RRF + Reranker",
+        "retrieval": {
+          "chunk_size": 800,
+          "chunk_overlap": 120,
+          "dense_top_k": 20,
+          "sparse_top_k": 20,
+          "rerank_top_k": 10,
+          "final_top_k": 10,
+          "minimum_score": 0,
+          "rrf_k": 60,
+          "rerank_enabled": true
+        }
+      },
+      "metrics": {
+        "recall_at_1": 1,
+        "recall_at_5": 1,
+        "recall_at_10": 1,
+        "mrr": 1,
+        "citation_hit_rate": 1,
+        "average_retrieval_latency_ms": 2.053766666666667,
+        "p95_retrieval_latency_ms": 2.617,
+        "average_end_to_end_latency_ms": 2.077,
+        "p95_end_to_end_latency_ms": 2.637,
+        "average_tokens": 230.65,
+        "average_estimated_cost_usd": 0.00002473416666666667
+      },
+      "cases": [
+        {
+          "id": "q-001",
+          "question": "KnowFlow 支持上传哪些文件格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.081,
+          "end_to_end_latency_ms": 2.103,
+          "tokens": 245,
+          "estimated_cost_usd": 0.000026700000000000002,
+          "retrieved_chunk_ids": [
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef"
+          ]
+        },
+        {
+          "id": "q-002",
+          "question": "单个上传文件的默认大小上限是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.239,
+          "end_to_end_latency_ms": 2.26,
+          "tokens": 233,
+          "estimated_cost_usd": 0.000025580000000000002,
+          "retrieved_chunk_ids": [
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b"
+          ]
+        },
+        {
+          "id": "q-003",
+          "question": "上传文件使用哪种算法计算摘要？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.926,
+          "end_to_end_latency_ms": 1.945,
+          "tokens": 230,
+          "estimated_cost_usd": 0.00002481,
+          "retrieved_chunk_ids": [
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf"
+          ]
+        },
+        {
+          "id": "q-004",
+          "question": "同一知识库上传重复文件时系统如何处理？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.621,
+          "end_to_end_latency_ms": 2.653,
+          "tokens": 228,
+          "estimated_cost_usd": 0.00002533,
+          "retrieved_chunk_ids": [
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e"
+          ]
+        },
+        {
+          "id": "q-005",
+          "question": "原始上传文件保存在哪里？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.988,
+          "end_to_end_latency_ms": 2.011,
+          "tokens": 227,
+          "estimated_cost_usd": 0.000023460000000000002,
+          "retrieved_chunk_ids": [
+            "66586a14-f088-5264-bf62-8a4c82d5beec",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a"
+          ]
+        },
+        {
+          "id": "q-006",
+          "question": "文档上传接口会同步等待向量化完成吗？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.307,
+          "end_to_end_latency_ms": 2.325,
+          "tokens": 229,
+          "estimated_cost_usd": 0.000024279999999999998,
+          "retrieved_chunk_ids": [
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531"
+          ]
+        },
+        {
+          "id": "q-007",
+          "question": "文档成功完成索引后的状态是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.962,
+          "end_to_end_latency_ms": 1.978,
+          "tokens": 229,
+          "estimated_cost_usd": 0.00002418,
+          "retrieved_chunk_ids": [
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "795ac538-06aa-5928-b545-9a45d51780d0"
+          ]
+        },
+        {
+          "id": "q-008",
+          "question": "失败的索引任务是否允许重试？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.862,
+          "end_to_end_latency_ms": 1.88,
+          "tokens": 224,
+          "estimated_cost_usd": 0.00002396,
+          "retrieved_chunk_ids": [
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "795ac538-06aa-5928-b545-9a45d51780d0"
+          ]
+        },
+        {
+          "id": "q-009",
+          "question": "TXT 和 Markdown 解析需要保留什么结构？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.009,
+          "end_to_end_latency_ms": 2.027,
+          "tokens": 244,
+          "estimated_cost_usd": 0.000025719999999999998,
+          "retrieved_chunk_ids": [
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3"
+          ]
+        },
+        {
+          "id": "q-010",
+          "question": "PDF 分块必须记录哪些页码信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.877,
+          "end_to_end_latency_ms": 1.894,
+          "tokens": 240,
+          "estimated_cost_usd": 0.00002428,
+          "retrieved_chunk_ids": [
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a"
+          ]
+        },
+        {
+          "id": "q-011",
+          "question": "DOCX 解析会提取哪些内容？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.667,
+          "end_to_end_latency_ms": 1.686,
+          "tokens": 239,
+          "estimated_cost_usd": 0.00002471,
+          "retrieved_chunk_ids": [
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc"
+          ]
+        },
+        {
+          "id": "q-012",
+          "question": "空文档在解析阶段应如何处理？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.437,
+          "end_to_end_latency_ms": 2.459,
+          "tokens": 213,
+          "estimated_cost_usd": 0.00002231,
+          "retrieved_chunk_ids": [
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c"
+          ]
+        },
+        {
+          "id": "q-013",
+          "question": "默认分块大小是多少字符？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.179,
+          "end_to_end_latency_ms": 2.214,
+          "tokens": 222,
+          "estimated_cost_usd": 0.000024309999999999996,
+          "retrieved_chunk_ids": [
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52"
+          ]
+        },
+        {
+          "id": "q-014",
+          "question": "默认分块重叠长度是多少字符？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.972,
+          "end_to_end_latency_ms": 1.997,
+          "tokens": 223,
+          "estimated_cost_usd": 0.00002501,
+          "retrieved_chunk_ids": [
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af"
+          ]
+        },
+        {
+          "id": "q-015",
+          "question": "递归分块优先使用哪些边界？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.902,
+          "end_to_end_latency_ms": 1.922,
+          "tokens": 232,
+          "estimated_cost_usd": 0.000024909999999999997,
+          "retrieved_chunk_ids": [
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "61fc96bb-4076-5b13-984a-9275bc919d13"
+          ]
+        },
+        {
+          "id": "q-016",
+          "question": "向量检索必须使用哪个字段隔离知识库？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.208,
+          "end_to_end_latency_ms": 2.233,
+          "tokens": 238,
+          "estimated_cost_usd": 0.00002638,
+          "retrieved_chunk_ids": [
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429"
+          ]
+        },
+        {
+          "id": "q-017",
+          "question": "向量检索默认召回多少条结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.714,
+          "end_to_end_latency_ms": 1.732,
+          "tokens": 224,
+          "estimated_cost_usd": 0.00002286,
+          "retrieved_chunk_ids": [
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "50c1bee0-9992-5ae0-944b-61897f11d731"
+          ]
+        },
+        {
+          "id": "q-018",
+          "question": "全文检索使用 PostgreSQL 的哪些能力？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.092,
+          "end_to_end_latency_ms": 2.111,
+          "tokens": 232,
+          "estimated_cost_usd": 0.000026119999999999997,
+          "retrieved_chunk_ids": [
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84"
+          ]
+        },
+        {
+          "id": "q-019",
+          "question": "混合检索使用什么算法融合结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.015,
+          "end_to_end_latency_ms": 2.035,
+          "tokens": 234,
+          "estimated_cost_usd": 0.00002666,
+          "retrieved_chunk_ids": [
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338"
+          ]
+        },
+        {
+          "id": "q-020",
+          "question": "RRF 的默认 rrf_k 值是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.783,
+          "end_to_end_latency_ms": 1.802,
+          "tokens": 243,
+          "estimated_cost_usd": 0.00002498,
+          "retrieved_chunk_ids": [
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182"
+          ]
+        },
+        {
+          "id": "q-021",
+          "question": "混合检索如何处理相同分块？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.794,
+          "end_to_end_latency_ms": 1.813,
+          "tokens": 224,
+          "estimated_cost_usd": 0.00002396,
+          "retrieved_chunk_ids": [
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3"
+          ]
+        },
+        {
+          "id": "q-022",
+          "question": "启用重排序时默认发送多少候选结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.161,
+          "end_to_end_latency_ms": 2.179,
+          "tokens": 230,
+          "estimated_cost_usd": 0.00002598,
+          "retrieved_chunk_ids": [
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "4a7d9560-fa37-5387-8d82-48ece328f318"
+          ]
+        },
+        {
+          "id": "q-023",
+          "question": "重排序成功后默认保留多少结果？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.035,
+          "end_to_end_latency_ms": 2.054,
+          "tokens": 223,
+          "estimated_cost_usd": 0.00002336,
+          "retrieved_chunk_ids": [
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c"
+          ]
+        },
+        {
+          "id": "q-024",
+          "question": "rerank 调用失败后检索如何降级？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.871,
+          "end_to_end_latency_ms": 1.888,
+          "tokens": 239,
+          "estimated_cost_usd": 0.000026430000000000003,
+          "retrieved_chunk_ids": [
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "61fc96bb-4076-5b13-984a-9275bc919d13"
+          ]
+        },
+        {
+          "id": "q-025",
+          "question": "问答流式响应采用什么协议？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.768,
+          "end_to_end_latency_ms": 1.787,
+          "tokens": 208,
+          "estimated_cost_usd": 0.00002151,
+          "retrieved_chunk_ids": [
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d"
+          ]
+        },
+        {
+          "id": "q-026",
+          "question": "用户消息何时写入数据库？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.55,
+          "end_to_end_latency_ms": 1.565,
+          "tokens": 217,
+          "estimated_cost_usd": 0.00002351,
+          "retrieved_chunk_ids": [
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e"
+          ]
+        },
+        {
+          "id": "q-027",
+          "question": "最终生成的回答是否必须持久化？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.062,
+          "end_to_end_latency_ms": 2.096,
+          "tokens": 221,
+          "estimated_cost_usd": 0.00002381,
+          "retrieved_chunk_ids": [
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "795ac538-06aa-5928-b545-9a45d51780d0"
+          ]
+        },
+        {
+          "id": "q-028",
+          "question": "模型调用失败时消息记录什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.369,
+          "end_to_end_latency_ms": 2.414,
+          "tokens": 225,
+          "estimated_cost_usd": 0.000022359999999999996,
+          "retrieved_chunk_ids": [
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338"
+          ]
+        },
+        {
+          "id": "q-029",
+          "question": "回答中的引用采用什么编号格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.297,
+          "end_to_end_latency_ms": 2.32,
+          "tokens": 214,
+          "estimated_cost_usd": 0.00002346,
+          "retrieved_chunk_ids": [
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d"
+          ]
+        },
+        {
+          "id": "q-030",
+          "question": "引用必须包含哪些文档标识？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.009,
+          "end_to_end_latency_ms": 2.026,
+          "tokens": 218,
+          "estimated_cost_usd": 0.00002366,
+          "retrieved_chunk_ids": [
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a"
+          ]
+        },
+        {
+          "id": "q-031",
+          "question": "引用必须包含哪些原文位置信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.858,
+          "end_to_end_latency_ms": 1.873,
+          "tokens": 226,
+          "estimated_cost_usd": 0.00002351,
+          "retrieved_chunk_ids": [
+            "86027f82-b166-50f1-9cc5-adea6c20e311",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "795ac538-06aa-5928-b545-9a45d51780d0"
+          ]
+        },
+        {
+          "id": "q-032",
+          "question": "服务端如何防止模型伪造引用编号？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.025,
+          "end_to_end_latency_ms": 2.043,
+          "tokens": 223,
+          "estimated_cost_usd": 0.00002388,
+          "retrieved_chunk_ids": [
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d"
+          ]
+        },
+        {
+          "id": "q-033",
+          "question": "查询改写默认使用最近多少条消息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.617,
+          "end_to_end_latency_ms": 2.637,
+          "tokens": 221,
+          "estimated_cost_usd": 0.00002378,
+          "retrieved_chunk_ids": [
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "274f2023-f776-5547-8c5c-c229ff52930d",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429"
+          ]
+        },
+        {
+          "id": "q-034",
+          "question": "查询改写失败后使用什么问题？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.226,
+          "end_to_end_latency_ms": 2.262,
+          "tokens": 218,
+          "estimated_cost_usd": 0.00002256,
+          "retrieved_chunk_ids": [
+            "16a03787-5cf9-51f0-9914-5809bb61f79d",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "795ac538-06aa-5928-b545-9a45d51780d0"
+          ]
+        },
+        {
+          "id": "q-035",
+          "question": "没有可靠上下文时系统应如何回答？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.733,
+          "end_to_end_latency_ms": 2.753,
+          "tokens": 225,
+          "estimated_cost_usd": 0.000023979999999999997,
+          "retrieved_chunk_ids": [
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "58bfdab8-cec0-5a35-83a3-34b1a4a12b35",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "90765b49-bc49-5bed-822a-7fd2b5809edc",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "7a61ab7a-4610-565f-b4e8-aa4bd4993c88",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d"
+          ]
+        },
+        {
+          "id": "q-036",
+          "question": "模型 API Key 可以从哪里读取？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.896,
+          "end_to_end_latency_ms": 1.915,
+          "tokens": 245,
+          "estimated_cost_usd": 0.000025629999999999997,
+          "retrieved_chunk_ids": [
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7"
+          ]
+        },
+        {
+          "id": "q-037",
+          "question": "模型调用需要记录哪些 Token 信息？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.927,
+          "end_to_end_latency_ms": 1.947,
+          "tokens": 248,
+          "estimated_cost_usd": 0.0000296,
+          "retrieved_chunk_ids": [
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e"
+          ]
+        },
+        {
+          "id": "q-038",
+          "question": "哪些模型错误应进行指数退避重试？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.401,
+          "end_to_end_latency_ms": 2.42,
+          "tokens": 215,
+          "estimated_cost_usd": 0.00002348,
+          "retrieved_chunk_ids": [
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84"
+          ]
+        },
+        {
+          "id": "q-039",
+          "question": "模型调用默认最大重试次数是多少？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.146,
+          "end_to_end_latency_ms": 2.329,
+          "tokens": 221,
+          "estimated_cost_usd": 0.00002268,
+          "retrieved_chunk_ids": [
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "d14852bf-8aff-5e70-9c41-2d3acd8f7ca4",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df"
+          ]
+        },
+        {
+          "id": "q-040",
+          "question": "价格配置应该与什么代码分离？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.152,
+          "end_to_end_latency_ms": 2.171,
+          "tokens": 223,
+          "estimated_cost_usd": 0.00002226,
+          "retrieved_chunk_ids": [
+            "6171b440-7a0f-5e03-a966-c9cfcbf7de84",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a"
+          ]
+        },
+        {
+          "id": "q-041",
+          "question": "管理员可以查看哪些模型调用概况？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.092,
+          "end_to_end_latency_ms": 2.122,
+          "tokens": 222,
+          "estimated_cost_usd": 0.00002383,
+          "retrieved_chunk_ids": [
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "cb994b84-cce9-53ee-9539-1f9ad531a2f3",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182"
+          ]
+        },
+        {
+          "id": "q-042",
+          "question": "模型用量可按哪些维度汇总？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.887,
+          "end_to_end_latency_ms": 1.908,
+          "tokens": 226,
+          "estimated_cost_usd": 0.00002406,
+          "retrieved_chunk_ids": [
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "2b0dcab0-f61f-5779-9143-ebac39052b67",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "a7acb3e6-631f-5ee2-90ee-44b29c99f7a6"
+          ]
+        },
+        {
+          "id": "q-043",
+          "question": "Prometheus 指标通过哪个路径暴露？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.017,
+          "end_to_end_latency_ms": 2.032,
+          "tokens": 255,
+          "estimated_cost_usd": 0.00002675,
+          "retrieved_chunk_ids": [
+            "99e974d0-26db-55c5-bf51-059941c77c2a",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "274f2023-f776-5547-8c5c-c229ff52930d"
+          ]
+        },
+        {
+          "id": "q-044",
+          "question": "HTTP 可观测性至少记录什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.621,
+          "end_to_end_latency_ms": 1.636,
+          "tokens": 227,
+          "estimated_cost_usd": 0.00002408,
+          "retrieved_chunk_ids": [
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "c7cb4cc1-639d-5dfb-9e7d-662ac3e567df",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "2e08aae2-75cd-5e59-9283-3937cf9e9f1e",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "99e974d0-26db-55c5-bf51-059941c77c2a"
+          ]
+        },
+        {
+          "id": "q-045",
+          "question": "Embedding 指标至少包含什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.784,
+          "end_to_end_latency_ms": 1.805,
+          "tokens": 250,
+          "estimated_cost_usd": 0.00002533,
+          "retrieved_chunk_ids": [
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569"
+          ]
+        },
+        {
+          "id": "q-046",
+          "question": "离线评测数据集采用什么格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.873,
+          "end_to_end_latency_ms": 1.889,
+          "tokens": 230,
+          "estimated_cost_usd": 0.00002371,
+          "retrieved_chunk_ids": [
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "fd9fc5d8-0417-596f-802e-eed2c8b37c78",
+            "a209e7dc-90db-5bd7-873f-de334162a7a8",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "4a7d9560-fa37-5387-8d82-48ece328f318"
+          ]
+        },
+        {
+          "id": "q-047",
+          "question": "离线评测必须计算哪些 Recall 指标？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.026,
+          "end_to_end_latency_ms": 2.044,
+          "tokens": 256,
+          "estimated_cost_usd": 0.000029,
+          "retrieved_chunk_ids": [
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "f0102bf4-8a3f-5d1c-8205-ceb528a35569",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3",
+            "dcc502d5-4a3f-5763-8ceb-ec6b9e08f182",
+            "274f2023-f776-5547-8c5c-c229ff52930d"
+          ]
+        },
+        {
+          "id": "q-048",
+          "question": "离线评测是否必须计算 MRR？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.844,
+          "end_to_end_latency_ms": 1.859,
+          "tokens": 247,
+          "estimated_cost_usd": 0.00002511,
+          "retrieved_chunk_ids": [
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "61fc96bb-4076-5b13-984a-9275bc919d13",
+            "882b5993-d818-5b6d-9b38-60f4137bd1b3"
+          ]
+        },
+        {
+          "id": "q-049",
+          "question": "评测必须统计哪种引用指标？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.947,
+          "end_to_end_latency_ms": 1.964,
+          "tokens": 228,
+          "estimated_cost_usd": 0.00002361,
+          "retrieved_chunk_ids": [
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "d608fa62-5269-57d2-81b6-5d06ee9e89e3",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "04a20926-4853-5260-a12a-3b6c4f4328bf",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a"
+          ]
+        },
+        {
+          "id": "q-050",
+          "question": "评测需要报告哪些检索延迟？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.737,
+          "end_to_end_latency_ms": 1.754,
+          "tokens": 235,
+          "estimated_cost_usd": 0.00002506,
+          "retrieved_chunk_ids": [
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "b9e37702-ff2e-5993-a979-65a43e1af34a",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "4c84b788-2b38-5f9c-a6c8-057793dab60b",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef"
+          ]
+        },
+        {
+          "id": "q-051",
+          "question": "评测需要报告哪些端到端延迟？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.81,
+          "end_to_end_latency_ms": 1.834,
+          "tokens": 228,
+          "estimated_cost_usd": 0.00002471,
+          "retrieved_chunk_ids": [
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "795ac538-06aa-5928-b545-9a45d51780d0"
+          ]
+        },
+        {
+          "id": "q-052",
+          "question": "评测必须比较的第一种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.272,
+          "end_to_end_latency_ms": 2.291,
+          "tokens": 240,
+          "estimated_cost_usd": 0.00002593,
+          "retrieved_chunk_ids": [
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "6efd96d3-ca3a-5506-bb45-70f23fc26c57"
+          ]
+        },
+        {
+          "id": "q-053",
+          "question": "评测必须比较的第二种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.032,
+          "end_to_end_latency_ms": 2.048,
+          "tokens": 242,
+          "estimated_cost_usd": 0.00002603,
+          "retrieved_chunk_ids": [
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "50c1bee0-9992-5ae0-944b-61897f11d731"
+          ]
+        },
+        {
+          "id": "q-054",
+          "question": "评测必须比较的第三种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.653,
+          "end_to_end_latency_ms": 2.672,
+          "tokens": 244,
+          "estimated_cost_usd": 0.000027230000000000002,
+          "retrieved_chunk_ids": [
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "50c1bee0-9992-5ae0-944b-61897f11d731"
+          ]
+        },
+        {
+          "id": "q-055",
+          "question": "评测必须比较的第四种检索方案是什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.189,
+          "end_to_end_latency_ms": 2.212,
+          "tokens": 247,
+          "estimated_cost_usd": 0.00002903,
+          "retrieved_chunk_ids": [
+            "1d906ba1-30e7-5c2a-85c2-0f13b6361897",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "b76a6299-2a30-5061-b18b-7c1df3591b5d",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70",
+            "bc69678d-112e-53f1-a12c-d28f27f75eab",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "54db27b4-884e-5eb4-a78f-df79ddb9595a",
+            "50c1bee0-9992-5ae0-944b-61897f11d731"
+          ]
+        },
+        {
+          "id": "q-056",
+          "question": "评测报告必须输出哪两种文件格式？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.143,
+          "end_to_end_latency_ms": 2.16,
+          "tokens": 231,
+          "estimated_cost_usd": 0.000025379999999999998,
+          "retrieved_chunk_ids": [
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "6127f939-8704-5e94-816f-a1c4af73cf9b",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e",
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "256f9488-5366-5555-a9cc-979f5f9c7a54",
+            "5ed2c7be-4b0f-54ed-8a38-162be857eb70"
+          ]
+        },
+        {
+          "id": "q-057",
+          "question": "评测报告除指标表外还要包含什么？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.402,
+          "end_to_end_latency_ms": 2.419,
+          "tokens": 233,
+          "estimated_cost_usd": 0.00002493,
+          "retrieved_chunk_ids": [
+            "cb4f9d55-db53-5cad-aa40-c969e1660fb7",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "b6f33000-538d-58aa-b3dd-e0241c3a3cfd",
+            "5e5a4052-ca83-5305-976d-e14f017a8c08",
+            "edbb7467-5103-56c5-a5c2-cbc25c85a2f3",
+            "39f61a02-41b4-5944-8cc2-08166878b9fa",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52"
+          ]
+        },
+        {
+          "id": "q-058",
+          "question": "M5 验收至少需要多少条评测问题？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.006,
+          "end_to_end_latency_ms": 2.026,
+          "tokens": 230,
+          "estimated_cost_usd": 0.00002488,
+          "retrieved_chunk_ids": [
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52",
+            "4d96e5e5-c206-547a-b7ab-f9f46c3d6338",
+            "50c1bee0-9992-5ae0-944b-61897f11d731",
+            "8ef63000-8fb8-5ae2-bcf5-cbfc1bd41f3d",
+            "e44e1f0b-dfb4-545c-940e-96b3a7af86af",
+            "969caab6-94a2-5c30-a01f-4082eebe4d4a",
+            "d24813f6-4ac1-5925-836f-a1489f82dcef",
+            "4a7d9560-fa37-5387-8d82-48ece328f318",
+            "d404ce34-7b7e-574e-a237-db1d88ad7429",
+            "afc6f037-635b-5192-a556-9eae8e0fee8e"
+          ]
+        },
+        {
+          "id": "q-059",
+          "question": "自动化测试默认能否调用真实付费模型？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 2.409,
+          "end_to_end_latency_ms": 2.426,
+          "tokens": 228,
+          "estimated_cost_usd": 0.000024779999999999997,
+          "retrieved_chunk_ids": [
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "6b4d7890-dd26-59fa-b782-e5369bf32cfe",
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "aef528f2-6eaa-598e-bcb9-94fe5704142f",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "e2c00a19-8543-577e-9863-ed92f5a557b7",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3"
+          ]
+        },
+        {
+          "id": "q-060",
+          "question": "真实模型测试应如何显式开启？",
+          "first_relevant_rank": 1,
+          "citation_hit": true,
+          "retrieval_latency_ms": 1.744,
+          "end_to_end_latency_ms": 1.76,
+          "tokens": 227,
+          "estimated_cost_usd": 0.000024659999999999998,
+          "retrieved_chunk_ids": [
+            "f2bde373-7980-5ec3-944c-5082b4fe0d7e",
+            "dcf66a4d-fcf0-5975-bcb9-b63319cbcc1c",
+            "795ac538-06aa-5928-b545-9a45d51780d0",
+            "86b6d1f7-c9bf-5361-acd3-4c79ae113db8",
+            "7e770652-6b79-55ac-8d0b-e7231ea29e9d",
+            "c47b84e8-9694-5313-a90e-f58a61c04095",
+            "327cf5e3-c2df-5dd6-91c8-8a970921e6c3",
+            "d6453d11-8d71-5e3b-9de7-e24fd4b4adf9",
+            "cf46fa88-c64d-5f7d-889d-e6d6d6968531",
+            "2fcf6ec4-af3c-53b5-9ce8-10793169bb52"
+          ]
+        }
+      ],
+      "failures": []
+    }
+  ],
+  "conclusions": [
+    "Highest Recall@10/MRR combination: Sparse only (1.0000 / 1.0000).",
+    "Dense and sparse Recall@10 are tied; inspect MRR and failure cases before choosing a default.",
+    "Reranking did not reduce MRR relative to RRF on this run."
+  ]
+}

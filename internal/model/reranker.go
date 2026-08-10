@@ -66,10 +66,11 @@ func (f *FakeReranker) Rerank(_ context.Context, query string, docs []RerankDocu
 }
 
 type RerankClient struct {
-	baseURL string
-	apiKey  string
-	model   string
-	client  *http.Client
+	baseURL    string
+	apiKey     string
+	model      string
+	client     *http.Client
+	maxRetries int
 }
 
 func NewRerankClient(baseURL, apiKey, model string, client *http.Client) (*RerankClient, error) {
@@ -84,8 +85,10 @@ func NewRerankClient(baseURL, apiKey, model string, client *http.Client) (*Reran
 	if client == nil {
 		client = &http.Client{Timeout: 30 * time.Second}
 	}
-	return &RerankClient{baseURL: strings.TrimRight(baseURL, "/"), apiKey: apiKey, model: model, client: client}, nil
+	return &RerankClient{baseURL: strings.TrimRight(baseURL, "/"), apiKey: apiKey, model: model, client: client, maxRetries: 3}, nil
 }
+
+func (c *RerankClient) SetMaxRetries(value int) { c.maxRetries = max(0, value) }
 
 func (c *RerankClient) Rerank(ctx context.Context, query string, docs []RerankDocument, topK int) ([]RerankResult, error) {
 	if topK <= 0 || len(docs) == 0 {
@@ -101,13 +104,15 @@ func (c *RerankClient) Rerank(ctx context.Context, query string, docs []RerankDo
 	if err != nil {
 		return nil, err
 	}
-	request, err := http.NewRequestWithContext(ctx, http.MethodPost, c.baseURL+"/rerank", bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Set("Authorization", "Bearer "+c.apiKey)
-	request.Header.Set("Content-Type", "application/json")
-	response, err := c.client.Do(request)
+	response, err := doWithRetry(ctx, c.maxRetries, func() (*http.Response, error) {
+		request, requestErr := http.NewRequestWithContext(ctx, http.MethodPost, c.baseURL+"/rerank", bytes.NewReader(body))
+		if requestErr != nil {
+			return nil, requestErr
+		}
+		request.Header.Set("Authorization", "Bearer "+c.apiKey)
+		request.Header.Set("Content-Type", "application/json")
+		return c.client.Do(request)
+	})
 	if err != nil {
 		return nil, err
 	}

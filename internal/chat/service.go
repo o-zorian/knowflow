@@ -12,6 +12,7 @@ import (
 	"knowflow/internal/apperror"
 	"knowflow/internal/model"
 	"knowflow/internal/retrieval"
+	usagego "knowflow/internal/usage"
 )
 
 var (
@@ -25,7 +26,7 @@ type Store interface {
 	Get(ctx context.Context, userID, conversationID string) (Detail, error)
 	Delete(ctx context.Context, userID, conversationID string) error
 	StartTurn(ctx context.Context, userID, conversationID, content string) (Conversation, Message, Message, []Message, error)
-	CompleteAssistant(ctx context.Context, messageID, content, modelName string, citations []Citation, trace map[string]any, usage model.Usage, latencyMS int) (Message, error)
+	CompleteAssistant(ctx context.Context, messageID, content, modelName string, citations []Citation, trace map[string]any, modelUsage model.Usage, estimatedCostUSD float64, latencyMS int) (Message, error)
 	FailAssistant(ctx context.Context, messageID, content, code string, latencyMS int) error
 }
 
@@ -39,7 +40,10 @@ type Service struct {
 	model     model.ChatModel
 	rewriter  model.QueryRewriter
 	modelName string
+	pricing   usagego.Pricing
 }
+
+func (s *Service) SetPricing(pricing usagego.Pricing) { s.pricing = pricing }
 
 func NewService(store Store, retriever Retriever, chatModel model.ChatModel, modelName string, rewriters ...model.QueryRewriter) *Service {
 	var rewriter model.QueryRewriter
@@ -100,6 +104,7 @@ func (s *Service) Stream(ctx context.Context, userID, conversationID, content st
 
 func (s *Service) runTurn(ctx context.Context, conversation Conversation, userMessage, assistantMessage Message, history []Message, events chan<- StreamEvent) {
 	defer close(events)
+	ctx = usagego.WithScope(ctx, conversation.UserID, conversation.KnowledgeBaseID)
 	started := time.Now()
 	if !send(ctx, events, StreamEvent{Name: "message.started", Data: map[string]any{
 		"user_message": userMessage, "assistant_message": assistantMessage,
@@ -185,7 +190,8 @@ func (s *Service) runTurn(ctx context.Context, conversation Conversation, userMe
 func (s *Service) persistCompletion(messageID, content string, citations []Citation, trace map[string]any, usage model.Usage, started time.Time) (Message, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	message, err := s.store.CompleteAssistant(ctx, messageID, content, s.modelName, citations, trace, usage, int(time.Since(started).Milliseconds()))
+	cost := s.pricing.Chat(usage.PromptTokens, usage.CompletionTokens)
+	message, err := s.store.CompleteAssistant(ctx, messageID, content, s.modelName, citations, trace, usage, cost, int(time.Since(started).Milliseconds()))
 	if err != nil {
 		return Message{}, apperror.Wrap(http.StatusInternalServerError, "MESSAGE_SAVE_FAILED", "answer could not be saved", err)
 	}

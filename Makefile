@@ -1,10 +1,11 @@
-.PHONY: help fmt test vet build verify compose-config compose-up compose-down migrate run-api run-worker
+.PHONY: help fmt test vet build verify compose-config compose-up compose-down migrate eval run-api run-worker
 
 help:
 	@echo "KnowFlow development targets"
 	@echo "  make verify          Format, test, vet, build, and validate Compose"
 	@echo "  make compose-up      Build and start the development stack"
 	@echo "  make migrate         Re-run versioned migrations in Compose"
+	@echo "  make eval            Generate four-strategy JSON and Markdown evaluation reports"
 	@echo "  make run-api         Run API with the current environment"
 	@echo "  make run-worker      Run Worker with the current environment"
 
@@ -33,6 +34,9 @@ compose-down:
 
 migrate:
 	docker compose run --rm api /usr/local/bin/migrate
+
+eval:
+	docker compose run --rm --build eval
 
 run-api:
 	go run ./cmd/api

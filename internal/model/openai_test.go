@@ -6,8 +6,31 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync/atomic"
 	"testing"
 )
+
+func TestOpenAIClientRetriesRetryableStatus(t *testing.T) {
+	var attempts atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		if attempts.Add(1) < 3 {
+			http.Error(w, "temporary", http.StatusServiceUnavailable)
+			return
+		}
+		fmt.Fprint(w, `{"data":[{"index":0,"embedding":[1,0]}]}`)
+	}))
+	defer server.Close()
+	client, err := NewOpenAIEmbeddingClient(server.URL, "secret", "embedding-model", 2, server.Client())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := client.EmbedQuery(context.Background(), "question"); err != nil {
+		t.Fatal(err)
+	}
+	if attempts.Load() != 3 {
+		t.Fatalf("attempts = %d", attempts.Load())
+	}
+}
 
 func TestOpenAIClientStreamsDeltasAndUsage(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

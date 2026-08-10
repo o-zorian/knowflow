@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"knowflow/internal/model"
+	"knowflow/internal/usage"
 )
 
 type ObjectReader interface {
@@ -43,6 +44,7 @@ func (p *Processor) Process(ctx context.Context, message Message) (bool, error) 
 	if !claimed {
 		return false, nil
 	}
+	ctx = usage.WithScope(ctx, item.OwnerID, item.KnowledgeBaseID)
 	stage := "parsing"
 	fail := func(processing *ProcessingError) (bool, error) {
 		failureCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)

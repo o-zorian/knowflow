@@ -10,7 +10,7 @@ import (
 
 func registerM3Routes(mux *http.ServeMux, logger *slog.Logger, services BusinessServices) {
 	requireAuth := func(handler http.HandlerFunc) http.HandlerFunc {
-		return authenticate(services.Auth, logger, handler)
+		return authenticate(services.Auth, services.RateLimiter, logger, handler)
 	}
 	mux.HandleFunc("POST /api/v1/conversations", requireAuth(func(w http.ResponseWriter, r *http.Request) {
 		var input struct {

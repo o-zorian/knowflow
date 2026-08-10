@@ -15,11 +15,12 @@ import (
 )
 
 type OpenAIClient struct {
-	baseURL   string
-	apiKey    string
-	model     string
-	dimension int
-	client    *http.Client
+	baseURL    string
+	apiKey     string
+	model      string
+	dimension  int
+	client     *http.Client
+	maxRetries int
 }
 
 func NewOpenAIEmbeddingClient(baseURL, apiKey, model string, dimension int, client *http.Client) (*OpenAIClient, error) {
@@ -46,10 +47,11 @@ func NewOpenAIClient(baseURL, apiKey, model string, client *http.Client) (*OpenA
 	if client == nil {
 		client = &http.Client{Timeout: 2 * time.Minute}
 	}
-	return &OpenAIClient{baseURL: strings.TrimRight(baseURL, "/"), apiKey: apiKey, model: model, client: client}, nil
+	return &OpenAIClient{baseURL: strings.TrimRight(baseURL, "/"), apiKey: apiKey, model: model, client: client, maxRetries: 3}, nil
 }
 
-func (c *OpenAIClient) Name() string { return c.model }
+func (c *OpenAIClient) Name() string            { return c.model }
+func (c *OpenAIClient) SetMaxRetries(value int) { c.maxRetries = max(0, value) }
 
 func (c *OpenAIClient) Stream(ctx context.Context, request ChatRequest) (<-chan ChatEvent, error) {
 	messages := make([]ChatMessage, 0, len(request.Messages)+1)
@@ -62,12 +64,14 @@ func (c *OpenAIClient) Stream(ctx context.Context, request ChatRequest) (<-chan 
 	if err != nil {
 		return nil, err
 	}
-	httpRequest, err := http.NewRequestWithContext(ctx, http.MethodPost, c.baseURL+"/chat/completions", bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-	c.authorize(httpRequest)
-	response, err := c.client.Do(httpRequest)
+	response, err := doWithRetry(ctx, c.maxRetries, func() (*http.Response, error) {
+		httpRequest, requestErr := http.NewRequestWithContext(ctx, http.MethodPost, c.baseURL+"/chat/completions", bytes.NewReader(body))
+		if requestErr != nil {
+			return nil, requestErr
+		}
+		c.authorize(httpRequest)
+		return c.client.Do(httpRequest)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -142,12 +146,14 @@ func (c *OpenAIClient) embed(ctx context.Context, texts []string) ([][]float32, 
 	if err != nil {
 		return nil, err
 	}
-	request, err := http.NewRequestWithContext(ctx, http.MethodPost, c.baseURL+"/embeddings", bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-	c.authorize(request)
-	response, err := c.client.Do(request)
+	response, err := doWithRetry(ctx, c.maxRetries, func() (*http.Response, error) {
+		request, requestErr := http.NewRequestWithContext(ctx, http.MethodPost, c.baseURL+"/embeddings", bytes.NewReader(body))
+		if requestErr != nil {
+			return nil, requestErr
+		}
+		c.authorize(request)
+		return c.client.Do(request)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -207,5 +213,27 @@ func sendChatEvent(ctx context.Context, events chan<- ChatEvent, event ChatEvent
 		return false
 	case events <- event:
 		return true
+	}
+}
+
+func doWithRetry(ctx context.Context, maxRetries int, attempt func() (*http.Response, error)) (*http.Response, error) {
+	for number := 0; ; number++ {
+		response, err := attempt()
+		retryable := err != nil || (response != nil && (response.StatusCode == http.StatusTooManyRequests || response.StatusCode >= 500))
+		if !retryable || number >= maxRetries {
+			return response, err
+		}
+		if response != nil {
+			_, _ = io.Copy(io.Discard, io.LimitReader(response.Body, 4096))
+			_ = response.Body.Close()
+		}
+		delay := 100 * time.Millisecond * time.Duration(1<<min(number, 6))
+		timer := time.NewTimer(delay)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return nil, ctx.Err()
+		case <-timer.C:
+		}
 	}
 }

@@ -16,6 +16,7 @@ import (
 	"knowflow/internal/platform/logging"
 	"knowflow/internal/platform/objectstore"
 	redisplatform "knowflow/internal/platform/redis"
+	"knowflow/internal/usage"
 )
 
 func main() {
@@ -59,6 +60,12 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	embedderName := cfg.Models.Embedding.Name
+	if embedderName == "" {
+		embedderName = "fake-embedding"
+	}
+	pricing := usage.Pricing{EmbeddingPerMillion: cfg.Pricing.EmbeddingPerMillion}
+	embedder = usage.ObserveEmbedder(embedder, embedderName, usage.NewPostgresRecorder(pool), pricing, nil)
 	processor, err := ingestion.NewProcessor(ingestion.NewPostgresStore(pool), objectStore,
 		ingestion.DocumentParser{}, embedder, cfg.Models.Embedding.BatchSize)
 	if err != nil {
@@ -101,8 +108,12 @@ func configuredEmbedder(cfg config.Config) (model.Embedder, error) {
 	if cfg.Models.Embedding.BaseURL == "" {
 		return model.NewFakeEmbedder(cfg.Models.Embedding.Dimension)
 	}
-	return model.NewOpenAIEmbeddingClient(cfg.Models.Embedding.BaseURL, cfg.Models.Embedding.APIKey.Value(),
+	client, err := model.NewOpenAIEmbeddingClient(cfg.Models.Embedding.BaseURL, cfg.Models.Embedding.APIKey.Value(),
 		cfg.Models.Embedding.Name, cfg.Models.Embedding.Dimension, nil)
+	if err == nil {
+		client.SetMaxRetries(cfg.Operational.ModelMaxRetries)
+	}
+	return client, err
 }
 
 func checkDependencies(ctx context.Context, dependencies []health.Dependency) error {

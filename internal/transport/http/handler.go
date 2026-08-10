@@ -9,8 +9,10 @@ import (
 	"knowflow/internal/auth"
 	"knowflow/internal/chat"
 	"knowflow/internal/document"
+	"knowflow/internal/governance"
 	"knowflow/internal/health"
 	"knowflow/internal/knowledgebase"
+	platformmetrics "knowflow/internal/platform/metrics"
 	"knowflow/internal/platform/requestid"
 )
 
@@ -20,6 +22,9 @@ type BusinessServices struct {
 	Document      *document.Service
 	Chat          *chat.Service
 	MaxUploadSize int64
+	Governance    *governance.Service
+	RateLimiter   RateLimiter
+	Metrics       *platformmetrics.Metrics
 }
 
 func NewHandler(logger *slog.Logger, allowedOrigins []string, timeout time.Duration, dependencies []health.Dependency, business ...BusinessServices) http.Handler {
@@ -35,13 +40,34 @@ func NewHandler(logger *slog.Logger, allowedOrigins []string, timeout time.Durat
 		if business[0].Chat != nil {
 			registerM3Routes(mux, logger, business[0])
 		}
+		if business[0].Governance != nil {
+			registerM5Routes(mux, logger, business[0])
+		}
+		if business[0].Metrics != nil {
+			metricsHandler := business[0].Metrics.Handler()
+			mux.Handle("GET /metrics", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				refreshCtx, cancel := context.WithTimeout(r.Context(), timeout)
+				defer cancel()
+				if business[0].Governance != nil {
+					_ = business[0].Governance.RefreshOperationalMetrics(refreshCtx)
+				}
+				metricsHandler.ServeHTTP(w, r)
+			}))
+		}
 	}
 	mux.HandleFunc("/", notFound)
 
 	var handler http.Handler = mux
 	handler = corsMiddleware(allowedOrigins, handler)
 	handler = recoveryMiddleware(logger, handler)
-	handler = accessLogMiddleware(logger, handler)
+	if len(business) > 0 && business[0].RateLimiter != nil {
+		handler = ipRateLimitMiddleware(business[0].RateLimiter, handler)
+	}
+	var metrics *platformmetrics.Metrics
+	if len(business) > 0 {
+		metrics = business[0].Metrics
+	}
+	handler = accessLogMiddleware(logger, metrics, handler)
 	handler = requestIDMiddleware(handler)
 	return handler
 }

@@ -1,8 +1,8 @@
 # KnowFlow
 
-KnowFlow is a Go-based enterprise knowledge-base RAG platform. The repository currently implements M0 through M4: the engineering foundation, owner-scoped authentication/knowledge-base/document APIs, asynchronous document indexing into PostgreSQL/pgvector, citation-grounded streaming RAG conversations, and configurable hybrid retrieval.
+KnowFlow is a Go-based enterprise knowledge-base RAG platform. The repository currently implements M0 through M5: the engineering foundation, owner-scoped APIs, asynchronous indexing, citation-grounded RAG, configurable hybrid retrieval, deterministic offline evaluation, and service governance.
 
-## Architecture through M4
+## Architecture through M5
 
 The API and Worker are separate processes in one Go module. Shared infrastructure lives under `internal/`; HTTP concerns are isolated under `internal/transport/http`; versioned SQL is the only source of database schema changes. Registration, token rotation, owner-scoped knowledge-base CRUD, document upload/status/retry/chunk-preview APIs, Redis queueing, parsing, recursive chunking, replaceable model adapters, transactional vector persistence, hybrid retrieval, persisted conversations, streaming chat, and server-validated citations are implemented.
 
@@ -24,6 +24,18 @@ The four supported configurations are:
 | Dense + Sparse + RRF + Reranker | `> 0` | `> 0` | `true` |
 
 The `retrieval.completed` trace records the original and rewritten queries, rewrite fallback, source counts, strategy, dense/sparse/RRF/rerank scores, and rerank fallback. No provider error text is exposed in the trace.
+
+## Evaluation and governance
+
+Run the complete 60-question, four-strategy evaluation with one command:
+
+```sh
+docker compose run --rm --build eval
+```
+
+This seeds only a deterministic `demo-kb` evaluation namespace, invokes the real PostgreSQL pgvector/`tsvector`/RRF/rerank path, and writes [JSON](eval/results/m5-comparison.json) plus [Markdown](eval/results/m5-comparison.md) reports. The reports contain configurations, Recall@1/5/10, MRR, citation hit rate, average/P95 retrieval and end-to-end latency, average Token/cost, per-question results, failures, and improvement conclusions. Fake models keep the default run offline; illustrative report prices are isolated in `EVAL_*_COST_PER_MILLION_USD` configuration and are recorded in the report.
+
+Every chat, embedding, and rerank call writes a `model_usage` row with scope, model, Token/text count, configured estimated cost, latency, status, error code, request ID, and trace ID. Provider calls retry 429, 5xx, and network failures with bounded exponential backoff. Redis enforces independent IP, authenticated-user, and failed-login limits. Administrators can inspect summary, failed ingestion jobs, model usage, and users through `/api/v1/admin/*`, disable users (which immediately revokes active refresh tokens), or use the API-backed page at `/admin`. Prometheus metrics are exposed at `/metrics` for HTTP, ingestion status/queue length, model requests/errors/latency, embedding text count, and retrieval latency.
 
 ## Asynchronous indexing behavior
 
@@ -119,6 +131,8 @@ Errors exposed to clients are deliberately generic. Dependency details are prese
 
 `EMBEDDING_BATCH_SIZE`, `WORKER_POLL_TIMEOUT`, and `INGESTION_JOB_TIMEOUT` control the Worker. API startup requires HTTP, PostgreSQL, Redis, MinIO, and JWT values; Worker startup requires PostgreSQL, Redis, and MinIO; the migration command requires PostgreSQL. In `production`, placeholder MinIO credentials, a short/placeholder JWT secret, wildcard CORS, and missing model providers are rejected.
 
+`MODEL_MAX_RETRIES` controls bounded model retries. `RATE_LIMIT_*` and `LOGIN_FAILURE_*` control Redis governance windows. Provider-specific USD-per-million-token prices are deployment configuration; leaving them at zero records usage with zero estimated cost rather than embedding a stale price table in business code.
+
 If an SSE client disconnects, its request context cancels query rewriting, active dense/sparse retrieval, reranking, or the answer model stream. The API then uses a short independent database context to mark the assistant message `failed` with `CLIENT_DISCONNECTED`; it does not continue generation in the background.
 
 ## Database schema
@@ -132,4 +146,5 @@ Sparse retrieval deliberately uses a small, immutable tokenizer suitable for the
 - PDF indexing extracts an existing text layer; scanned/image-only PDFs and OCR are outside the requirements and fail with `EMPTY_DOCUMENT` when no text is extractable. Password-protected or malformed PDFs fail with `DOCUMENT_PARSE_FAILED`.
 - DOCX parsing targets the main `word/document.xml` body. Headers, footers, comments, drawings, and embedded media are not indexed.
 - The development fake embedder is deterministic and lexical. It exercises the complete pgvector path but is not a substitute for a production semantic embedding model; configure the OpenAI-compatible embedding adapter for semantic retrieval.
-- Model retries, fallback providers, pricing, and the per-call governance views remain M5 work. M3 persists prompt/completion token counts reported by the chat provider on each assistant message but does not estimate cost.
+- Automatic fallback to a second provider is not configured in this milestone; retry exhaustion is returned as a controlled provider failure. Streaming cannot safely switch providers after response deltas have already been emitted without risking duplicated text.
+- The included evaluation corpus is deterministic and requirements-focused. Its fake lexical embeddings and local latency figures validate the complete pipeline but are not claims about production semantic quality or external-provider latency.
