@@ -1,7 +1,9 @@
 # KnowFlow M5 Retrieval Evaluation
 
-Generated: `2026-08-10T10:00:57Z`  
-Dataset: `/app/eval/datasets/knowflow-m5.jsonl`  
+Generated: `2026-08-10T10:38:23Z`
+
+Dataset: `/app/eval/datasets/knowflow-m5.jsonl`
+
 Questions: **60**
 
 Configured illustrative pricing (USD / 1M tokens): chat input 0.1500, chat output 0.6000, embedding 0.0200, rerank input 0.0500.
@@ -19,10 +21,10 @@ Configured illustrative pricing (USD / 1M tokens): chat input 0.1500, chat outpu
 
 | Configuration | Recall@1 | Recall@5 | Recall@10 | MRR | Citation hit | Retrieval avg / P95 ms | E2E avg / P95 ms | Avg tokens | Avg cost USD |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Dense only | 0.9833 | 1.0000 | 1.0000 | 0.9889 | 0.9833 | 0.864 / 1.260 | 0.876 / 1.297 | 38.75 | 0.00001509 |
-| Sparse only | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.824 / 2.372 | 1.837 / 2.386 | 35.17 | 0.00001507 |
-| Dense + Sparse + RRF | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 2.122 / 2.659 | 2.142 / 2.701 | 38.83 | 0.00001514 |
-| Dense + Sparse + RRF + Reranker | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 2.054 / 2.617 | 2.077 / 2.637 | 230.65 | 0.00002473 |
+| Dense only | 0.9833 | 1.0000 | 1.0000 | 0.9889 | 0.9833 | 0.975 / 1.333 | 0.993 / 1.348 | 38.75 | 0.00001509 |
+| Sparse only | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 2.141 / 3.240 | 2.161 / 3.256 | 35.17 | 0.00001507 |
+| Dense + Sparse + RRF | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 2.147 / 2.763 | 2.166 / 2.808 | 38.83 | 0.00001514 |
+| Dense + Sparse + RRF + Reranker | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.976 / 2.509 | 1.997 / 2.529 | 230.65 | 0.00002473 |
 
 ## Failure cases
 

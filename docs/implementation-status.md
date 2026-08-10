@@ -116,3 +116,29 @@ Completed scope:
 - Admin summary, failed-job, model-usage, user-list/status APIs and an API-backed `/admin` page; disabling a user revokes active refresh tokens.
 
 M5 verification uses the live Docker Engine. `docker compose run --rm --build eval` evaluated 60 questions across all four strategies and generated `eval/results/m5-comparison.json` and `.md`. Full unit, integration, vet, build, Compose, API, metrics, and admin endpoint results are recorded in the final M5 handoff.
+
+### M6 — release preparation
+
+Status: **implemented and release-verified**.
+
+Completed scope:
+
+- A responsive Vue 3 product UI backed only by real APIs: registration/login, knowledge-base creation and retrieval configuration, multi-format upload, live indexing progress, retry, chunk preview, persisted conversations, JSON SSE rendering, clickable original citations, and administrator governance metrics.
+- A small independent Go Web process that serves committed Vite release assets and runtime API configuration, avoiding a Node runtime in the production stack while CI verifies that assets match source.
+- A fixed demonstration document and cross-platform `smoke` command covering unique registration, knowledge-base creation, upload, asynchronous Worker indexing, every required successful SSE event, a real citation, and persisted-answer reload.
+- Release README with background, screenshots, architecture, retrieval flow, fresh-environment startup, configuration, evaluation results, operation, testing, and limitations.
+- Detailed Mermaid architecture/sequence diagrams, OpenAPI 3.1 contract, four real product screenshots, and a three-minute demonstration/recording script.
+- GitHub Actions jobs for Go format/vet/offline test/build, Vue lint/test/build, serialized pgvector integration, Compose validation, and all production/tool image builds.
+
+M6 verification on 2026-08-10:
+
+- `go test ./cmd/... ./internal/... ./migrations -count=1`, `go vet ...`, and `go build ...`: passed.
+- `npm ci`, `npm run lint`, `npm test`, and `npm run build`: passed with zero audit vulnerabilities; the SSE parser and Vue release build were exercised.
+- OpenAPI 3.1 validation with Redocly: passed without structural errors.
+- A separate `knowflow-m6` Compose project used new PostgreSQL, Redis, and MinIO volumes plus isolated host ports. PostgreSQL/pgvector, Redis, MinIO, API, Worker, and Web became healthy without touching the existing development stack.
+- Migrations ran twice and both executions reported current. The serialized ingestion/retrieval/HTTP integration suites passed against the fresh pgvector database, including four parser formats, ownership isolation, ready/failure/retry/idempotency, four retrieval strategies/rerank fallback, SSE persistence/citations, model failure, admin usage, and disable/revoke behavior.
+- `docker compose run --rm --build smoke` ended with `SMOKE PASSED`; the uploaded Markdown reached `ready`, streamed every successful event with a real source citation, and reloaded the saved answer.
+- `docker compose run --rm --build eval` evaluated 60 questions across all four configurations and regenerated JSON/Markdown reports.
+- Headless Chrome loaded the deployed Web runtime configuration, fetched actual API data under CORS, and captured the committed release screenshots.
+
+Remaining release boundaries are documented in README. No external credential is required for development, automated tests, the smoke demonstration, or the deterministic evaluation.

@@ -379,7 +379,7 @@ func WriteReports(report Report, jsonPath, markdownPath string) error {
 }
 func Markdown(report Report) string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "# KnowFlow M5 Retrieval Evaluation\n\nGenerated: `%s`  \nDataset: `%s`  \nQuestions: **%d**\n\n", report.GeneratedAt.Format(time.RFC3339), report.Dataset, report.QuestionCount)
+	fmt.Fprintf(&b, "# KnowFlow M5 Retrieval Evaluation\n\nGenerated: `%s`\n\nDataset: `%s`\n\nQuestions: **%d**\n\n", report.GeneratedAt.Format(time.RFC3339), report.Dataset, report.QuestionCount)
 	fmt.Fprintf(&b, "Configured illustrative pricing (USD / 1M tokens): chat input %.4f, chat output %.4f, embedding %.4f, rerank input %.4f.\n\n", report.Pricing.ChatInputPerMillion, report.Pricing.ChatOutputPerMillion, report.Pricing.EmbeddingPerMillion, report.Pricing.RerankInputPerMillion)
 	b.WriteString("## Experiment configurations\n\n| Configuration | Dense K | Sparse K | RRF K | Rerank | Rerank K | Final K |\n|---|---:|---:|---:|---:|---:|---:|\n")
 	for _, e := range report.Experiments {

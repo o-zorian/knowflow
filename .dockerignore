@@ -5,3 +5,4 @@ bin
 coverage.out
 docs
 *.log
+web/node_modules

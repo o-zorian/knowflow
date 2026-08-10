@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  go:
+    name: Go lint, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Formatting
+        run: test -z "$(gofmt -l cmd internal migrations)"
+      - name: Vet
+        run: go vet ./cmd/... ./internal/... ./migrations
+      - name: Offline tests
+        run: go test ./cmd/... ./internal/... ./migrations -count=1
+      - name: Build all commands
+        run: go build ./cmd/... ./internal/... ./migrations
+
+  web:
+    name: Vue lint, test, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - name: Committed release assets match source
+        run: git diff --exit-code -- dist
+
+  integration:
+    name: PostgreSQL integration
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_DB: knowflow
+          POSTGRES_USER: knowflow
+          POSTGRES_PASSWORD: knowflow-ci-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U knowflow -d knowflow"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      KNOWFLOW_TEST_DATABASE_URL: postgres://knowflow:knowflow-ci-password@localhost:5432/knowflow?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Integration suites
+        run: go test -p 1 ./internal/ingestion ./internal/retrieval ./internal/transport/http -count=1
+
+  compose:
+    name: Container build and configuration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cp .env.example .env
+      - run: docker compose config --quiet
+      - run: docker compose build api worker web smoke eval

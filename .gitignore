@@ -5,3 +5,5 @@ bin/
 .cache/
 coverage.out
 *.log
+*.exe
+web/node_modules/

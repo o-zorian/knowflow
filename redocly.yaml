@@ -1,0 +1,12 @@
+extends:
+  - minimal
+
+rules:
+  no-unresolved-refs: error
+  no-invalid-media-type-examples: error
+  no-invalid-parameter-examples: error
+  operation-summary: off
+  tag-description: off
+  no-server-example.com: off
+  operation-4xx-response: off
+  info-license: off
