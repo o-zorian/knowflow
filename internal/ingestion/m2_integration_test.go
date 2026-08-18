@@ -36,6 +36,20 @@ func (s *integrationObjectReader) Get(_ context.Context, key string) (io.ReadClo
 	return io.NopCloser(bytes.NewReader(data)), nil
 }
 
+func (s *integrationObjectReader) Remove(_ context.Context, key string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	delete(s.objects, key)
+	return nil
+}
+
+func (s *integrationObjectReader) has(key string) bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	_, ok := s.objects[key]
+	return ok
+}
+
 func (s *integrationObjectReader) set(key, content string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -100,6 +114,89 @@ func TestM2FailedDocumentCanRetryWithoutDuplicateChunks(t *testing.T) {
 	status, jobStatus, _, _, attempts, chunkCount, rows := m2State(t, ctx, pool, documentID, jobID)
 	if status != "ready" || jobStatus != "succeeded" || attempts != 2 || chunkCount == 0 || rows != chunkCount {
 		t.Fatalf("unexpected retry state: doc=%s job=%s attempts=%d chunks=%d rows=%d", status, jobStatus, attempts, chunkCount, rows)
+	}
+}
+
+func TestM2DocumentDeletionCleansObjectChunksAndVectors(t *testing.T) {
+	pool, cleanup := m2Database(t)
+	defer cleanup()
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	ownerID, documentID, jobID, objectKey := seedM2Job(t, ctx, pool, "delete-document")
+	objects := &integrationObjectReader{objects: map[string][]byte{objectKey: []byte(strings.Repeat("deletion content. ", 100))}}
+	embedder, _ := model.NewFakeEmbedder(1024)
+	indexer, _ := NewProcessor(NewPostgresStore(pool), objects, DocumentParser{}, embedder, 8)
+	if processed, err := indexer.Process(ctx, Message{
+		Type: MessageDocumentIndex, OwnerID: ownerID, JobID: jobID, DocumentID: documentID, IndexVersion: 1,
+	}); err != nil || !processed {
+		t.Fatalf("index before delete failed: processed=%v err=%v", processed, err)
+	}
+	if err := document.NewPostgresStore(pool).MarkDeleting(ctx, ownerID, documentID); err != nil {
+		t.Fatal(err)
+	}
+	deletions, _ := NewDeletionProcessor(NewPostgresStore(pool), objects)
+	if processed, err := deletions.Process(ctx, Message{
+		Type: MessageDocumentDelete, OwnerID: ownerID, DocumentID: documentID,
+	}); err != nil || !processed {
+		t.Fatalf("delete failed: processed=%v err=%v", processed, err)
+	}
+	assertDeletedDocument(t, ctx, pool, documentID, objectKey, objects)
+	if processed, err := deletions.Process(ctx, Message{
+		Type: MessageDocumentDelete, OwnerID: ownerID, DocumentID: documentID,
+	}); err != nil || !processed {
+		t.Fatalf("idempotent delete failed: processed=%v err=%v", processed, err)
+	}
+}
+
+func TestM2KnowledgeBaseDeletionCleansAllDocumentData(t *testing.T) {
+	pool, cleanup := m2Database(t)
+	defer cleanup()
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	ownerID, documentID, jobID, objectKey := seedM2Job(t, ctx, pool, "delete-kb")
+	var knowledgeBaseID string
+	if err := pool.QueryRow(ctx, `SELECT knowledge_base_id::text FROM documents WHERE id = $1`, documentID).Scan(&knowledgeBaseID); err != nil {
+		t.Fatal(err)
+	}
+	objects := &integrationObjectReader{objects: map[string][]byte{objectKey: []byte(strings.Repeat("knowledge base deletion. ", 100))}}
+	embedder, _ := model.NewFakeEmbedder(1024)
+	indexer, _ := NewProcessor(NewPostgresStore(pool), objects, DocumentParser{}, embedder, 8)
+	if processed, err := indexer.Process(ctx, Message{
+		Type: MessageDocumentIndex, OwnerID: ownerID, JobID: jobID, DocumentID: documentID, IndexVersion: 1,
+	}); err != nil || !processed {
+		t.Fatalf("index before delete failed: processed=%v err=%v", processed, err)
+	}
+	if err := knowledgebase.NewPostgresStore(pool).Delete(ctx, ownerID, knowledgeBaseID); err != nil {
+		t.Fatal(err)
+	}
+	deletions, _ := NewDeletionProcessor(NewPostgresStore(pool), objects)
+	if processed, err := deletions.Process(ctx, Message{
+		Type: MessageKnowledgeBaseDelete, OwnerID: ownerID, KnowledgeBaseID: knowledgeBaseID,
+	}); err != nil || !processed {
+		t.Fatalf("knowledge base delete failed: processed=%v err=%v", processed, err)
+	}
+	assertDeletedDocument(t, ctx, pool, documentID, objectKey, objects)
+	var deleted bool
+	if err := pool.QueryRow(ctx, `SELECT deleted_at IS NOT NULL FROM knowledge_bases WHERE id = $1`, knowledgeBaseID).Scan(&deleted); err != nil {
+		t.Fatal(err)
+	}
+	if !deleted {
+		t.Fatal("knowledge base was not soft-deleted")
+	}
+}
+
+func assertDeletedDocument(t *testing.T, ctx context.Context, pool *pgxpool.Pool, documentID, objectKey string, objects *integrationObjectReader) {
+	t.Helper()
+	var deleted bool
+	var chunkCount, chunkRows int
+	if err := pool.QueryRow(ctx, `SELECT deleted_at IS NOT NULL, chunk_count,
+		(SELECT count(*) FROM document_chunks WHERE document_id = documents.id)
+		FROM documents WHERE id = $1`, documentID).Scan(&deleted, &chunkCount, &chunkRows); err != nil {
+		t.Fatal(err)
+	}
+	if !deleted || chunkCount != 0 || chunkRows != 0 || objects.has(objectKey) {
+		t.Fatalf("cleanup incomplete: deleted=%v chunk_count=%d chunk_rows=%d object_exists=%v",
+			deleted, chunkCount, chunkRows, objects.has(objectKey))
 	}
 }
 

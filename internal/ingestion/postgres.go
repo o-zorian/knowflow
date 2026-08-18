@@ -39,6 +39,133 @@ type PostgresStore struct{ pool *pgxpool.Pool }
 
 func NewPostgresStore(pool *pgxpool.Pool) *PostgresStore { return &PostgresStore{pool: pool} }
 
+func (s *PostgresStore) DocumentObjectKeys(ctx context.Context, ownerID, documentID string) ([]string, bool, error) {
+	var objectKey string
+	err := s.pool.QueryRow(ctx, `SELECT d.object_key FROM documents d
+		JOIN knowledge_bases kb ON kb.id = d.knowledge_base_id
+		WHERE d.id = $1 AND kb.owner_id = $2`, documentID, ownerID).Scan(&objectKey)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, false, nil
+	}
+	if err != nil {
+		return nil, false, fmt.Errorf("load document deletion target: %w", err)
+	}
+	return []string{objectKey}, true, nil
+}
+
+func (s *PostgresStore) CompleteDocumentDeletion(ctx context.Context, ownerID, documentID string) error {
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	var lockedID string
+	err = tx.QueryRow(ctx, `SELECT d.id::text FROM documents d
+		JOIN knowledge_bases kb ON kb.id = d.knowledge_base_id
+		WHERE d.id = $1 AND kb.owner_id = $2 FOR UPDATE OF d`, documentID, ownerID).Scan(&lockedID)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return tx.Commit(ctx)
+	}
+	if err != nil {
+		return err
+	}
+	if _, err := tx.Exec(ctx, `DELETE FROM document_chunks WHERE document_id = $1`, documentID); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(ctx, `UPDATE ingestion_jobs SET status = 'failed', stage = 'deleted', progress = 0,
+		error_code = 'DOCUMENT_DELETED', error_message = 'document was deleted', finished_at = now()
+		WHERE document_id = $1 AND status IN ('pending', 'running')`, documentID); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(ctx, `UPDATE documents SET status = 'deleting', chunk_count = 0,
+		error_code = NULL, error_message = NULL, deleted_at = COALESCE(deleted_at, now()) WHERE id = $1`, documentID); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
+}
+
+func (s *PostgresStore) KnowledgeBaseObjectKeys(ctx context.Context, ownerID, knowledgeBaseID string) ([]string, bool, error) {
+	var exists bool
+	if err := s.pool.QueryRow(ctx, `SELECT EXISTS (
+		SELECT 1 FROM knowledge_bases WHERE id = $1 AND owner_id = $2
+	)`, knowledgeBaseID, ownerID).Scan(&exists); err != nil {
+		return nil, false, fmt.Errorf("load knowledge base deletion target: %w", err)
+	}
+	if !exists {
+		return nil, false, nil
+	}
+	rows, err := s.pool.Query(ctx, `SELECT d.object_key FROM documents d
+		JOIN knowledge_bases kb ON kb.id = d.knowledge_base_id
+		WHERE kb.id = $1 AND kb.owner_id = $2 ORDER BY d.id`, knowledgeBaseID, ownerID)
+	if err != nil {
+		return nil, false, fmt.Errorf("load knowledge base object keys: %w", err)
+	}
+	defer rows.Close()
+	keys := make([]string, 0)
+	for rows.Next() {
+		var key string
+		if err := rows.Scan(&key); err != nil {
+			return nil, false, err
+		}
+		keys = append(keys, key)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, false, err
+	}
+	return keys, true, nil
+}
+
+func (s *PostgresStore) CompleteKnowledgeBaseDeletion(ctx context.Context, ownerID, knowledgeBaseID string) error {
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	var lockedID string
+	err = tx.QueryRow(ctx, `SELECT id::text FROM knowledge_bases
+		WHERE id = $1 AND owner_id = $2 FOR UPDATE`, knowledgeBaseID, ownerID).Scan(&lockedID)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return tx.Commit(ctx)
+	}
+	if err != nil {
+		return err
+	}
+	rows, err := tx.Query(ctx, `SELECT id::text FROM documents WHERE knowledge_base_id = $1 FOR UPDATE`, knowledgeBaseID)
+	if err != nil {
+		return err
+	}
+	for rows.Next() {
+		var documentID string
+		if err := rows.Scan(&documentID); err != nil {
+			rows.Close()
+			return err
+		}
+	}
+	if err := rows.Err(); err != nil {
+		rows.Close()
+		return err
+	}
+	rows.Close()
+	if _, err := tx.Exec(ctx, `DELETE FROM document_chunks WHERE knowledge_base_id = $1`, knowledgeBaseID); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(ctx, `UPDATE ingestion_jobs j SET status = 'failed', stage = 'deleted', progress = 0,
+		error_code = 'KNOWLEDGE_BASE_DELETED', error_message = 'knowledge base was deleted', finished_at = now()
+		FROM documents d WHERE d.id = j.document_id AND d.knowledge_base_id = $1
+		AND j.status IN ('pending', 'running')`, knowledgeBaseID); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(ctx, `UPDATE documents SET status = 'deleting', chunk_count = 0,
+		error_code = NULL, error_message = NULL, deleted_at = COALESCE(deleted_at, now())
+		WHERE knowledge_base_id = $1`, knowledgeBaseID); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(ctx, `UPDATE knowledge_bases SET deleted_at = COALESCE(deleted_at, now()) WHERE id = $1`, knowledgeBaseID); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
+}
+
 func (s *PostgresStore) Claim(ctx context.Context, message Message) (WorkItem, bool, error) {
 	tx, err := s.pool.Begin(ctx)
 	if err != nil {

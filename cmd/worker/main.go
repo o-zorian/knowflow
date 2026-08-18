@@ -71,11 +71,16 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	deletionProcessor, err := ingestion.NewDeletionProcessor(ingestion.NewPostgresStore(pool), objectStore)
+	if err != nil {
+		return err
+	}
 	queue := ingestion.NewRedisQueue(redisClient.Native())
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	indexWorker := ingestion.NewWorker(queue, processor, logger, cfg.Operational.WorkerPollTimeout, cfg.Operational.IngestionJobTimeout)
+	indexWorker := ingestion.NewWorker(queue, processor, deletionProcessor, logger,
+		cfg.Operational.WorkerPollTimeout, cfg.Operational.IngestionJobTimeout)
 	workerErrors := make(chan error, 1)
 	go func() { workerErrors <- indexWorker.Run(ctx) }()
 	ticker := time.NewTicker(cfg.Operational.WorkerHealthInterval)

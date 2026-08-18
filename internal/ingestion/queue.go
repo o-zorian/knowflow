@@ -12,6 +12,12 @@ import (
 
 const QueueKey = "knowflow:ingestion"
 
+const (
+	MessageDocumentIndex       = "document.index"
+	MessageDocumentDelete      = "document.delete"
+	MessageKnowledgeBaseDelete = "knowledge_base.delete"
+)
+
 var ErrQueueEmpty = errors.New("ingestion queue is empty")
 
 type Message struct {
@@ -28,15 +34,21 @@ type RedisQueue struct{ client redisclient.Cmdable }
 func NewRedisQueue(client redisclient.Cmdable) *RedisQueue { return &RedisQueue{client: client} }
 
 func (q *RedisQueue) EnqueueIndex(ctx context.Context, ownerID, jobID, documentID string, indexVersion int) error {
-	return q.enqueue(ctx, Message{Type: "document.index", OwnerID: ownerID, JobID: jobID, DocumentID: documentID, IndexVersion: indexVersion})
+	return q.enqueue(ctx, Message{Type: MessageDocumentIndex, OwnerID: ownerID, JobID: jobID, DocumentID: documentID, IndexVersion: indexVersion})
 }
 
 func (q *RedisQueue) EnqueueDocumentDeletion(ctx context.Context, ownerID, documentID string) error {
-	return q.enqueue(ctx, Message{Type: "document.delete", OwnerID: ownerID, DocumentID: documentID})
+	return q.enqueue(ctx, Message{Type: MessageDocumentDelete, OwnerID: ownerID, DocumentID: documentID})
 }
 
 func (q *RedisQueue) EnqueueKnowledgeBaseDeletion(ctx context.Context, ownerID, knowledgeBaseID string) error {
-	return q.enqueue(ctx, Message{Type: "knowledge_base.delete", OwnerID: ownerID, KnowledgeBaseID: knowledgeBaseID})
+	return q.enqueue(ctx, Message{Type: MessageKnowledgeBaseDelete, OwnerID: ownerID, KnowledgeBaseID: knowledgeBaseID})
+}
+
+// Requeue puts a message back at the tail after a transient worker failure.
+// Deletion messages are idempotent, so retrying them cannot recreate data.
+func (q *RedisQueue) Requeue(ctx context.Context, message Message) error {
+	return q.enqueue(ctx, message)
 }
 
 func (q *RedisQueue) enqueue(ctx context.Context, message Message) error {
