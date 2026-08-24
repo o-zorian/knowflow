@@ -7,3 +7,6 @@ coverage.out
 *.log
 *.exe
 web/node_modules/
+eval/real-world-v1/run-state.json
+eval/real-world-v1/qa/
+eval/real-world-v1/qa-fixed/

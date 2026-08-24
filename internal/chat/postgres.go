@@ -129,7 +129,7 @@ func (s *PostgresStore) StartTurn(ctx context.Context, userID, conversationID, c
 }
 
 func (s *PostgresStore) CompleteAssistant(ctx context.Context, messageID, content, modelName string, citations []Citation, trace map[string]any, usage model.Usage, estimatedCostUSD float64, latencyMS int) (Message, error) {
-	citationJSON, err := json.Marshal(citations)
+	citationJSON, err := marshalCitations(citations)
 	if err != nil {
 		return Message{}, err
 	}
@@ -144,6 +144,13 @@ func (s *PostgresStore) CompleteAssistant(ctx context.Context, messageID, conten
 		model, prompt_tokens, completion_tokens, estimated_cost_usd::float8, latency_ms, error_code, created_at`,
 		messageID, content, citationJSON, traceJSON, modelName, usage.PromptTokens, usage.CompletionTokens, estimatedCostUSD, latencyMS)
 	return scanMessage(row)
+}
+
+func marshalCitations(citations []Citation) ([]byte, error) {
+	if citations == nil {
+		citations = []Citation{}
+	}
+	return json.Marshal(citations)
 }
 
 func (s *PostgresStore) FailAssistant(ctx context.Context, messageID, content, code string, latencyMS int) error {

@@ -30,7 +30,7 @@ func (s *fakeStore) Sparse(context.Context, string, string, string, int) ([]Resu
 func TestRRFCombinesRanksAndDeduplicatesChunks(t *testing.T) {
 	results := RRF(
 		[]Result{{ChunkID: "a", Similarity: 0.9}, {ChunkID: "b", Similarity: 0.8}},
-		[]Result{{ChunkID: "b", SparseScore: 0.7}, {ChunkID: "c", SparseScore: 0.6}},
+		[]Result{{ChunkID: "b", SparseScore: 0.7, SparseCoverage: 0.8}, {ChunkID: "c", SparseScore: 0.6, SparseCoverage: 0.8}},
 		60,
 	)
 	if len(results) != 3 || results[0].ChunkID != "b" {
@@ -38,6 +38,15 @@ func TestRRFCombinesRanksAndDeduplicatesChunks(t *testing.T) {
 	}
 	if results[0].Similarity != 0.8 || results[0].SparseScore != 0.7 || results[0].RRFScore == 0 {
 		t.Fatalf("fused result = %#v", results[0])
+	}
+}
+
+func TestWeightedRRFDoesNotLetWeakSparseMatchesDisplaceDenseResults(t *testing.T) {
+	dense := []Result{{ChunkID: "dense-a", Similarity: 0.9}, {ChunkID: "dense-b", Similarity: 0.8}}
+	sparse := []Result{{ChunkID: "unigram-noise", SparseScore: 0.9, SparseCoverage: 0.05}}
+	results := RRF(dense, sparse, 60)
+	if len(results) != 3 || results[0].ChunkID != "dense-a" || results[1].ChunkID != "dense-b" {
+		t.Fatalf("weak sparse match displaced dense candidates: %#v", results)
 	}
 }
 

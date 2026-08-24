@@ -1,11 +1,13 @@
-.PHONY: help fmt lint test build web-install web-test verify compose-config compose-up compose-down migrate smoke eval run-api run-worker
+.PHONY: help fmt lint test build web-install web-test verify compose-config compose-up compose-down migrate smoke eval real-eval-provision real-eval run-api run-worker
 
 help:
 	@echo "KnowFlow development targets"
 	@echo "  make verify          Format, test, vet, build, and validate Compose"
 	@echo "  make compose-up      Build and start the development stack"
 	@echo "  make migrate         Re-run versioned migrations in Compose"
-	@echo "  make eval            Generate four-strategy JSON and Markdown evaluation reports"
+	@echo "  make eval            Generate deterministic M5 regression reports"
+	@echo "  make real-eval-provision  Upload and index the real-world-v1 corpus"
+	@echo "  make real-eval       Run all real-world-v1 retrieval strategies"
 	@echo "  make smoke           Run register-to-cited-answer acceptance flow"
 	@echo "  make run-api         Run API with the current environment"
 	@echo "  make run-worker      Run Worker with the current environment"
@@ -49,6 +51,12 @@ smoke:
 
 eval:
 	docker compose run --rm --build eval
+
+real-eval-provision:
+	go run ./cmd/realworldeval --phase provision --timeout 45m
+
+real-eval:
+	go run ./cmd/realworldeval --phase evaluate --timeout 4h
 
 run-api:
 	go run ./cmd/api

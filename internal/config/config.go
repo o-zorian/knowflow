@@ -71,7 +71,7 @@ type Auth struct {
 type Models struct {
 	LLM       Model
 	Embedding EmbeddingModel
-	Reranker  Model
+	Reranker  RerankModel
 }
 
 type Model struct {
@@ -84,6 +84,26 @@ type EmbeddingModel struct {
 	Model
 	Dimension int
 	BatchSize int
+}
+
+const (
+	RerankProviderOpenAICompatible = "openai-compatible"
+	RerankProviderVikingDB         = "vikingdb"
+)
+
+// RerankModel supports both the legacy Bearer-token /rerank protocol and
+// VikingDB Knowledge Rerank, which uses Volcengine AK/SK request signing.
+type RerankModel struct {
+	Model
+	Provider string
+	VikingDB VikingDBRerank
+}
+
+type VikingDBRerank struct {
+	AccessKey Secret
+	SecretKey Secret
+	Host      string
+	Region    string
 }
 
 type Upload struct {
@@ -181,10 +201,27 @@ func load(required scope) (Config, error) {
 			Name:    strings.TrimSpace(os.Getenv("EMBEDDING_MODEL")),
 		},
 	}
-	cfg.Models.Reranker = Model{
-		BaseURL: strings.TrimSpace(os.Getenv("RERANK_BASE_URL")),
-		APIKey:  Secret(os.Getenv("RERANK_API_KEY")),
-		Name:    strings.TrimSpace(os.Getenv("RERANK_MODEL")),
+	cfg.Models.Reranker = RerankModel{
+		Provider: strings.ToLower(strings.TrimSpace(os.Getenv("RERANK_PROVIDER"))),
+		Model: Model{
+			BaseURL: strings.TrimSpace(os.Getenv("RERANK_BASE_URL")),
+			APIKey:  Secret(os.Getenv("RERANK_API_KEY")),
+			Name:    strings.TrimSpace(os.Getenv("RERANK_MODEL")),
+		},
+		VikingDB: VikingDBRerank{
+			AccessKey: Secret(os.Getenv("VIKINGDB_AK")),
+			SecretKey: Secret(os.Getenv("VIKINGDB_SK")),
+			Host:      strings.TrimSpace(os.Getenv("VIKINGDB_HOST")),
+			Region:    strings.TrimSpace(os.Getenv("VIKINGDB_REGION")),
+		},
+	}
+	if cfg.Models.Reranker.Provider == "" {
+		switch {
+		case rerankVikingDBCredentialsConfigured(cfg.Models.Reranker.VikingDB):
+			cfg.Models.Reranker.Provider = RerankProviderVikingDB
+		case rerankBearerConfigured(cfg.Models.Reranker.Model):
+			cfg.Models.Reranker.Provider = RerankProviderOpenAICompatible
+		}
 	}
 
 	cfg.Database.MaxConns = int32(parseInt("DATABASE_MAX_CONNS", 10, 1, 100, &problems))
@@ -256,7 +293,7 @@ func validate(cfg Config, required scope, problems *[]string) {
 	}
 	validateModel("LLM", cfg.Models.LLM, problems)
 	validateModel("EMBEDDING", cfg.Models.Embedding.Model, problems)
-	validateModel("RERANK", cfg.Models.Reranker, problems)
+	validateReranker(cfg.Models.Reranker, problems)
 	if cfg.App.Environment == "production" && required.http {
 		if cfg.Models.LLM.BaseURL == "" {
 			*problems = append(*problems, "LLM_BASE_URL, LLM_API_KEY, and LLM_MODEL are required in production")
@@ -300,6 +337,65 @@ func validateModel(prefix string, model Model, problems *[]string) {
 			*problems = append(*problems, prefix+"_BASE_URL must be an absolute HTTP(S) URL")
 		}
 	}
+}
+
+func validateReranker(reranker RerankModel, problems *[]string) {
+	switch reranker.Provider {
+	case "":
+		return
+	case RerankProviderOpenAICompatible:
+		validateModel("RERANK", reranker.Model, problems)
+		if rerankVikingDBConfigured(reranker.VikingDB) {
+			*problems = append(*problems, "VIKINGDB_AK, VIKINGDB_SK, VIKINGDB_HOST, and VIKINGDB_REGION cannot be combined with RERANK_PROVIDER=openai-compatible")
+		}
+	case RerankProviderVikingDB:
+		missing := make([]string, 0, 5)
+		if reranker.VikingDB.AccessKey.Value() == "" {
+			missing = append(missing, "VIKINGDB_AK")
+		}
+		if reranker.VikingDB.SecretKey.Value() == "" {
+			missing = append(missing, "VIKINGDB_SK")
+		}
+		if reranker.VikingDB.Host == "" {
+			missing = append(missing, "VIKINGDB_HOST")
+		}
+		if reranker.VikingDB.Region == "" {
+			missing = append(missing, "VIKINGDB_REGION")
+		}
+		if reranker.Name == "" {
+			missing = append(missing, "RERANK_MODEL")
+		}
+		if len(missing) > 0 {
+			*problems = append(*problems, strings.Join(missing, ", ")+" are required for RERANK_PROVIDER=vikingdb")
+		}
+		if reranker.BaseURL != "" || reranker.APIKey.Value() != "" {
+			*problems = append(*problems, "RERANK_BASE_URL and RERANK_API_KEY cannot be combined with RERANK_PROVIDER=vikingdb")
+		}
+		if reranker.VikingDB.Host != "" {
+			endpoint := reranker.VikingDB.Host
+			if !strings.Contains(endpoint, "://") {
+				endpoint = "https://" + endpoint
+			}
+			parsed, err := url.Parse(endpoint)
+			if err != nil || (parsed.Scheme != "http" && parsed.Scheme != "https") || parsed.Host == "" || (parsed.Path != "" && parsed.Path != "/") {
+				*problems = append(*problems, "VIKINGDB_HOST must be an HTTP(S) host without a path")
+			}
+		}
+	default:
+		*problems = append(*problems, "RERANK_PROVIDER must be openai-compatible or vikingdb")
+	}
+}
+
+func rerankBearerConfigured(model Model) bool {
+	return model.BaseURL != "" || model.APIKey.Value() != "" || model.Name != ""
+}
+
+func rerankVikingDBConfigured(viking VikingDBRerank) bool {
+	return viking.AccessKey.Value() != "" || viking.SecretKey.Value() != "" || viking.Host != "" || viking.Region != ""
+}
+
+func rerankVikingDBCredentialsConfigured(viking VikingDBRerank) bool {
+	return viking.AccessKey.Value() != "" || viking.SecretKey.Value() != ""
 }
 
 func valueOrDefault(name, fallback string) string {

@@ -13,6 +13,9 @@ import (
 	"strings"
 	"time"
 	"unicode"
+
+	"github.com/volcengine/vikingdb-go-sdk/knowledge"
+	vikingmodel "github.com/volcengine/vikingdb-go-sdk/knowledge/model"
 )
 
 type Reranker interface {
@@ -71,6 +74,93 @@ type RerankClient struct {
 	model      string
 	client     *http.Client
 	maxRetries int
+}
+
+// VikingDBRerankClient calls VikingDB Knowledge Rerank with Volcengine V4
+// AK/SK signing. The official SDK signs each request for service "air" and
+// sends it to /api/knowledge/service/rerank.
+type VikingDBRerankClient struct {
+	client     *knowledge.Client
+	model      string
+	maxRetries int
+}
+
+const vikingDBRerankBatchSize = 50
+
+func NewVikingDBRerankClient(host, region, accessKey, secretKey, modelName string, httpClient *http.Client) (*VikingDBRerankClient, error) {
+	host = strings.TrimSpace(host)
+	region = strings.TrimSpace(region)
+	accessKey = strings.TrimSpace(accessKey)
+	secretKey = strings.TrimSpace(secretKey)
+	modelName = strings.TrimSpace(modelName)
+	if host == "" || region == "" || accessKey == "" || secretKey == "" || modelName == "" {
+		return nil, errors.New("VikingDB host, region, AK, SK, and rerank model are required")
+	}
+	endpoint := host
+	if !strings.Contains(endpoint, "://") {
+		endpoint = "https://" + endpoint
+	}
+	parsed, err := url.Parse(endpoint)
+	if err != nil || (parsed.Scheme != "http" && parsed.Scheme != "https") || parsed.Host == "" || (parsed.Path != "" && parsed.Path != "/") {
+		return nil, errors.New("VikingDB host must be an HTTP(S) host without a path")
+	}
+	opts := []knowledge.ClientOption{
+		knowledge.WithEndpoint(strings.TrimRight(endpoint, "/")),
+		knowledge.WithRegion(region),
+		knowledge.WithMaxRetries(0),
+	}
+	if httpClient != nil {
+		opts = append(opts, knowledge.WithHTTPClient(httpClient))
+	}
+	sdkClient, err := knowledge.New(knowledge.AuthIAM(accessKey, secretKey), opts...)
+	if err != nil {
+		return nil, fmt.Errorf("create VikingDB rerank client: %w", err)
+	}
+	return &VikingDBRerankClient{client: sdkClient, model: modelName, maxRetries: 3}, nil
+}
+
+func (c *VikingDBRerankClient) SetMaxRetries(value int) { c.maxRetries = max(0, value) }
+
+func (c *VikingDBRerankClient) Rerank(ctx context.Context, query string, docs []RerankDocument, topK int) ([]RerankResult, error) {
+	if topK <= 0 || len(docs) == 0 {
+		return []RerankResult{}, nil
+	}
+	results := make([]RerankResult, 0, len(docs))
+	for start := 0; start < len(docs); start += vikingDBRerankBatchSize {
+		end := min(start+vikingDBRerankBatchSize, len(docs))
+		datas := make([]vikingmodel.RerankDataItem, end-start)
+		for index := start; index < end; index++ {
+			content := docs[index].Content
+			datas[index-start] = vikingmodel.RerankDataItem{Query: query, Content: &content}
+		}
+		response, err := c.client.Rerank(ctx, vikingmodel.RerankRequest{
+			Datas: datas, RerankModel: &c.model,
+		}, knowledge.WithRequestMaxRetries(c.maxRetries))
+		if err != nil {
+			return nil, fmt.Errorf("VikingDB rerank request for documents %d-%d: %w", start, end-1, err)
+		}
+		if response == nil {
+			return nil, errors.New("VikingDB rerank returned an empty response")
+		}
+		if response.Code != 0 {
+			return nil, fmt.Errorf("VikingDB rerank failed: code=%d message=%s request_id=%s", response.Code, response.Message, response.RequestID)
+		}
+		if response.Data == nil || len(response.Data.Scores) != len(datas) {
+			count := 0
+			if response.Data != nil {
+				count = len(response.Data.Scores)
+			}
+			return nil, fmt.Errorf("VikingDB rerank returned %d scores for %d documents", count, len(datas))
+		}
+		for index, score := range response.Data.Scores {
+			results = append(results, RerankResult{Index: start + index, Score: score})
+		}
+	}
+	sort.SliceStable(results, func(i, j int) bool { return results[i].Score > results[j].Score })
+	if len(results) > topK {
+		results = results[:topK]
+	}
+	return results, nil
 }
 
 func NewRerankClient(baseURL, apiKey, model string, client *http.Client) (*RerankClient, error) {

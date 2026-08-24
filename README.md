@@ -46,8 +46,8 @@ The API and Worker are independently runnable processes in one modular Go codeba
 
 1. Persist the user message and pending assistant message before model work starts.
 2. Rewrite follow-up questions with the latest six completed messages; fall back to the original query on error.
-3. Execute enabled Dense pgvector and Sparse `tsvector` searches concurrently, always scoped to the owner, knowledge base, ready document, and current index version.
-4. Fuse with RRF, de-duplicate chunks, apply `minimum_score`, and optionally rerank. A reranker failure transparently falls back to RRF order.
+3. Execute enabled Dense pgvector and Sparse `tsvector` searches concurrently, always scoped to the owner, knowledge base, ready document, and current index version. Sparse search indexes Chinese bigrams/English words at high weight, retains Chinese unigrams at low weight, and ranks OR-recalled candidates by primary-lexeme coverage.
+4. Fuse with coverage-weighted RRF, de-duplicate chunks, apply `minimum_score`, and optionally rerank. Weak CJK unigram matches retain recall without displacing reliable Dense candidates; a reranker failure transparently falls back to RRF order.
 5. Bound the final evidence to 8,000 estimated tokens, assign stable evidence numbers, and stream the answer through SSE.
 6. Remove nonexistent citation markers, map valid markers to real chunk rows, then persist the answer, citation snapshots, retrieval trace, Token, latency, and cost.
 
@@ -145,11 +145,15 @@ Each report includes configuration, Recall@1/5/10, MRR, citation hit rate, avera
 | Web | `WEB_PORT`, `WEB_API_BASE_URL`, `CORS_ALLOWED_ORIGINS` | The Web process exposes the browser API URL at runtime; allowed origins are enforced by the API. |
 | Chat | `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL` | All empty in development selects `FakeChatModel`; partial groups are rejected. |
 | Embedding | `EMBEDDING_BASE_URL`, `EMBEDDING_API_KEY`, `EMBEDDING_MODEL`, `EMBEDDING_DIMENSION`, `EMBEDDING_BATCH_SIZE` | All empty selects the deterministic lexical Fake Embedder. Dimension is fixed at 1024 by the migration. |
-| Rerank | `RERANK_BASE_URL`, `RERANK_API_KEY`, `RERANK_MODEL` | Optional; all empty selects Fake Reranker in development. |
+| Rerank | `RERANK_PROVIDER`, `RERANK_MODEL`, plus provider credentials | `openai-compatible` uses `RERANK_BASE_URL`/`RERANK_API_KEY`; `vikingdb` uses `VIKINGDB_AK`/`VIKINGDB_SK`/`VIKINGDB_HOST`/`VIKINGDB_REGION`. All empty selects Fake Reranker in development. |
 | Reliability | `MODEL_MAX_RETRIES`, `WORKER_POLL_TIMEOUT`, `INGESTION_JOB_TIMEOUT` | Bounds provider retry and Worker execution. |
 | Governance | `RATE_LIMIT_*`, `LOGIN_FAILURE_*`, per-model cost variables | Controls Redis limits and usage accounting. |
 
-Supplying a real provider requires its Base URL, API key, and model name as one complete group. Keys are read only from environment, wrapped by a redacting configuration type, and never returned to the frontend or written to logs. Production startup rejects placeholder MinIO credentials, weak/placeholder JWT secrets, wildcard CORS, and missing LLM/Embedding providers.
+Supplying a real provider requires one complete provider-specific group. Keys are read only from environment, wrapped by a redacting configuration type, and never returned to the frontend or written to logs. Production startup rejects placeholder MinIO credentials, weak/placeholder JWT secrets, wildcard CORS, and missing LLM/Embedding providers.
+
+VikingDB Knowledge Rerank uses Volcengine AK/SK signing rather than a Bearer API key. Configure `RERANK_PROVIDER=vikingdb`, `RERANK_MODEL=doubao-seed-rerank`, `VIKINGDB_AK`, `VIKINGDB_SK`, `VIKINGDB_HOST=api-knowledgebase.mlp.cn-beijing.volces.com`, and `VIKINGDB_REGION=cn-beijing`. `VIKINGDB_HOST` may include `https://` but must not include an API path; the client appends `/api/knowledge/service/rerank`. Candidate sets larger than the official Go SDK's 50-item request limit are split into batches and globally sorted. The legacy generic adapter remains available with `RERANK_PROVIDER=openai-compatible`.
+
+OpenAI-compatible text embedding models use `POST /embeddings`. Volcengine Ark models whose ID contains `embedding-vision` use Ark's `POST /embeddings/multimodal` automatically; KnowFlow wraps each chunk as a text input and requests the configured 1024 dimensions. Ark's multimodal API accepts at most one text input per request, so `EMBEDDING_BATCH_SIZE` still bounds Worker batches while those chunks are sent to Ark individually.
 
 ## API and process operation
 
@@ -226,7 +230,7 @@ The [three-minute demo script](docs/demo-script.md) is suitable for a recording 
 - DOCX parsing targets the main `word/document.xml` body, including headings, body paragraphs, and tables. Headers, footers, comments, drawings, and embedded media are not indexed.
 - The first-release sparse tokenizer retains ASCII words and creates common Han unigram/bigram terms before PostgreSQL `simple` stemming. It has no linguistic Chinese segmentation, synonyms, phrase scoring, or every CJK extension block. Long `plainto_tsquery` input also uses AND semantics.
 - Fake embeddings are deterministic and lexical. They prove the complete pgvector path and make offline evaluation repeatable, but they are not a claim about production semantic quality.
-- The rerank adapter uses the common `/rerank` `{model, query, documents, top_n}` shape because OpenAI compatibility does not define a universal rerank protocol.
+- The generic rerank adapter uses the common `/rerank` `{model, query, documents, top_n}` shape because OpenAI compatibility does not define a universal rerank protocol. VikingDB is a separate adapter using its Knowledge Rerank request shape and Volcengine AK/SK signing.
 - Automatic fallback to a second external model provider is not configured. Streaming cannot safely switch after deltas have been emitted without risking duplicated text.
 - If an SSE client disconnects, request context cancels active rewriting/retrieval/rerank/generation and a short independent context marks the assistant message `failed` with `CLIENT_DISCONNECTED`; generation does not continue in the background.
 - Redis list processing is duplicate-safe but does not use a separate in-flight acknowledgement list. A hard Worker crash after dequeue can leave a running job for operator recovery.

@@ -43,3 +43,13 @@ func TestRewriteForRetrievalFallsBackToOriginalQuery(t *testing.T) {
 		t.Fatalf("query=%q applied=%v fallback=%v", query, applied, fallback)
 	}
 }
+
+func TestMarshalNilCitationsProducesJSONArray(t *testing.T) {
+	payload, err := marshalCitations(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(payload) != "[]" {
+		t.Fatalf("nil citations encoded as %s, want []", payload)
+	}
+}

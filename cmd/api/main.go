@@ -173,17 +173,28 @@ func configuredChatModel(cfg config.Config) (model.ChatModel, string, error) {
 }
 
 func configuredReranker(cfg config.Config) (model.Reranker, error) {
-	if cfg.Models.Reranker.BaseURL == "" {
+	switch cfg.Models.Reranker.Provider {
+	case "":
 		if cfg.App.Environment == "production" {
 			return nil, nil
 		}
 		return &model.FakeReranker{}, nil
+	case config.RerankProviderOpenAICompatible:
+		client, err := model.NewRerankClient(cfg.Models.Reranker.BaseURL, cfg.Models.Reranker.APIKey.Value(), cfg.Models.Reranker.Name, nil)
+		if err == nil {
+			client.SetMaxRetries(cfg.Operational.ModelMaxRetries)
+		}
+		return client, err
+	case config.RerankProviderVikingDB:
+		viking := cfg.Models.Reranker.VikingDB
+		client, err := model.NewVikingDBRerankClient(viking.Host, viking.Region, viking.AccessKey.Value(), viking.SecretKey.Value(), cfg.Models.Reranker.Name, nil)
+		if err == nil {
+			client.SetMaxRetries(cfg.Operational.ModelMaxRetries)
+		}
+		return client, err
+	default:
+		return nil, fmt.Errorf("unsupported rerank provider %q", cfg.Models.Reranker.Provider)
 	}
-	client, err := model.NewRerankClient(cfg.Models.Reranker.BaseURL, cfg.Models.Reranker.APIKey.Value(), cfg.Models.Reranker.Name, nil)
-	if err == nil {
-		client.SetMaxRetries(cfg.Operational.ModelMaxRetries)
-	}
-	return client, err
 }
 
 func configuredQueryRewriter(cfg config.Config, chatModel model.ChatModel) model.QueryRewriter {

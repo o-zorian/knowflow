@@ -1,0 +1,27 @@
+ORCHARD DISTRIBUTION - INVENTORY CONTROL PROCEDURE 2026
+Status: CURRENT
+Effective: 2026-02-01
+Owner: Supply Chain Assurance
+
+1. CYCLE COUNT SCHEDULE
+Class A items are counted every Monday. Class B items are counted every Wednesday. Class C items are counted on the first business day of each calendar quarter. A holiday moves the count to the next business day; it does not cancel the count.
+
+2. VARIANCE ACTIONS
+CLASS      RECOUNT THRESHOLD      MANAGER REVIEW      FINANCE REVIEW
+A          above 0.5%             above 1.0%          above 2.0%
+B          above 1.0%             above 2.0%          above 4.0%
+C          above 2.0%             above 4.0%          above 8.0%
+
+For Class A inventory, a variance above 0.5% triggers an immediate recount, above 1.0% requires manager review, and above 2.0% additionally requires finance review. Thresholds are strictly “above”; exactly 0.5% does not trigger the recount rule.
+
+3. COLD CHAIN
+Refrigerated stock must remain between 2°C and 8°C. An excursion outside that range lasting more than 15 consecutive minutes requires quarantine under code QH-26 and a quality assessment. A brief sensor reading under 15 minutes is investigated but does not automatically require quarantine.
+
+4. ROTATION TERMS
+FEFO means first-expire, first-out and applies to dated food, medicine, and reagents. FIFO means first-in, first-out and applies only when expiration dates do not control disposition. The terms sound similar but FEFO takes precedence whenever an expiry date exists.
+
+5. VERSION CONTROL
+Code QH-26 replaces archived code QH-25. The 2025 procedure used a 3°C to 7°C target and different variance thresholds; those historical values must not be used for 2026 receipts.
+
+6. DISTRACTOR NOTE
+Parking permits, vehicle insurance carriers, and supplier contract duration are outside this inventory procedure. Their absence must not be filled with assumptions from unrelated warehouse manuals.

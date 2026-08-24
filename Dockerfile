@@ -12,8 +12,8 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/api ./cmd/api \
 	&& CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/web ./cmd/web \
     && mkdir -p /out/tmp && chmod 1777 /out/tmp
 
-FROM scratch
-COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+FROM alpine:3.22
+RUN apk add --no-cache ca-certificates poppler-utils
 COPY --from=build /out/api /out/worker /out/migrate /out/healthcheck /out/eval /out/smoke /out/web /usr/local/bin/
 COPY --from=build /src/eval/datasets /app/eval/datasets
 COPY --from=build /src/demo /app/demo

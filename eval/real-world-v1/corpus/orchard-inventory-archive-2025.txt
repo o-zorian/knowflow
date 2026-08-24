@@ -1,0 +1,21 @@
+ORCHARD DISTRIBUTION - INVENTORY CONTROL PROCEDURE 2025
+Status: ARCHIVED - DO NOT USE FOR CURRENT RECEIPTS
+Historical effective period: 2025-01-01 through 2026-01-31
+
+1. HISTORICAL CYCLE COUNTS
+Class A items were counted every Tuesday, Class B every second Thursday, and Class C twice per year. These schedules are preserved only for audit reconstruction.
+
+2. HISTORICAL VARIANCE TABLE
+CLASS      RECOUNT THRESHOLD      MANAGER REVIEW
+A          above 0.8%             above 1.5%
+B          above 1.5%             above 3.0%
+C          above 3.0%             above 6.0%
+
+3. HISTORICAL COLD CHAIN
+The archived target range was 3°C to 7°C. Excursions longer than 20 minutes used quarantine code QH-25. On 2026-02-01 the current procedure widened the accepted range to 2°C through 8°C, shortened the duration threshold to 15 minutes, and replaced QH-25 with QH-26.
+
+4. AUDIT WARNING
+This archived file may rank highly for searches containing QH-25 or Tuesday. It is valid only for events inside its historical effective period and must never override the current 2026 procedure.
+
+5. OUT-OF-SCOPE RECORDS
+The archive does not name an insurance carrier, a parking level, or the duration of supplier audits. Those facts belong to other systems and are intentionally absent.

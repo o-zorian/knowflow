@@ -142,7 +142,16 @@ func (c *OpenAIClient) EmbedQuery(ctx context.Context, text string) ([]float32, 
 func (c *OpenAIClient) Dimension() int { return c.dimension }
 
 func (c *OpenAIClient) embed(ctx context.Context, texts []string) ([][]float32, error) {
-	body, err := json.Marshal(map[string]any{"model": c.model, "input": texts})
+	if strings.Contains(strings.ToLower(c.model), "embedding-vision") {
+		return c.embedMultimodal(ctx, texts)
+	}
+	return c.embedText(ctx, texts)
+}
+
+func (c *OpenAIClient) embedText(ctx context.Context, texts []string) ([][]float32, error) {
+	body, err := json.Marshal(map[string]any{
+		"model": c.model, "input": texts, "dimensions": c.dimension, "encoding_format": "float",
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -184,6 +193,59 @@ func (c *OpenAIClient) embed(ctx context.Context, texts []string) ([][]float32, 
 		if c.dimension > 0 && len(vector) != c.dimension {
 			return nil, fmt.Errorf("embedding provider returned dimension %d, want %d", len(vector), c.dimension)
 		}
+	}
+	return vectors, nil
+}
+
+// Ark's doubao-embedding-vision models expose a multimodal endpoint instead of
+// the OpenAI-compatible text embeddings endpoint. A multimodal request accepts
+// at most one input of each media type, so document batches must be sent one
+// text at a time while preserving their original order.
+func (c *OpenAIClient) embedMultimodal(ctx context.Context, texts []string) ([][]float32, error) {
+	vectors := make([][]float32, 0, len(texts))
+	for _, text := range texts {
+		body, err := json.Marshal(map[string]any{
+			"model":           c.model,
+			"input":           []map[string]string{{"type": "text", "text": text}},
+			"dimensions":      c.dimension,
+			"encoding_format": "float",
+		})
+		if err != nil {
+			return nil, err
+		}
+		response, err := doWithRetry(ctx, c.maxRetries, func() (*http.Response, error) {
+			request, requestErr := http.NewRequestWithContext(ctx, http.MethodPost, c.baseURL+"/embeddings/multimodal", bytes.NewReader(body))
+			if requestErr != nil {
+				return nil, requestErr
+			}
+			c.authorize(request)
+			return c.client.Do(request)
+		})
+		if err != nil {
+			return nil, err
+		}
+		if response.StatusCode < 200 || response.StatusCode >= 300 {
+			err = providerError(response)
+			_ = response.Body.Close()
+			return nil, err
+		}
+		var payload struct {
+			Data struct {
+				Embedding []float32 `json:"embedding"`
+			} `json:"data"`
+		}
+		err = json.NewDecoder(io.LimitReader(response.Body, 16<<20)).Decode(&payload)
+		_ = response.Body.Close()
+		if err != nil {
+			return nil, fmt.Errorf("decode multimodal embedding response: %w", err)
+		}
+		if len(payload.Data.Embedding) == 0 {
+			return nil, errors.New("embedding provider omitted a vector")
+		}
+		if c.dimension > 0 && len(payload.Data.Embedding) != c.dimension {
+			return nil, fmt.Errorf("embedding provider returned dimension %d, want %d", len(payload.Data.Embedding), c.dimension)
+		}
+		vectors = append(vectors, payload.Data.Embedding)
 	}
 	return vectors, nil
 }

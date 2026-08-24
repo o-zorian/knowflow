@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -79,5 +80,69 @@ func TestOpenAIEmbeddingClientValidatesDimension(t *testing.T) {
 	_, err = client.EmbedQuery(context.Background(), "question")
 	if err == nil || !strings.Contains(err.Error(), "dimension 2, want 3") {
 		t.Fatalf("error = %v", err)
+	}
+}
+
+func TestOpenAIEmbeddingClientRequestsConfiguredDimensions(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var body struct {
+			Model          string   `json:"model"`
+			Input          []string `json:"input"`
+			Dimensions     int      `json:"dimensions"`
+			EncodingFormat string   `json:"encoding_format"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			t.Fatal(err)
+		}
+		if body.Model != "embedding-model" || len(body.Input) != 1 || body.Dimensions != 2 || body.EncodingFormat != "float" {
+			t.Fatalf("unexpected embedding request: %+v", body)
+		}
+		fmt.Fprint(w, `{"data":[{"index":0,"embedding":[1,0]}]}`)
+	}))
+	defer server.Close()
+	client, err := NewOpenAIEmbeddingClient(server.URL, "secret", "embedding-model", 2, server.Client())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := client.EmbedQuery(context.Background(), "question"); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestOpenAIEmbeddingVisionClientUsesMultimodalEndpoint(t *testing.T) {
+	var requests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/embeddings/multimodal" {
+			t.Fatalf("request path = %s", r.URL.Path)
+		}
+		var body struct {
+			Model string `json:"model"`
+			Input []struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"input"`
+			Dimensions     int    `json:"dimensions"`
+			EncodingFormat string `json:"encoding_format"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			t.Fatal(err)
+		}
+		if body.Model != "doubao-embedding-vision-250615" || len(body.Input) != 1 || body.Input[0].Type != "text" || body.Dimensions != 2 || body.EncodingFormat != "float" {
+			t.Fatalf("unexpected multimodal embedding request: %+v", body)
+		}
+		requests.Add(1)
+		fmt.Fprint(w, `{"data":{"object":"embedding","embedding":[1,0]}}`)
+	}))
+	defer server.Close()
+	client, err := NewOpenAIEmbeddingClient(server.URL, "secret", "doubao-embedding-vision-250615", 2, server.Client())
+	if err != nil {
+		t.Fatal(err)
+	}
+	vectors, err := client.EmbedDocuments(context.Background(), []string{"first", "second"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if requests.Load() != 2 || len(vectors) != 2 || len(vectors[0]) != 2 || len(vectors[1]) != 2 {
+		t.Fatalf("requests=%d vectors=%v", requests.Load(), vectors)
 	}
 }

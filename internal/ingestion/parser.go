@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -139,6 +140,40 @@ func parsePDF(ctx context.Context, reader io.Reader) ([]SourceBlock, error) {
 	if err := temporary.Close(); err != nil {
 		return nil, transient("DOCUMENT_READ_FAILED", "document could not be read", err)
 	}
+	if pdftotext, lookupErr := exec.LookPath("pdftotext"); lookupErr == nil {
+		return parsePDFWithPoppler(ctx, pdftotext, path)
+	}
+	return parsePDFWithGo(path, ctx)
+}
+
+func parsePDFWithPoppler(ctx context.Context, pdftotext, path string) ([]SourceBlock, error) {
+	command := exec.CommandContext(ctx, pdftotext, "-enc", "UTF-8", "-layout", path, "-")
+	var stdout, stderr bytes.Buffer
+	command.Stdout = &stdout
+	command.Stderr = &stderr
+	if err := command.Run(); err != nil {
+		if ctx.Err() != nil {
+			return nil, ctx.Err()
+		}
+		return nil, permanent("DOCUMENT_PARSE_FAILED", "PDF document could not be parsed", fmt.Errorf("pdftotext: %w: %s", err, strings.TrimSpace(stderr.String())))
+	}
+	pages := strings.Split(strings.ReplaceAll(stdout.String(), "\r\n", "\n"), "\f")
+	blocks := make([]SourceBlock, 0, len(pages))
+	for index, raw := range pages {
+		content := cleanText(raw)
+		if content == "" {
+			continue
+		}
+		page := index + 1
+		blocks = append(blocks, SourceBlock{Content: content, PageStart: &page, PageEnd: &page, Metadata: map[string]any{"page_start": page, "page_end": page, "source_type": "pdf", "extractor": "pdftotext"}})
+	}
+	return blocks, nil
+}
+
+// parsePDFWithGo keeps local development and unit tests self-contained. The
+// production image includes Poppler because its ToUnicode handling is more
+// reliable for real CJK PDFs than the pure-Go fallback.
+func parsePDFWithGo(path string, ctx context.Context) ([]SourceBlock, error) {
 	file, pdfReader, err := pdf.Open(path)
 	if err != nil {
 		return nil, permanent("DOCUMENT_PARSE_FAILED", "PDF document could not be parsed", err)

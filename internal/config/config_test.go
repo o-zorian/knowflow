@@ -83,3 +83,83 @@ func TestLoadAPIRejectsPartialRerankerConfiguration(t *testing.T) {
 		t.Fatalf("LoadAPI() error = %v", err)
 	}
 }
+
+func TestLoadAPILoadsVikingDBReranker(t *testing.T) {
+	setValidAPIEnv(t)
+	t.Setenv("RERANK_PROVIDER", "vikingdb")
+	t.Setenv("RERANK_MODEL", "doubao-seed-rerank")
+	t.Setenv("VIKINGDB_AK", "test-ak")
+	t.Setenv("VIKINGDB_SK", "test-sk")
+	t.Setenv("VIKINGDB_HOST", "api-knowledgebase.mlp.cn-beijing.volces.com")
+	t.Setenv("VIKINGDB_REGION", "cn-beijing")
+
+	cfg, err := LoadAPI()
+	if err != nil {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+	if cfg.Models.Reranker.Provider != RerankProviderVikingDB || cfg.Models.Reranker.Name != "doubao-seed-rerank" {
+		t.Fatalf("reranker = %#v", cfg.Models.Reranker)
+	}
+	if got := cfg.Models.Reranker.VikingDB.AccessKey.String(); got != "[REDACTED]" {
+		t.Fatalf("AK String() = %q", got)
+	}
+}
+
+func TestLoadAPIInfersVikingDBReranker(t *testing.T) {
+	setValidAPIEnv(t)
+	t.Setenv("RERANK_MODEL", "doubao-seed-rerank")
+	t.Setenv("VIKINGDB_AK", "test-ak")
+	t.Setenv("VIKINGDB_SK", "test-sk")
+	t.Setenv("VIKINGDB_HOST", "https://api-knowledgebase.mlp.cn-beijing.volces.com")
+	t.Setenv("VIKINGDB_REGION", "cn-beijing")
+
+	cfg, err := LoadAPI()
+	if err != nil {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+	if cfg.Models.Reranker.Provider != RerankProviderVikingDB {
+		t.Fatalf("provider = %q", cfg.Models.Reranker.Provider)
+	}
+}
+
+func TestLoadAPIDoesNotEnableVikingDBFromEndpointDefaultsAlone(t *testing.T) {
+	setValidAPIEnv(t)
+	t.Setenv("VIKINGDB_HOST", "api-knowledgebase.mlp.cn-beijing.volces.com")
+	t.Setenv("VIKINGDB_REGION", "cn-beijing")
+
+	cfg, err := LoadAPI()
+	if err != nil {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+	if cfg.Models.Reranker.Provider != "" {
+		t.Fatalf("provider = %q", cfg.Models.Reranker.Provider)
+	}
+}
+
+func TestLoadAPIRejectsPartialVikingDBReranker(t *testing.T) {
+	setValidAPIEnv(t)
+	t.Setenv("RERANK_PROVIDER", "vikingdb")
+	t.Setenv("RERANK_MODEL", "doubao-seed-rerank")
+	t.Setenv("VIKINGDB_AK", "test-ak")
+
+	_, err := LoadAPI()
+	if err == nil || !strings.Contains(err.Error(), "VIKINGDB_SK") || !strings.Contains(err.Error(), "VIKINGDB_HOST") {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+}
+
+func TestLoadAPIRejectsMixedRerankerCredentials(t *testing.T) {
+	setValidAPIEnv(t)
+	t.Setenv("RERANK_PROVIDER", "vikingdb")
+	t.Setenv("RERANK_MODEL", "doubao-seed-rerank")
+	t.Setenv("RERANK_API_KEY", "legacy-key")
+	t.Setenv("VIKINGDB_AK", "test-ak")
+	t.Setenv("VIKINGDB_SK", "test-sk")
+	t.Setenv("VIKINGDB_HOST", "api-knowledgebase.mlp.cn-beijing.volces.com")
+	t.Setenv("VIKINGDB_REGION", "cn-beijing")
+
+	_, err := LoadAPI()
+	if err == nil || !strings.Contains(err.Error(), "cannot be combined") {
+		t.Fatalf("LoadAPI() error = %v", err)
+	}
+}

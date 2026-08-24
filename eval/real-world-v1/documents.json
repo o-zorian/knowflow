@@ -1,0 +1,58 @@
+{
+  "name": "real-world-v1",
+  "purpose": "真实格式、真实 Provider、公开 API 端到端评测语料",
+  "document_count": 10,
+  "question_count": 60,
+  "documents": [
+    {
+      "filename": "atlas-support-playbook-2026.4.docx",
+      "format": "docx",
+      "size_bytes": 39934
+    },
+    {
+      "filename": "aurora-maintenance-bulletin-2026-rB.pdf",
+      "format": "pdf",
+      "size_bytes": 42823
+    },
+    {
+      "filename": "aurora-transit-operations-v2.1.pdf",
+      "format": "pdf",
+      "size_bytes": 56719
+    },
+    {
+      "filename": "helios-travel-policy-v2.8-archived.docx",
+      "format": "docx",
+      "size_bytes": 39648
+    },
+    {
+      "filename": "helios-travel-policy-v3.2.docx",
+      "format": "docx",
+      "size_bytes": 40158
+    },
+    {
+      "filename": "lumen-release-notes-3.4.md",
+      "format": "md",
+      "size_bytes": 1635
+    },
+    {
+      "filename": "meridian-api-migration-v4.md",
+      "format": "md",
+      "size_bytes": 2098
+    },
+    {
+      "filename": "northwind-energy-q2-2026.pdf",
+      "format": "pdf",
+      "size_bytes": 37914
+    },
+    {
+      "filename": "orchard-inventory-archive-2025.txt",
+      "format": "txt",
+      "size_bytes": 1293
+    },
+    {
+      "filename": "orchard-inventory-procedure-2026.txt",
+      "format": "txt",
+      "size_bytes": 1968
+    }
+  ]
+}

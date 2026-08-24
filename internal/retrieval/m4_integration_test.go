@@ -112,6 +112,17 @@ func TestM4PostgresFourConfigurationsAndRerankFallback(t *testing.T) {
 		})
 	}
 
+	// Natural-language Chinese questions contain terms that need not appear
+	// verbatim in the source. Sparse retrieval must use weighted OR recall
+	// rather than requiring every generated unigram and bigram to match.
+	sparseResults, err := NewPostgresStore(pool).Sparse(ctx, userID, knowledgeBaseID, "混合检索当前版本何时生效", 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(sparseResults) == 0 || sparseResults[0].DocumentID != documentID || !strings.Contains(sparseResults[0].Content, "混合检索") {
+		t.Fatalf("natural-language CJK sparse results = %#v", sparseResults)
+	}
+
 	config.RerankEnabled = true
 	payload, _ := json.Marshal(config)
 	if _, err := pool.Exec(ctx, `UPDATE knowledge_bases SET retrieval_config = $2 WHERE id = $1`, knowledgeBaseID, payload); err != nil {

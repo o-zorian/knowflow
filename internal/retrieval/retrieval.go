@@ -32,9 +32,13 @@ type Result struct {
 	Metadata    map[string]any `json:"metadata"`
 	Similarity  float64        `json:"similarity,omitempty"`
 	SparseScore float64        `json:"sparse_score,omitempty"`
-	RRFScore    float64        `json:"rrf_score,omitempty"`
-	RerankScore *float64       `json:"rerank_score,omitempty"`
-	Score       float64        `json:"score"`
+	// SparseCoverage is the fraction of distinct high-value query lexemes
+	// present in the chunk. It prevents low-value CJK unigram matches from
+	// overpowering semantic results during weighted RRF fusion.
+	SparseCoverage float64  `json:"sparse_coverage,omitempty"`
+	RRFScore       float64  `json:"rrf_score,omitempty"`
+	RerankScore    *float64 `json:"rerank_score,omitempty"`
+	Score          float64  `json:"score"`
 }
 
 type Response struct {
@@ -234,7 +238,14 @@ func RRF(dense, sparse []Result, rrfK int) []Result {
 				item = &fused{result: copy}
 				byChunk[result.ChunkID] = item
 			}
-			item.score += 1 / float64(rrfK+index+1)
+			weight := 1.0
+			if !denseSource {
+				// A 50% primary-lexeme overlap receives full RRF weight. Very
+				// weak matches retain a small contribution for recall without
+				// displacing reliable dense-only candidates.
+				weight = math.Max(0.1, math.Min(1, result.SparseCoverage*2))
+			}
+			item.score += weight / float64(rrfK+index+1)
 			if denseSource {
 				item.result.Similarity = result.Similarity
 			} else {
@@ -362,11 +373,12 @@ func (s *PostgresStore) Dense(ctx context.Context, ownerID, knowledgeBaseID stri
 
 func (s *PostgresStore) Sparse(ctx context.Context, ownerID, knowledgeBaseID, query string, topK int) ([]Result, error) {
 	rows, err := s.pool.Query(ctx, `WITH search_query AS (
-		SELECT plainto_tsquery('simple', knowflow_search_terms($3)) AS query
+		SELECT knowflow_sparse_query($3) AS query
 	)
 	SELECT dc.id::text, d.id::text, d.filename, dc.content, dc.token_count,
 		dc.page_start, dc.page_end, dc.heading_path, dc.chunk_index, dc.metadata,
-		ts_rank_cd(dc.search_vector, search_query.query, 32) AS sparse_score
+		ts_rank_cd(dc.search_vector, search_query.query, 32) AS sparse_score,
+		knowflow_sparse_coverage(dc.search_vector, $3) AS sparse_coverage
 		FROM document_chunks dc
 		JOIN documents d ON d.id = dc.document_id
 		JOIN knowledge_bases kb ON kb.id = dc.knowledge_base_id
@@ -374,7 +386,7 @@ func (s *PostgresStore) Sparse(ctx context.Context, ownerID, knowledgeBaseID, qu
 		WHERE dc.knowledge_base_id = $1 AND kb.owner_id = $2 AND kb.deleted_at IS NULL
 		AND d.deleted_at IS NULL AND d.status = 'ready' AND dc.index_version = d.index_version
 		AND search_query.query @@ dc.search_vector
-		ORDER BY sparse_score DESC, dc.id
+		ORDER BY sparse_coverage DESC, sparse_score DESC, dc.id
 		LIMIT $4`, knowledgeBaseID, ownerID, query, topK)
 	if err != nil {
 		return nil, err
@@ -384,7 +396,7 @@ func (s *PostgresStore) Sparse(ctx context.Context, ownerID, knowledgeBaseID, qu
 	for rows.Next() {
 		var result Result
 		if err := rows.Scan(&result.ChunkID, &result.DocumentID, &result.Filename, &result.Content, &result.TokenCount,
-			&result.PageStart, &result.PageEnd, &result.HeadingPath, &result.ChunkIndex, &result.Metadata, &result.SparseScore); err != nil {
+			&result.PageStart, &result.PageEnd, &result.HeadingPath, &result.ChunkIndex, &result.Metadata, &result.SparseScore, &result.SparseCoverage); err != nil {
 			return nil, err
 		}
 		results = append(results, result)

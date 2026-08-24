@@ -10,7 +10,7 @@ func TestEmbeddedMigrationsAreOrderedAndContainCoreSchema(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(migrations) != 2 || migrations[0].version != 1 || migrations[1].version != 2 {
+	if len(migrations) != 5 || migrations[0].version != 1 || migrations[1].version != 2 || migrations[2].version != 3 || migrations[3].version != 4 || migrations[4].version != 5 {
 		t.Fatalf("migrations = %#v", migrations)
 	}
 	for _, required := range []string{
@@ -35,6 +35,21 @@ func TestEmbeddedMigrationsAreOrderedAndContainCoreSchema(t *testing.T) {
 	for _, required := range []string{"knowflow_search_terms", "USING GIN", "search_vector"} {
 		if !strings.Contains(migrations[1].sql, required) {
 			t.Errorf("M4 migration does not contain %q", required)
+		}
+	}
+	for _, required := range []string{"knowflow_sparse_query", "knowflow_search_primary_terms", "knowflow_search_fallback_terms", "setweight", "USING GIN"} {
+		if !strings.Contains(migrations[2].sql, required) {
+			t.Errorf("CJK sparse migration does not contain %q", required)
+		}
+	}
+	for _, required := range []string{"CREATE OR REPLACE FUNCTION knowflow_sparse_query", "NULL::tsquery"} {
+		if !strings.Contains(migrations[3].sql, required) {
+			t.Errorf("empty sparse query migration does not contain %q", required)
+		}
+	}
+	for _, required := range []string{"knowflow_sparse_coverage", "tsvector_to_array", "knowflow_search_primary_terms"} {
+		if !strings.Contains(migrations[4].sql, required) {
+			t.Errorf("sparse coverage migration does not contain %q", required)
 		}
 	}
 }
